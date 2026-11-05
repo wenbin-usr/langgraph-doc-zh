@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>事件流式输出 · LangGraph 中文文档</title>
+<meta name="description" content="使用类型化投影对 LangGraph 运行进行流式输出，覆盖消息、状态、子图、输出与扩展。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link active" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/event-streaming" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>核心能力</span><span class="sep">/</span><span>事件流式输出</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">核心能力</span>
+          <h1>事件流式输出</h1>
+          <p class="page-desc">使用类型化投影对 LangGraph 运行进行流式输出，覆盖消息、状态、子图、输出与扩展。</p>
+        </div>
+        <div class="doc-body"><p>事件流式输出是大多数 LangGraph 应用代码推荐的进程内流式输出模型。它返回一个运行流对象，可以同时以多种方式消费。</p>
+<h2 id="快速开始">快速开始<a class="h-anchor" href="#快速开始" aria-label="本节链接">#</a></h2>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span>
+    <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;What is 42 * 17?&quot;</span><span class="p">}],</span>
+<span class="p">},</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">final_state</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">output</span>
+</code></pre></div>
+<p>如果想对部署在 Agent Server 后面的图进行流式输出，请参阅 <a href="https://docs.langchain.com/langsmith/streaming" target="_blank" rel="noreferrer">LangSmith Streaming API</a>。</p>
+<h2 id="各部分如何协同工作">各部分如何协同工作<a class="h-anchor" href="#各部分如何协同工作" aria-label="本节链接">#</a></h2>
+<p>流式输出栈包含两个主要层级：</p>
+<ol><li><strong>流式输出（Streaming）</strong> 从 Pregel 引擎发出原始的图执行事件。</li><li><strong>事件流式输出（Event streaming）</strong> 对这些事件进行规范化，让它们经过流转换器，并暴露类型化投影。</li></ol>
+<p>Pregel 引擎运行图步骤</p>
+<p>发出</p>
+<p>原始 Pregel 事件<code>updates</code>、<code>values</code>、<code>messages</code>、<code>custom</code>、<code>checkpoints</code>、<code>tasks</code>、<code>debug</code></p>
+<p>发送至</p>
+<p>事件路由器让每个事件经过转换器管道</p>
+<p>级联经过</p>
+<p>流转换器</p>
+<p>ValuesTransformerMessagesTransformer...自定义转换器</p>
+<p>产生</p>
+<p>事件流面向应用代码的投影事件</p>
+<p>事件路由器是这两层之间的桥梁。它接收规范化的 Pregel 事件，并让每个事件经过已注册的流转换器。内置转换器创建标准投影，例如 <code>stream.messages</code>、<code>stream.values</code>、<code>stream.subgraphs</code> 和 <code>stream.output</code>。自定义转换器可以在 <code>stream.extensions</code> 下添加应用专属的投影。</p>
+<h2 id="事件流式输出提供的能力">事件流式输出提供的能力<a class="h-anchor" href="#事件流式输出提供的能力" aria-label="本节链接">#</a></h2>
+<p>运行流在单一底层事件流之上暴露类型化投影：</p>
+<div class="table-wrap"><table><thead><tr><th>投影</th><th>用途</th></tr></thead><tbody><tr><td><code>stream</code></td><td>遍历每个协议事件。</td></tr><tr><td><code>stream.messages</code></td><td>流式输出聊天模型消息与 token 增量。</td></tr><tr><td><code>stream.values</code></td><td>遍历状态快照并等待最终值。</td></tr><tr><td><code>stream.output</code></td><td>等待最终输出。</td></tr><tr><td><code>stream.subgraphs</code></td><td>发现并观察嵌套的图执行。</td></tr><tr><td><code>stream.interrupts</code></td><td>查看人在回路的中断载荷。</td></tr><tr><td><code>stream.interrupted</code></td><td>检查运行是否因等待人工输入而暂停。</td></tr><tr><td><code>stream.extensions</code></td><td>消费自定义流转换器的投影。</td></tr></tbody></table></div>
+<p>多个消费者可以并发读取这些投影。读取 <code>stream.messages</code> 不会消耗 <code>stream.values</code>、<code>stream.subgraphs</code> 或 <code>stream.output</code> 所需的事件。</p>
+<p>事件流式输出位于<a href="streaming.html">流式输出</a>之上的一层，后者通过 <code>updates</code>、<code>values</code>、<code>messages</code>、<code>custom</code>、<code>checkpoints</code>、<code>tasks</code> 和 <code>debug</code> 等 <code>stream_mode</code> 模式暴露原始的图执行事件。当你需要对那些模式的低层访问时，使用流式输出；当应用代码能从类型化投影中获益时，使用事件流式输出。</p>
+<h2 id="流式输出消息">流式输出消息<a class="h-anchor" href="#流式输出消息" aria-label="本节链接">#</a></h2>
+<p>使用 <code>stream.messages</code> 处理聊天模型输出：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">usage</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">usage_metadata</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">usage</span><span class="p">)</span>
+</code></pre></div>
+<p>在同步代码中，<code>message.text</code> 是可迭代的。逐 token 输出时遍历它，或调用 <code>str(message.text)</code> 获取完整文本。</p>
+<p><code>message.reasoning</code> 暴露推理增量。<code>message.tool_calls</code> 暴露工具调用块。每个块包含该调用的 <code>id</code>、<code>name</code>，以及其 <code>args</code> 中新增的部分。如果你需要按精确到达顺序获取文本、推理和工具调用块，请遍历消息流的原始事件，而不是分别遍历各个投影。</p>
+<h2 id="流式输出子图">流式输出子图<a class="h-anchor" href="#流式输出子图" aria-label="本节链接">#</a></h2>
+<p>使用 <code>stream.subgraphs</code> 观察嵌套的图工作，而无需解析命名空间字符串：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">subgraph</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">subgraphs</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">subgraph</span><span class="o">.</span><span class="n">graph_name</span><span class="p">,</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<p><code>subgraph.graph_name</code> 是编译后的图或智能体的 <code>name</code>。从工具分派的具名智能体（例如通过 Deep Agents <code>task</code> 工具调用的 <code>create_agent(name=...)</code>）会以该名称出现在这里，并且开启该作用域的 <code>lifecycle</code> 事件带有一个 <code>cause</code>，指回分派它的工具调用。更多信息请参阅 <a href="#生命周期">Lifecycle</a>。</p>
+<p>关于产品专属的流，子智能体流请参阅 <a href="https://docs.langchain.com/oss/python/deepagents/event-streaming" target="_blank" rel="noreferrer">Deep Agents streaming</a>，工具调用与中间件事件请参阅 <a href="https://docs.langchain.com/oss/python/langchain/streaming" target="_blank" rel="noreferrer">LangChain agent streaming</a>。</p>
+<h2 id="流式输出状态">流式输出状态<a class="h-anchor" href="#流式输出状态" aria-label="本节链接">#</a></h2>
+<p>使用 <code>stream.values</code> 在每个步骤之后流式输出完整状态快照：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">snapshot</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
+
+<span class="n">final_state</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">output</span>
+</code></pre></div>
+<h2 id="流式输出多个投影">流式输出多个投影<a class="h-anchor" href="#流式输出多个投影" aria-label="本节链接">#</a></h2>
+<p>在异步代码中并发消费时，使用 <code>astream_events</code> 配合 <code>asyncio.gather</code>：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="k">await</span> <span class="n">graph</span><span class="o">.</span><span class="n">astream_events</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">consume_messages</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[llm] node=</span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">consume_subgraphs</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">for</span> <span class="n">subgraph</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">subgraphs</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[subgraph] path=</span><span class="si">{</span><span class="n">subgraph</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">consume_messages</span><span class="p">(),</span> <span class="n">consume_subgraphs</span><span class="p">())</span>
+</code></pre></div>
+<p>对于同步代码，使用 <code>stream.interleave(...)</code> 按严格的到达顺序消费多个投影：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">interleave</span><span class="p">(</span><span class="s2">&quot;values&quot;</span><span class="p">,</span> <span class="s2">&quot;messages&quot;</span><span class="p">,</span> <span class="s2">&quot;subgraphs&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;values&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[state] keys=</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;messages&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[llm] node=</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;subgraphs&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[subgraph] path=</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="中断后恢复">中断后恢复<a class="h-anchor" href="#中断后恢复" aria-label="本节链接">#</a></h2>
+<p>当图因等待人工输入而暂停时，查看 <code>stream.interrupted</code> 和 <code>stream.interrupts</code>，然后携带 <code>Command</code> 再次调用 <code>stream_events(..., version="v3")</code> 来恢复。</p>
+<p>恢复需要图在编译时配置了检查点保存器，并且配置中带有线程 ID——请参阅<a href="persistence.html">持久化</a>。</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">stream</span><span class="o">.</span><span class="n">interrupted</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">interrupts</span><span class="p">)</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;decisions&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;approve&quot;</span><span class="p">}]}),</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">final_state</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">output</span>
+</code></pre></div>
+<h2 id="流式输出所有协议事件">流式输出所有协议事件<a class="h-anchor" href="#流式输出所有协议事件" aria-label="本节链接">#</a></h2>
+<p>当你需要原始协议事件流时，直接使用运行对象本身：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span>
+    <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;What is 42 * 17?&quot;</span><span class="p">}],</span>
+<span class="p">},</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+    <span class="n">namespace</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;namespace&quot;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">namespace</span><span class="p">,</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">],</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+</code></pre></div>
+<p>每个事件都是一个 <code>ProtocolEvent</code> 信封，包裹着特定通道的载荷。转换器的 <code>process(event)</code> 接收的也是同样的结构。</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="k">class</span><span class="w"> </span><span class="nc">ProtocolEvent</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">seq</span><span class="p">:</span> <span class="nb">int</span>                    <span class="c1"># strictly increasing within a run; use for ordering</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span>                 <span class="c1"># channel name: &quot;messages&quot;, &quot;values&quot;, &quot;updates&quot;, &quot;custom&quot;, &quot;tools&quot;, &quot;lifecycle&quot;, ...</span>
+    <span class="n">params</span><span class="p">:</span> <span class="n">ProtocolEventParams</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ProtocolEventParams</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">namespace</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>        <span class="c1"># path of &quot;&lt;name&gt;:&lt;runtime_id&gt;&quot; segments from the root graph; [] is the root</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="nb">int</span>              <span class="c1"># wall-clock milliseconds; can drift, don&#39;t rely on for ordering</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">Any</span>                   <span class="c1"># channel-specific payload; shape depends on `method`</span>
+</code></pre></div>
+<p><code>namespace</code> 是从根图到发出该事件的作用域的路径。根是空数组 <code>[]</code>。每个子执行会添加一个 <code>"name:runtime_id"</code> 段，因此子图内部的嵌套工具调用看起来像 <code>["researcher:6f4d", "tools:91ac"]</code>。<code>:</code> 之前是稳定的图或节点名称；后缀是每次调用的运行时 ID。当你只关心特定子树时，请自行按命名空间过滤原始事件——<code>stream.subgraphs</code> 已经为嵌套的图执行完成了这件事。</p>
+<h2 id="通道与事件生命周期">通道与事件生命周期<a class="h-anchor" href="#通道与事件生命周期" aria-label="本节链接">#</a></h2>
+<p>原始事件在通道上流动。通道名称会作为事件的 <code>method</code> 出现；每个通道发出特定形状的事件。</p>
+<div class="table-wrap"><table><thead><tr><th>通道</th><th>用途</th></tr></thead><tbody><tr><td><code>values</code></td><td>完整的图状态快照。</td></tr><tr><td><code>updates</code></td><td>每个节点的状态增量。</td></tr><tr><td><code>messages</code></td><td>以内容块为中心的聊天模型输出。</td></tr><tr><td><code>tools</code></td><td>工具调用开始、流式输出、结束和错误事件。</td></tr><tr><td><code>lifecycle</code></td><td>运行、子图和子智能体的状态变化。</td></tr><tr><td><code>checkpoints</code></td><td>用于分支和时间旅行的轻量检查点信封。</td></tr><tr><td><code>input</code></td><td>人在回路输入请求与响应。</td></tr><tr><td><code>tasks</code></td><td>Pregel 任务创建与结果事件。</td></tr><tr><td><code>custom</code></td><td>来自图代码的用户自定义载荷。</td></tr><tr><td><code>custom:&lt;name&gt;</code></td><td>应用定义的流转换器输出。</td></tr></tbody></table></div>
+<p>带类型的投影（<code>stream.messages</code>、<code>stream.values</code> 等）由这些通道构建而成。当你直接迭代运行对象时，通道名称会作为原始事件上的 <code>method</code> 字段出现。</p>
+<h3 id="消息">消息<a class="h-anchor" href="#消息" aria-label="本节链接">#</a></h3>
+<p><code>messages</code> 通道将输出建模为内容块。数据的 <code>event</code> 字段为以下之一：</p>
+<ul><li><code>message-start</code></li><li><code>content-block-start</code></li><li><code>content-block-delta</code></li><li><code>content-block-finish</code></li><li><code>message-finish</code></li></ul>
+<p>内容块具有明确的边界：一个块开始，发出零个或多个增量，然后结束，之后同一条消息中的下一个块才开始。这使得 token 流式输出、推理块、工具调用块和多模态内容都变得明确，而无需依赖特定提供商的格式。<code>message-finish</code> 可能包含 token 用量；不可恢复的模型调用失败会以消息错误事件的形式到达。</p>
+<p>每个 <code>content-block-delta</code> 事件携带针对其 <code>index</code> 处内容块的一个增量：</p>
+<div class="table-wrap"><table><thead><tr><th>增量 <code>type</code></th><th>对内容块的影响</th></tr></thead><tbody><tr><td><code>text-delta</code></td><td>将其 <code>text</code> 追加到块的 <code>text</code>。</td></tr><tr><td><code>reasoning-delta</code></td><td>将其 <code>reasoning</code> 追加到块的 <code>reasoning</code>。</td></tr><tr><td><code>data-delta</code></td><td>将其 <code>data</code> 追加到块的 <code>base64</code>。</td></tr><tr><td><code>tool-call-delta</code></td><td>将其 <code>args</code> 追加到块的 <code>args</code>。</td></tr><tr><td><code>block-delta</code></td><td>将 <code>fields</code> 中的每个键设置到块上，替换之前的值。</td></tr></tbody></table></div>
+<p><code>content-block-finish</code> 携带完整的内容块。忽略任何你无法识别的增量类型，并继续读取流。</p>
+<p>若要直接消费原始内容块事件，而不是使用 <code>stream.messages</code> 投影：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;messages&quot;</span><span class="p">:</span>
+        <span class="k">continue</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">continue</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;content-block-delta&quot;</span><span class="p">:</span>
+        <span class="k">continue</span>
+
+    <span class="n">block</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;text-delta&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;reasoning-delta&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[thinking]</span><span class="si">{</span><span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reasoning&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;tool-call-delta&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[args]</span><span class="si">{</span><span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="工具">工具<a class="h-anchor" href="#工具" aria-label="本节链接">#</a></h3>
+<p><code>tools</code> 通道暴露工具执行过程。数据的 <code>event</code> 字段为以下之一：</p>
+<ul><li><code>tool-started</code></li><li><code>tool-output-delta</code></li><li><code>tool-finished</code></li><li><code>tool-error</code></li></ul>
+<p>工具事件通过工具调用 ID 关联，因此一次工具执行可以关联回 <code>messages</code> 通道上发起它的工具调用内容块。</p>
+<h3 id="生命周期">生命周期<a class="h-anchor" href="#生命周期" aria-label="本节链接">#</a></h3>
+<p><code>lifecycle</code> 通道跟踪根运行、子图和子智能体的状态。数据的 <code>event</code> 字段为以下之一：</p>
+<ul><li><code>started</code></li><li><code>running</code></li><li><code>completed</code></li><li><code>failed</code></li><li><code>interrupted</code></li></ul>
+<p>除 <code>event</code> 之外，生命周期数据还可能包含可选的 <code>graph_name</code>、<code>error</code> 以及 <code>cause</code>，用于描述子作用域启动的原因（父工具调用、扇出发送、边转换）。</p>
+<h2 id="构建你自己的投影">构建你自己的投影<a class="h-anchor" href="#构建你自己的投影" aria-label="本节链接">#</a></h2>
+<p>流转换器是事件流式输出中的投影层。它们观察协议事件，维护自己的状态，并暴露一次运行的派生视图 —— 诸如工具活动、token 总数、进度事件、产物，或面向另一种协议的消息。<code>StreamChannel</code> 是转换器用来发布这些视图的投影原语。</p>
+<p>内置投影（<code>stream.messages</code>、<code>stream.values</code>、<code>stream.subgraphs</code>、<code>stream.output</code>）以及产品特定投影（LangChain 的 <code>stream.tool_calls</code>、Deep Agents 的 <code>stream.subagents</code>）本身就是使用这一相同契约的转换器。用户转换器通过编译期或调用期注册叠加在上层，其投影出现在 <code>stream.extensions</code> 下。</p>
+<p>当现有投影不匹配应用所需的形状时，就编写一个。</p>
+<h3 id="转换器如何工作">转换器如何工作<a class="h-anchor" href="#转换器如何工作" aria-label="本节链接">#</a></h3>
+<p>事件流式输出始于 LangGraph Pregel 引擎的流式输出。运行时将这些块规范化为协议事件，然后由流处理器将每个事件路由通过一栈流转换器。</p>
+<div class="code-block" data-lang="mermaid"><div class="code-head"><span class="code-lang">mermaid</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-mermaid">flowchart TD
+    A[Pregel modes] --&gt; B[Events]
+    B --&gt; C[Built-in projections]
+    C --&gt; D[User transformers]
+    D --&gt; E[Run projections]</code></pre></div>
+<p>流处理器是单个流的中枢调度器。对于每个协议事件，它会：</p>
+<ol><li>按顺序调用每个已注册转换器的 <code>process(event)</code> 钩子。</li><li>将具名 <code>StreamChannel</code> 的推送接回协议事件流。</li><li>将事件存入运行流，除非某个转换器将其抑制。</li><li>在运行结束时对每个转换器调用 <code>finalize()</code> 或 <code>fail()</code>。</li></ol>
+<p>转换器是观察性的。它们不会回调图运行时。相反，它们消费事件，并将派生值推入 <code>StreamChannel</code>、promise 或其他投影对象。</p>
+<h3 id="转换器的结构">转换器的结构<a class="h-anchor" href="#转换器的结构" aria-label="本节链接">#</a></h3>
+<p>转换器实现 <code>StreamTransformer</code> 接口：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProtocolEvent</span><span class="p">,</span> <span class="n">StreamTransformer</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyTransformer</span><span class="p">(</span><span class="n">StreamTransformer</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">ProtocolEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">err</span><span class="p">:</span> <span class="ne">BaseException</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+</code></pre></div>
+<ul><li><code>init()</code> 创建投影对象。用户转换器的投影出现在 <code>stream.extensions</code> 下。</li><li><code>process()</code> 观察每个协议事件。<code>ProtocolEvent</code> 的结构参见<a href="#流式输出所有协议事件">流式输出所有协议事件</a>。仅当你刻意想要抑制原始事件时才返回 <code>false</code>。</li><li><code>finalize()</code> 在流成功结束后关闭或结算非通道投影。</li><li><code>fail()</code> 将错误传播到非通道投影。</li></ul>
+<h3 id="声明所需的流模式">声明所需的流模式<a class="h-anchor" href="#声明所需的流模式" aria-label="本节链接">#</a></h3>
+<p><code>required_stream_modes</code> 控制底层图在流式输出期间发出哪些 Pregel 流模式。运行时取所有已注册转换器 <code>required_stream_modes</code> 的并集，并将该并集作为 <code>stream_mode</code> 参数传给图的 <code>.stream()</code> 调用。<strong>没有任何转换器请求的模式永远不会被发出</strong> —— 声明 <code>("custom",)</code> 正是让 <code>custom</code> 事件在整个运行中流动的原因。</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="k">class</span><span class="w"> </span><span class="nc">CustomTransformer</span><span class="p">(</span><span class="n">StreamTransformer</span><span class="p">):</span>
+<span class="code-line hl">    <span class="n">required_stream_modes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;custom&quot;</span><span class="p">,)</span></span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">ProtocolEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span>
+            <span class="o">...</span>
+        <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+<p><code>process()</code> 接收图发出的每个事件，并负责按 <code>event["method"]</code> 进行过滤。该声明开启上游发出；它不会缩小 <code>process()</code> 所见的内容。有效值是 Pregel 流模式：<code>"messages"</code>、<code>"tools"</code>、<code>"custom"</code>、<code>"values"</code>、<code>"updates"</code>、<code>"checkpoints"</code>、<code>"tasks"</code>、<code>"debug"</code>。每个转换器必须声明它所要处理的每个模式 —— 被省略的模式不会由图发出，也永远不会到达 <code>process()</code>。</p>
+<h3 id="streamchannel">StreamChannel<a class="h-anchor" href="#streamchannel" aria-label="本节链接">#</a></h3>
+<p><code>StreamChannel</code> 是转换器用于流式输出值的投影原语。它始终在 <code>stream.extensions.&lt;name&gt;</code> 上暴露一个可迭代流。构造函数参数决定每次 <code>push()</code> 是否也作为 <code>custom:&lt;name&gt;</code> 事件流入运行的主事件流 —— 也就是说，在迭代原始协议事件时，该投影的值是否会出现。</p>
+<div class="table-wrap"><table><thead><tr><th>需求</th><th>使用</th></tr></thead><tbody><tr><td>仅作为侧通道投影</td><td><code>StreamChannel()</code></td></tr><tr><td>同时让每次 push 流入主事件流</td><td><code>StreamChannel(name)</code></td></tr></tbody></table></div>
+<p>具名通道的负载必须可序列化，因为每个推送的值还会在主事件流中变成 <code>custom:&lt;name&gt;</code> 协议事件。将 promise、异步可迭代对象、类实例及其他进程内句柄保留在未具名通道中。</p>
+<p>流处理器负责通道生命周期。一旦 <code>init()</code> 返回一个通道，处理器会在运行结束时为你关闭它或使其失败。转换器只负责推送值。</p>
+<h3 id="示例具名通道">示例：具名通道<a class="h-anchor" href="#示例具名通道" aria-label="本节链接">#</a></h3>
+<p>向 <code>StreamChannel</code> 传入字符串名称，即可通过 <code>stream.extensions</code> 暴露流式投影，<em>并且</em>将每个推送的值作为 <code>custom:&lt;name&gt;</code> 协议事件转发到运行的主事件流中：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProtocolEvent</span><span class="p">,</span> <span class="n">StreamChannel</span><span class="p">,</span> <span class="n">StreamTransformer</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ToolActivity</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">status</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ToolActivityTransformer</span><span class="p">(</span><span class="n">StreamTransformer</span><span class="p">):</span>
+    <span class="n">required_stream_modes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;tools&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activity</span> <span class="o">=</span> <span class="n">StreamChannel</span><span class="p">[</span><span class="n">ToolActivity</span><span class="p">](</span><span class="s2">&quot;tool_activity&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;tool_activity&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">activity</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">ProtocolEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;tools&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool_name&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">):</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;error&quot;</span> <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;event&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;tool-error&quot;</span> <span class="k">else</span> <span class="s2">&quot;started&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">activity</span><span class="o">.</span><span class="n">push</span><span class="p">({</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;tool_name&quot;</span><span class="p">],</span> <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">status</span><span class="p">})</span>
+        <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+<h3 id="示例未具名通道">示例：未具名通道<a class="h-anchor" href="#示例未具名通道" aria-label="本节链接">#</a></h3>
+<p>不带名称时，该通道仅是侧通道投影 —— 可通过 <code>stream.extensions</code> 访问，但对迭代原始事件的消费者不可见。对于持有无法序列化到主事件流中的进程内句柄（promise、异步可迭代对象、类实例）的投影，这是正确的选择。</p>
+<p>下面的示例将未具名通道与 <code>get_stream_writer</code> 搭配使用，后者让图节点发出 <code>custom</code> 通道事件，然后由转换器将其排入投影：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_stream_writer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProtocolEvent</span><span class="p">,</span> <span class="n">StreamChannel</span><span class="p">,</span> <span class="n">StreamTransformer</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="n">get_stream_writer</span><span class="p">()</span>
+    <span class="n">writer</span><span class="p">({</span><span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;progress&quot;</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;retrieving context&quot;</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">state</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomTransformer</span><span class="p">(</span><span class="n">StreamTransformer</span><span class="p">):</span>
+    <span class="n">required_stream_modes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;custom&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">StreamChannel</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;custom&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">ProtocolEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span> <span class="n">transformers</span><span class="o">=</span><span class="p">[</span><span class="n">CustomTransformer</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">extensions</span><span class="p">[</span><span class="s2">&quot;custom&quot;</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="示例最终值投影">示例：最终值投影<a class="h-anchor" href="#示例最终值投影" aria-label="本节链接">#</a></h3>
+<p>当投影不应流入主事件流时，使用未具名流、promise 或其他进程内对象：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProtocolEvent</span><span class="p">,</span> <span class="n">StreamChannel</span><span class="p">,</span> <span class="n">StreamTransformer</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">StatsTransformer</span><span class="p">(</span><span class="n">StreamTransformer</span><span class="p">):</span>
+    <span class="n">required_stream_modes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;messages&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_tokens</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_tokens_log</span> <span class="o">=</span> <span class="n">StreamChannel</span><span class="p">[</span><span class="nb">int</span><span class="p">]()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;total_tokens&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_tokens_log</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">ProtocolEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">usage</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;usage&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_tokens</span> <span class="o">+=</span> <span class="n">usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;output_tokens&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_tokens_log</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_tokens</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_tokens_log</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="在调用时或编译时注册">在调用时或编译时注册<a class="h-anchor" href="#在调用时或编译时注册" aria-label="本节链接">#</a></h3>
+<p>在调用时传入转换器，以便本地实验：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="nb">input</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span>
+    <span class="n">transformers</span><span class="o">=</span><span class="p">[</span><span class="n">StatsTransformer</span><span class="p">,</span> <span class="n">ToolActivityTransformer</span><span class="p">],</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>当该图的每次运行都应产生该投影时，将转换器编译进图：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="n">transformers</span><span class="o">=</span><span class="p">[</span><span class="n">StatsTransformer</span><span class="p">,</span> <span class="n">ToolActivityTransformer</span><span class="p">],</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="内置toolcalltransformer">内置：<code>ToolCallTransformer</code><a class="h-anchor" href="#内置toolcalltransformer" aria-label="本节链接">#</a></h3>
+<p>LangGraph 内置了 <code>ToolCallTransformer</code>。注册它即可在普通 <code>StateGraph</code> 上暴露 <code>stream.tool_calls</code>：</p>
+<div class="code-block" data-lang="py"><div class="code-head"><span class="code-lang">py</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-py"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.prebuilt</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolCallTransformer</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span> <span class="n">transformers</span><span class="o">=</span><span class="p">[</span><span class="n">ToolCallTransformer</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">tool_call</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tool_call</span><span class="o">.</span><span class="n">tool_name</span><span class="p">,</span> <span class="n">tool_call</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="相关内容">相关内容<a class="h-anchor" href="#相关内容" aria-label="本节链接">#</a></h2>
+<p>LangGraph 定义了流式输出的基础原语。如需在 LangChain 或 Deep Agents 中使用流式输出，请参阅相关产品文档：</p>
+<ul><li><a href="https://docs.langchain.com/oss/python/langchain/event-streaming" target="_blank" rel="noreferrer">LangChain 智能体流式输出</a>介绍了 ReAct 风格的智能体消息、工具调用以及中间件更新。</li><li><a href="https://docs.langchain.com/oss/python/deepagents/event-streaming" target="_blank" rel="noreferrer">Deep Agents 流式输出</a>介绍了子智能体、嵌套消息以及子智能体的工具调用。</li><li><a href="https://docs.langchain.com/oss/python/langchain/frontend/overview" target="_blank" rel="noreferrer">LangChain 前端模式</a>与 <a href="frontend-overview.html">LangGraph 前端模式</a>展示了构建在流式状态之上的 UI 使用场景。</li><li><a href="https://docs.langchain.com/langsmith/streaming" target="_blank" rel="noreferrer">LangSmith Streaming API</a>介绍了针对部署在 Agent Server 后端的图进行流式输出。</li></ul>
+<p>线路级的事件与命令格式定义在 <a href="https://github.com/langchain-ai/agent-protocol" target="_blank" rel="noreferrer">Agent Protocol</a> 仓库中，可以分别通过 PyPI 上的 <a href="https://pypi.org/project/langchain-protocol/" target="_blank" rel="noreferrer"> 0 </a> 和 npm 上的 <a href="https://www.npmjs.com/package/@langchain/protocol" target="_blank" rel="noreferrer"> 1 </a> 使用。</p>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档连接</a>到你所选择的智能体，通过 MCP 获取实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/event-streaming.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交问题</a>。</p></div>
+        <nav class="pager"><a class="prev" href="fault-tolerance.html"><span class="lbl">上一页</span><span class="ttl">容错</span></a><a class="next" href="streaming.html"><span class="lbl">下一页</span><span class="ttl">流式输出</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#快速开始">快速开始</a></li><li class="lvl-2"><a href="#各部分如何协同工作">各部分如何协同工作</a></li><li class="lvl-2"><a href="#事件流式输出提供的能力">事件流式输出提供的能力</a></li><li class="lvl-2"><a href="#流式输出消息">流式输出消息</a></li><li class="lvl-2"><a href="#流式输出子图">流式输出子图</a></li><li class="lvl-2"><a href="#流式输出状态">流式输出状态</a></li><li class="lvl-2"><a href="#流式输出多个投影">流式输出多个投影</a></li><li class="lvl-2"><a href="#中断后恢复">中断后恢复</a></li><li class="lvl-2"><a href="#流式输出所有协议事件">流式输出所有协议事件</a></li><li class="lvl-2"><a href="#通道与事件生命周期">通道与事件生命周期</a></li><li class="lvl-3"><a href="#消息">消息</a></li><li class="lvl-3"><a href="#工具">工具</a></li><li class="lvl-3"><a href="#生命周期">生命周期</a></li><li class="lvl-2"><a href="#构建你自己的投影">构建你自己的投影</a></li><li class="lvl-3"><a href="#转换器如何工作">转换器如何工作</a></li><li class="lvl-3"><a href="#转换器的结构">转换器的结构</a></li><li class="lvl-3"><a href="#声明所需的流模式">声明所需的流模式</a></li><li class="lvl-3"><a href="#streamchannel">StreamChannel</a></li><li class="lvl-3"><a href="#示例具名通道">示例：具名通道</a></li><li class="lvl-3"><a href="#示例未具名通道">示例：未具名通道</a></li><li class="lvl-3"><a href="#示例最终值投影">示例：最终值投影</a></li><li class="lvl-3"><a href="#在调用时或编译时注册">在调用时或编译时注册</a></li><li class="lvl-3"><a href="#内置toolcalltransformer">内置：`ToolCallTransformer`</a></li><li class="lvl-2"><a href="#相关内容">相关内容</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

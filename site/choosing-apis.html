@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>在 Graph API 与 Functional API 之间选择 · LangGraph 中文文档</title>
+<meta name="description" content="新工作流优先使用 LangGraph Graph API。在为 LangSmith Deployment 封装其他框架时，请使用 Functional API。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link active" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/choosing-apis" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>入门</span><span class="sep">/</span><span>在 Graph API 与 Functional API 之间选择</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">入门</span>
+          <h1>在 Graph API 与 Functional API 之间选择</h1>
+          <p class="page-desc">新工作流优先使用 LangGraph Graph API。在为 LangSmith Deployment 封装其他框架时，请使用 Functional API。</p>
+        </div>
+        <div class="doc-body"><p>LangGraph 为智能体工作流提供两套 API：<a href="graph-api.html">Graph API</a> 与 <a href="functional-api.html">Functional API</a>。两者共享同一运行时（持久化、流式输出、人在回路和记忆）。</p>
+<p>Graph API 是默认选择。新建 LangGraph 智能体，以及任何能从显式状态、分支或图可视化中获益的工作流，都优先使用它。</p>
+<p>当你需要在 LangSmith Deployment 上<a href="https://docs.langchain.com/langsmith/deploy-other-frameworks" target="_blank" rel="noreferrer">部署其他框架</a>时，请使用 Functional API。用 <code>@entrypoint</code> 和 <code>@task</code> 封装现有的 Claude Agent SDK、Strands、CrewAI、AutoGen 或类似智能体，使 Agent Server 能以持久化、流式输出和追踪的方式运行它。</p>
+<h2 id="graph-api默认">Graph API（默认）<a class="h-anchor" href="#graph-api默认" aria-label="本节链接">#</a></h2>
+<p>当你直接基于 LangGraph 构建时，请选择 Graph API：</p>
+<ul><li>跨节点显式共享的<a href="graph-api.html#state">状态</a></li><li>条件分支，以及稍后汇聚的并行路径</li><li>用于调试和文档的图示意图</li><li>团队对工作流结构的评审</li></ul>
+<p>可以从 <a href="use-graph-api.html">Graph API 构建检查清单</a>或<a href="thinking-in-graph-api.html">用 Graph API 思考</a>开始。</p>
+<h2 id="functional-api其他框架">Functional API（其他框架）<a class="h-anchor" href="#functional-api其他框架" aria-label="本节链接">#</a></h2>
+<p>当你已有其他框架中的智能体，并希望获得 LangSmith Deployment 的功能、又不想把该智能体重写为图时，请选择 Functional API：</p>
+<ul><li>对现有过程式代码或框架代码的改动最小</li><li>标准控制流（<code>if</code>/<code>else</code>、循环、函数调用）</li><li>以函数作用域内的值为单位，而非共享状态模式</li></ul>
+<p>关于封装并部署的模式，请参见<a href="https://docs.langchain.com/langsmith/deploy-other-frameworks" target="_blank" rel="noreferrer">部署其他框架</a>。关于 Functional API 的概念与操作指南，请参见 <a href="functional-api.html">Functional API 概览</a>。</p>
+<h2 id="并排形态对比">并排形态对比<a class="h-anchor" href="#并排形态对比" aria-label="本节链接">#</a></h2>
+<p>同一个小工作流在两套 API 中写法不同。下面的示例先对一个数字分类，然后返回一条消息：</p>
+<div class="tabs code-tabs" data-tabs data-group="code"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-0">Graph</button><button class="tab-btn" role="tab" data-target="code-1">Functional</button></div><div class="tab-panels"><div class="tab-panel active" id="code-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">number</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">is_even</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">check_even</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;is_even&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;number&quot;</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">format_message</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;The number is even.&quot;</span> <span class="k">if</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;is_even&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;The number is odd.&quot;</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+
+
+<span class="n">workflow</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;check_even&quot;</span><span class="p">,</span> <span class="n">check_even</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;format_message&quot;</span><span class="p">,</span> <span class="n">format_message</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;check_even&quot;</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;check_even&quot;</span><span class="p">,</span> <span class="s2">&quot;format_message&quot;</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;format_message&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">})</span>
+</code></pre></div></div><div class="tab-panel" id="code-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_even</span><span class="p">(</span><span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">number</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">format_message</span><span class="p">(</span><span class="n">is_even</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s2">&quot;The number is even.&quot;</span> <span class="k">if</span> <span class="n">is_even</span> <span class="k">else</span> <span class="s2">&quot;The number is odd.&quot;</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">even</span> <span class="o">=</span> <span class="n">is_even</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;number&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">format_message</span><span class="p">(</span><span class="n">even</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+
+<span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">})</span>
+</code></pre></div></div></div></div>
+<p>Graph API 让状态与转换变得显式。Functional API 保留普通的控制流，并在任务之间传递值。</p>
+<div class="table-wrap"><table><thead><tr><th>关注点</th><th>Graph API</th><th>Functional API</th></tr></thead><tbody><tr><td>风格</td><td>声明式的节点、边和共享状态</td><td>命令式函数，配合 <code>@entrypoint</code> / <code>@task</code>（Python）或 <code>entrypoint</code> / <code>task</code>（TypeScript）</td></tr><tr><td>控制流</td><td>边和条件边</td><td>语言原生的 <code>if</code>/<code>else</code>、循环和调用</td></tr><tr><td>状态</td><td>显式的<a href="graph-api.html#state">状态</a>与<a href="graph-api.html#reducers">归并函数</a></td><td>作用域限于入口点和任务</td></tr><tr><td>检查点</td><td>每个<a href="graph-api.html">超步</a>后生成新检查点</td><td>任务结果保存到入口点检查点</td></tr><tr><td>可视化</td><td>一等公民的图示意图</td><td>没有静态图可视化（图在运行时构建）</td></tr><tr><td>最适用场景</td><td>LangGraph 工作流的默认选择</td><td>为部署而封装其他框架</td></tr></tbody></table></div>
+<p>当线性的 Functional API 子工作流位于 Graph API 协调器内部，或反过来时，你仍然可以在同一个应用中组合这两套 API。</p>
+<h2 id="另请参阅">另请参阅<a class="h-anchor" href="#另请参阅" aria-label="本节链接">#</a></h2>
+<ul><li><a href="use-graph-api.html">Graph API 构建检查清单</a></li><li><a href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a href="graph-api.html">Graph API 概览</a></li><li><a href="graph-api.html#choose-the-unit-of-work">选择工作单元</a></li><li><a href="https://docs.langchain.com/langsmith/deploy-other-frameworks" target="_blank" rel="noreferrer">部署其他框架</a></li><li><a href="functional-api.html">Functional API 概览</a></li></ul>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档连接</a>到你选择的智能体，通过 MCP 获得实时回答。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/choosing-apis.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="quickstart.html"><span class="lbl">上一页</span><span class="ttl">快速开始</span></a><a class="next" href="persistence.html"><span class="lbl">下一页</span><span class="ttl">持久化</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#graph-api默认">Graph API（默认）</a></li><li class="lvl-2"><a href="#functional-api其他框架">Functional API（其他框架）</a></li><li class="lvl-2"><a href="#并排形态对比">并排形态对比</a></li><li class="lvl-2"><a href="#另请参阅">另请参阅</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

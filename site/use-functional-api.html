@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Functional API 构建清单 · LangGraph 中文文档</title>
+<meta name="description" content="决定如何使用 Functional API 组合入口点、任务、流式输出、中断与记忆。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link active" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/use-functional-api" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>使用 Functional API 构建</span><span class="sep">/</span><span>Functional API 构建清单</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">使用 Functional API 构建</span>
+          <h1>Functional API 构建清单</h1>
+          <p class="page-desc">决定如何使用 Functional API 组合入口点、任务、流式输出、中断与记忆。</p>
+        </div>
+        <div class="doc-body"><p>本指南将逐一说明使用 Functional API 构建应用时所做的一系列决策。安装步骤与端到端智能体示例，请参见 <a href="quickstart.html">LangGraph 快速开始</a>。设计思路讲解，请参见 <a href="thinking-in-functional-api.html">Functional API 设计思路</a>。概念说明，请参见 <a href="functional-api.html">Functional API 概览</a>。如需在 Graph API 与 Functional API 之间做选择，请参见 <a href="choosing-apis.html">在 Graph API 与 Functional API 之间选择</a>。</p>
+<h2 id="构建你的工作流">构建你的工作流<a class="h-anchor" href="#构建你的工作流" aria-label="本节链接">#</a></h2>
+<p>请按顺序逐项处理这些决策。每个步骤都链接到对应的操作指南，其中包含完整做法。</p>
+<p><strong>1. 组合工作流</strong></p>
+<p>定义一个入口点，将工作单元封装为任务，并选择各步骤之间的连接方式。</p>
+<ul><li>从单个入口点开始，并将输入作为单个参数传入（通常是 dict）。</li><li>对于需要独立检查点和重试的离散工作，使用任务。</li><li>当各步骤相互独立时，使用并行任务进行扇出。</li><li>需要组合时，调用已编译的 <a href="graph-api.html">Graph API</a> 图或另一个入口点。</li></ul>
+<p>参见 <a href="functional-api-workflows.html">组合 Functional API 工作流</a>。</p>
+<p><strong>2. 配置任务</strong></p>
+<p>当步骤可能失败、挂起或重复时，添加可靠性控制。</p>
+<ul><li>针对瞬时失败的重试</li><li>针对缓慢任务或入口点的超时</li><li>针对开销大的重复工作的缓存</li><li>出错后恢复，且无需重做已完成的任务</li></ul>
+<p>参见 <a href="functional-api-tasks.html">配置 Functional API 任务</a>。</p>
+<p><strong>3. 流式输出进度</strong></p>
+<p>在工作流运行期间流式输出更新、模型 token 或自定义数据。</p>
+<p>参见 <a href="functional-api-streaming.html">使用 Functional API 进行流式输出</a>。</p>
+<p><strong>4. 添加人在回路</strong></p>
+<p>使用中断暂停以进行审批或工具调用审查，然后使用 <code>Command</code> 恢复执行。</p>
+<p>参见 <a href="functional-api-human-in-the-loop.html">使用 Functional API 添加人在回路</a>。</p>
+<p><strong>5. 添加记忆</strong></p>
+<p>使用检查点器保存短期线程状态，使用存储保存长期数据。</p>
+<p>参见 <a href="functional-api-memory.html">使用 Functional API 添加记忆</a>。</p>
+<h2 id="下一步">下一步<a class="h-anchor" href="#下一步" aria-label="本节链接">#</a></h2>
+<ul><li><a href="thinking-in-functional-api.html">Functional API 设计思路</a></li><li><a href="functional-api.html">Functional API 概览</a></li><li><a href="functional-api-workflows.html">组合 Functional API 工作流</a></li><li><a href="functional-api-tasks.html">配置 Functional API 任务</a></li><li><a href="functional-api-streaming.html">使用 Functional API 进行流式输出</a></li><li><a href="functional-api-human-in-the-loop.html">使用 Functional API 添加人在回路</a></li><li><a href="functional-api-memory.html">使用 Functional API 添加记忆</a></li><li><a href="quickstart.html">LangGraph 快速开始</a></li><li><a href="choosing-apis.html">在 Graph API 与 Functional API 之间选择</a></li></ul>
+<hr class="rule">
+<p>通过 MCP <a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档接入</a>你所选的智能体，以获取实时解答。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/use-functional-api.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="thinking-in-functional-api.html"><span class="lbl">上一页</span><span class="ttl">用 Functional API 思考</span></a><a class="next" href="functional-api.html"><span class="lbl">下一页</span><span class="ttl">Functional API</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#构建你的工作流">构建你的工作流</a></li><li class="lvl-2"><a href="#下一步">下一步</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

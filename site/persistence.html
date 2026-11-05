@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>持久化 · LangGraph 中文文档</title>
+<meta name="description" content="LangGraph 的持久化层通过检查点保存器为智能体提供短期记忆，并通过存储提供长期记忆。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link active" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/persistence" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>核心能力</span><span class="sep">/</span><span>持久化</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">核心能力</span>
+          <h1>持久化</h1>
+          <p class="page-desc">LangGraph 的持久化层通过检查点保存器为智能体提供短期记忆，并通过存储提供长期记忆。</p>
+        </div>
+        <div class="doc-body"><p>持久化让 LangGraph 应用能够在单次图运行之外保留有用的信息。当智能体需要延续对话、从中断中恢复、从故障中恢复，或跨多次交互记住信息时，持久化就显得很重要。</p>
+<p>LangGraph 提供两套互补的持久化系统：</p>
+<ul><li><strong><a href="checkpointers.html">Checkpointers</a></strong> 将线程的图状态持久化为检查点。用于短期、线程范围的记忆，包括对话连续性、人在回路工作流、时间旅行和容错。</li><li><strong><a href="stores.html">Stores</a></strong> 在图状态之外持久化应用定义的数据。用于长期、跨线程的记忆，包括用户偏好、事实和共享知识。</li></ul>
+<p>大多数应用可以同时使用两者：<a href="checkpointers.html">检查点保存器</a>跟踪当前线程，<a href="stores.html">存储</a>跟踪跨线程的持久信息。</p>
+<h2 id="快速开始">快速开始<a class="h-anchor" href="#快速开始" aria-label="本节链接">#</a></h2>
+<p>使用检查点保存器、存储或两者来编译你的图：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.store.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemoryStore</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+<span class="n">store</span> <span class="o">=</span> <span class="n">InMemoryStore</span><span class="p">()</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="n">store</span><span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Hi, my name is Bob.&quot;</span><span class="p">}]},</span>
+    <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;thread-1&quot;</span><span class="p">}},</span>
+<span class="p">)</span>
+</code></pre></div>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p><strong>Agent Server 会自动处理持久化</strong> 使用 <a href="https://docs.langchain.com/langsmith/agent-server" target="_blank" rel="noreferrer">Agent Server</a> 时，你无需手动实现或配置检查点保存器或存储。服务器会在后台处理持久化基础设施。</p></div></div>
+<h2 id="检查点保存器与存储">检查点保存器与存储<a class="h-anchor" href="#检查点保存器与存储" aria-label="本节链接">#</a></h2>
+<div class="table-wrap"><table><thead><tr><th></th><th>检查点保存器</th><th>存储</th></tr></thead><tbody><tr><td>持久化内容</td><td>图状态快照</td><td>应用定义的键值数据</td></tr><tr><td>范围</td><td>单个线程</td><td>跨线程</td></tr><tr><td>记忆类型</td><td>短期、线程范围的记忆</td><td>长期、跨线程的记忆</td></tr><tr><td>用途</td><td>对话连续性、人在回路、时间旅行和容错</td><td>用户偏好、事实和共享知识</td></tr><tr><td>访问方式</td><td>在图配置中传入 <code>thread_id</code></td><td>从节点或应用代码中读写条目</td></tr><tr><td>完整指南</td><td><a href="checkpointers.html">Checkpointers</a></td><td><a href="stores.html">Stores</a></td></tr></tbody></table></div>
+<h2 id="常见问题排查">常见问题排查<a class="h-anchor" href="#常见问题排查" aria-label="本节链接">#</a></h2>
+<h3 id="postgressaverthreadid-过长">PostgresSaver：<code>thread_id</code> 过长<a class="h-anchor" href="#postgressaverthreadid-过长" aria-label="本节链接">#</a></h3>
+<p>使用 <code>PostgresSaver</code>（或 <code>AsyncPostgresSaver</code>）时，<code>thread_id</code> 存储在一个长度有限的列中。如果你的 <code>thread_id</code> 超过该列的长度，就会看到数据库错误。</p>
+<p><strong>修复：</strong> 将 <code>thread_id</code> 的值控制在 255 个字符以内。如果需要确定性 ID，请使用 UUID 或哈希：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.utils.uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid7</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid7</span><span class="p">())[:</span><span class="mi">255</span><span class="p">]}}</span>
+</code></pre></div>
+<h3 id="memorysaver-在重启之间不会持久化"><code>MemorySaver</code> 在重启之间不会持久化<a class="h-anchor" href="#memorysaver-在重启之间不会持久化" aria-label="本节链接">#</a></h3>
+<p><code>MemorySaver</code> 和 <code>InMemorySaver</code> 将检查点存储在 RAM 中。进程重启时，所有检查点都会丢失。</p>
+<p><strong>修复：</strong> 生产环境中请使用持久化的检查点保存器：</p>
+<ul><li><code>PostgresSaver</code>：支持异步的 PostgreSQL</li><li><code>SqliteSaver</code>：用于开发的本地文件存储</li></ul>
+<h3 id="检查点无限增长">检查点无限增长<a class="h-anchor" href="#检查点无限增长" aria-label="本节链接">#</a></h3>
+<p>在长对话中，检查点会不断累积。这可能增加延迟和存储成本。</p>
+<p><strong>修复：</strong> 定期清理旧检查点，或设置保留策略：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.postgres</span><span class="w"> </span><span class="kn">import</span> <span class="n">PostgresSaver</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">PostgresSaver</span><span class="o">.</span><span class="n">from_conn_string</span><span class="p">(</span><span class="s2">&quot;postgresql://...&quot;</span><span class="p">)</span>
+<span class="n">checkpointer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>  <span class="c1"># Creates tables with indexes</span>
+<span class="c1"># Consider adding a cron job to delete checkpoints older than N days</span>
+</code></pre></div>
+<h3 id="从父图访问子图的状态">从父图访问子图的状态<a class="h-anchor" href="#从父图访问子图的状态" aria-label="本节链接">#</a></h3>
+<p>当子图更新状态时，父图可能不会立即看到这些变化。这是因为每个子图管理自己的检查点命名空间。</p>
+<p><strong>修复：</strong> 对需要跨图边界的数据使用<a href="stores.html">通过存储共享状态</a>，或将子图配置为写入父检查点。</p>
+<h2 id="后续步骤">后续步骤<a class="h-anchor" href="#后续步骤" aria-label="本节链接">#</a></h2>
+<ul><li><a href="checkpointers.html">使用检查点保存器</a>来持久化并检查线程状态。</li><li><a href="stores.html">使用存储</a>来跨线程持久化需要长期保留的数据。</li></ul>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档连接</a>到你选择的智能体，通过 MCP 获取实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/persistence.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交问题</a>。</p></div>
+        <nav class="pager"><a class="prev" href="choosing-apis.html"><span class="lbl">上一页</span><span class="ttl">选择 API</span></a><a class="next" href="checkpointers.html"><span class="lbl">下一页</span><span class="ttl">检查点</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#快速开始">快速开始</a></li><li class="lvl-2"><a href="#检查点保存器与存储">检查点保存器与存储</a></li><li class="lvl-2"><a href="#常见问题排查">常见问题排查</a></li><li class="lvl-3"><a href="#postgressaverthreadid-过长">PostgresSaver：`thread_id` 过长</a></li><li class="lvl-3"><a href="#memorysaver-在重启之间不会持久化">`MemorySaver` 在重启之间不会持久化</a></li><li class="lvl-3"><a href="#检查点无限增长">检查点无限增长</a></li><li class="lvl-3"><a href="#从父图访问子图的状态">从父图访问子图的状态</a></li><li class="lvl-2"><a href="#后续步骤">后续步骤</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

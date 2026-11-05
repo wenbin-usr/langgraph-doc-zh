@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>快速开始 · LangGraph 中文文档</title>
+<meta name="description" content="快速开始">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link active" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/quickstart" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>入门</span><span class="sep">/</span><span>快速开始</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">入门</span>
+          <h1>快速开始</h1>
+          
+        </div>
+        <div class="doc-body"><p>本快速开始演示如何使用 LangGraph Graph API 或 Functional API 构建一个计算器智能体。</p>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p><strong>使用 AI 编程助手？</strong></p>
+<ul><li>安装 <a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">LangChain 文档 MCP 服务器</a>，让你的智能体能够访问最新的 LangChain 文档和示例。<p>连接 LangChain 文档 MCP 服务器</p>
+<p>将两个 LangChain 文档 MCP 服务器都连接到我的编程智能体，以便它可以查询最新的 LangChain、LangGraph 和 LangSmith 文档及 API 参考。</p>
+<p>要添加的服务器：</p>
+<ul><li><code>docs-langchain</code>: <a href="https://docs.langchain.com/mcp" target="_blank" rel="noreferrer">https://docs.langchain.com/mcp</a></li><li><code>reference-langchain</code>: <a href="https://reference.langchain.com/mcp" target="_blank" rel="noreferrer">https://reference.langchain.com/mcp</a></li></ul>
+<p>检测我正在使用哪个智能体或编辑器（Claude Code、Cursor、Codex CLI、Claude Desktop、Deep Agents Code、VS Code、Antigravity 或其他兼容 MCP 的客户端）。使用 <a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">https://docs.langchain.com/use-these-docs.md</a> 中对应的配置：</p>
+<ul><li>Claude Code：为每个服务器运行 <code>claude mcp add --transport http</code>（默认项目范围；仅当我要求全局访问时才使用 <code>--scope user</code>）。</li><li>Codex CLI：使用每个服务器的 URL 运行 <code>codex mcp add</code>。</li><li>Cursor、Deep Agents Code、VS Code 或 Antigravity：使用该页面上为我的客户端显示的字段名，将两个条目合并到 MCP 设置 JSON 中。</li><li>Claude Desktop：在 Settings &gt; Connectors 下添加两个 URL。</li></ul>
+<p>不要臆造其他 MCP URL。配置完成后，确认两个服务器都已列出且可访问。</p></li><li>安装 <a href="https://github.com/langchain-ai/langchain-skills" target="_blank" rel="noreferrer">LangChain Skills</a>，以提升你的智能体在 LangChain 生态任务上的表现。<p>安装 LangChain Skills</p>
+<p>为我的编程智能体安装 LangChain Skills，以便它在 LangChain、LangGraph 和 Deep Agents 任务上表现更好。</p>
+<p>使用 <a href="https://github.com/langchain-ai/langchain-skills" target="_blank" rel="noreferrer">https://github.com/langchain-ai/langchain-skills</a> 中的 Agent Skills 安装程序：</p>
+<div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">npx<span class="w"> </span>skills<span class="w"> </span>add<span class="w"> </span>langchain-ai/langchain-skills<span class="w"> </span>--skill<span class="w"> </span><span class="s1">&#39;*&#39;</span><span class="w"> </span>--yes
+</code></pre></div>
+<p>如果我要求全局安装，请改用：</p>
+<div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">npx<span class="w"> </span>skills<span class="w"> </span>add<span class="w"> </span>langchain-ai/langchain-skills<span class="w"> </span>--skill<span class="w"> </span><span class="s1">&#39;*&#39;</span><span class="w"> </span>--yes<span class="w"> </span>--global
+</code></pre></div>
+<p>检测我正在使用哪个智能体或编辑器。如果我使用 Claude Code 并偏好插件方式，请按照该仓库 README 中的市场安装流程操作（先 <code>/plugin marketplace add</code>，再 <code>/plugin install</code>）。不要臆造其他 skill 包名或安装 URL。安装完成后，确认智能体可以使用这些 skills。</p></li></ul></div></div>
+<h2 id="前提条件">前提条件<a class="h-anchor" href="#前提条件" aria-label="本节链接">#</a></h2>
+<p>在开始之前，请确保你拥有来自模型提供商的 API 密钥（例如 Gemini、Anthropic、OpenAI）。 有关所有可用的提供商，请参阅<a href="https://docs.langchain.com/oss/python/integrations/chat" target="_blank" rel="noreferrer">聊天模型集成</a>。</p>
+<p>如果你使用 <a href="https://docs.langchain.com/langsmith/llm-gateway" target="_blank" rel="noreferrer">LangSmith Gateway</a>，可以<a href="https://docs.langchain.com/langsmith/llm-gateway-quickstart" target="_blank" rel="noreferrer">自带提供商密钥</a>，或使用 <a href="https://docs.langchain.com/langsmith/llm-gateway-credits" target="_blank" rel="noreferrer">Gateway Credits</a> 在没有提供商密钥的情况下访问模型。</p>
+<h2 id="设置">设置<a class="h-anchor" href="#设置" aria-label="本节链接">#</a></h2>
+<p>安装 <code>langgraph</code>、<code>langchain</code> 和 <code>langchain-anthropic</code>：</p>
+<div class="tabs code-tabs" data-tabs data-group="code"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-0">pip</button><button class="tab-btn" role="tab" data-target="code-1">uv</button></div><div class="tab-panels"><div class="tab-panel active" id="code-0" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>langgraph<span class="w"> </span>langchain<span class="w"> </span>langchain-anthropic
+</code></pre></div></div><div class="tab-panel" id="code-1" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">uv<span class="w"> </span>add<span class="w"> </span>langgraph<span class="w"> </span>langchain<span class="w"> </span>langchain-anthropic
+</code></pre></div></div></div></div>
+<p>本示例使用 Anthropic。在 shell 或 <code>.env</code> 文件中设置你的 API 密钥：</p>
+<div class="tabs code-tabs" data-tabs data-group="code-2"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-2-0">Shell</button><button class="tab-btn" role="tab" data-target="code-2-1">.env</button></div><div class="tab-panels"><div class="tab-panel active" id="code-2-0" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash"><span class="nb">export</span><span class="w"> </span><span class="nv">ANTHROPIC_API_KEY</span><span class="o">=</span><span class="s2">&quot;your-api-key&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-2-1" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash"><span class="nv">ANTHROPIC_API_KEY</span><span class="o">=</span>your-api-key
+</code></pre></div></div></div></div>
+<p>要使用其他提供商，请参阅<a href="https://docs.langchain.com/oss/python/integrations/chat" target="_blank" rel="noreferrer">聊天模型集成</a>，并在后续步骤中调整模型初始化。</p>
+<h2 id="1.-选择-api">1. 选择 API<a class="h-anchor" href="#1.-选择-api" aria-label="本节链接">#</a></h2>
+<p>两种方式构建的是同一个计算器智能体：模型可以调用工具，然后智能体再次调用模型，直到返回最终答案。</p>
+<ul><li>如果你希望将智能体定义为由节点和边构成的图，请<a href="#使用-graph-api">使用 Graph API</a>。</li><li>如果你希望将智能体定义为单个函数，请<a href="#使用-functional-api">使用 Functional API</a>。</li></ul>
+<p>选择一个标签页。创建一个文件。将以下每个步骤的代码依次添加到上一步代码的下方。</p>
+<p>不确定该选哪个？请参阅<a href="choosing-apis.html">在 Graph API 与 Functional API 之间选择</a>。有关概念性信息，请参阅 <a href="graph-api.html">Graph API 概览</a> 和 <a href="functional-api.html">Functional API 概览</a>。</p>
+<div class="tabs" data-tabs data-group="tabs"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" aria-selected="true" data-target="tabs-0">使用 Graph API</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-1">使用 Functional API</button></div><div class="tab-panels"><div class="tab-panel active" id="tabs-0" role="tabpanel"><span class="tab-anchor" id="使用-graph-api"></span><p>构建 LangGraph Graph API 计算器快速入门</p>
+<p>按照 LangGraph 快速入门，在当前工作目录中使用 Graph API 构建一个 LangGraph 计算器智能体。</p>
+<h2 id="第-1-步阅读指南">第 1 步：阅读指南<a class="h-anchor" href="#第-1-步阅读指南" aria-label="本节链接">#</a></h2>
+<p>判断该项目使用的是 Python 还是 TypeScript/JavaScript。获取并按照对应页面操作；将其视为包名、模型字符串和代码的唯一权威来源：</p>
+<ul><li>Python: <a href="quickstart.html">https://docs.langchain.com/oss/python/langgraph/quickstart.md</a></li><li>TypeScript: <a href="https://docs.langchain.com/oss/javascript/langgraph/quickstart" target="_blank" rel="noreferrer">https://docs.langchain.com/oss/javascript/langgraph/quickstart.md</a></li></ul>
+<p>只使用 <strong>使用 Graph API</strong> 标签页。不要实现 Functional API 路径。</p>
+<h2 id="第-2-步安装依赖">第 2 步：安装依赖<a class="h-anchor" href="#第-2-步安装依赖" aria-label="本节链接">#</a></h2>
+<p>使用该项目中已有的包管理器，安装 Graph API 路径所需的包。</p>
+<h2 id="第-3-步配置模型凭据">第 3 步：配置模型凭据<a class="h-anchor" href="#第-3-步配置模型凭据" aria-label="本节链接">#</a></h2>
+<p>本快速入门默认使用 Anthropic。检查是否已设置 <code>ANTHROPIC_API_KEY</code>。如果未设置，请用户创建密钥并在 shell 或 <code>.env</code> 文件中设置，然后停下并等待确认。不要编造、硬编码或提交 API 密钥。如果用户根据集成文档更倾向于使用其他聊天模型提供商，请在确认后相应调整示例。</p>
+<h2 id="第-4-步实现计算器智能体">第 4 步：实现计算器智能体<a class="h-anchor" href="#第-4-步实现计算器智能体" aria-label="本节链接">#</a></h2>
+<p>依据指南定义工具与模型，然后定义 Graph API 的状态、节点、边以及编译后的图。</p>
+<h2 id="第-5-步可选的-langsmith-追踪">第 5 步：可选的 LangSmith 追踪<a class="h-anchor" href="#第-5-步可选的-langsmith-追踪" aria-label="本节链接">#</a></h2>
+<p>询问用户是否需要追踪。如果需要，请他们自行设置 <code>LANGSMITH_TRACING=true</code> 和 <code>LANGSMITH_API_KEY</code>。不要编造 LangSmith 密钥。</p>
+<h2 id="第-6-步运行智能体">第 6 步：运行智能体<a class="h-anchor" href="#第-6-步运行智能体" aria-label="本节链接">#</a></h2>
+<p>使用指南中的示例算术查询调用智能体，并打印最终结果。</p>
+<h2 id="规则">规则<a class="h-anchor" href="#规则" aria-label="本节链接">#</a></h2>
+<ul><li>保持在本快速入门的范围内。除非用户要求，否则不要添加部署、评估或无关的框架。</li><li>优先采用所获取指南中展示的 Graph API 结构，而不是另创一种智能体模式。</li><li>当密钥、提供商选择或项目约定不明确时，先询问而不是猜测。</li></ul>
+<h2 id="2.-定义工具和模型">2. 定义工具和模型<a class="h-anchor" href="#2.-定义工具和模型" aria-label="本节链接">#</a></h2>
+<p>本示例使用 Claude Sonnet 模型，并定义加法、乘法和除法工具。</p>
+<p>为智能体创建文件（<code>agent.py</code> 或 <code>agent.ts</code>）。添加以下内容：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span>
+    <span class="s2">&quot;claude-sonnet-4-6&quot;</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+
+
+<span class="c1"># Define tools</span>
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiply `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">divide</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Divide `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">b</span>
+
+
+<span class="c1"># Augment the LLM with tools</span>
+<span class="n">tools</span> <span class="o">=</span> <span class="p">[</span><span class="n">add</span><span class="p">,</span> <span class="n">multiply</span><span class="p">,</span> <span class="n">divide</span><span class="p">]</span>
+<span class="n">tools_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">tool</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">tools</span><span class="p">}</span>
+<span class="n">model_with_tools</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">bind_tools</span><span class="p">(</span><span class="n">tools</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="3.-定义状态">3. 定义状态<a class="h-anchor" href="#3.-定义状态" aria-label="本节链接">#</a></h2>
+<p>图的状态存储消息和 LLM 调用次数。</p>
+<p>在工具和模型下方添加以下内容：</p>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p>LangGraph 中的状态会在智能体的整个执行过程中持久保留。</p>
+<p>配合 <code>operator.add</code> 的 <code>Annotated</code> 类型会把新消息追加到列表中，而不是替换列表。</p></div></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span><span class="p">,</span> <span class="n">Annotated</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MessagesState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">messages</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AnyMessage</span><span class="p">],</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">]</span>
+    <span class="n">llm_calls</span><span class="p">:</span> <span class="nb">int</span>
+</code></pre></div>
+<h2 id="4.-定义模型节点">4. 定义模型节点<a class="h-anchor" href="#4.-定义模型节点" aria-label="本节链接">#</a></h2>
+<p>模型节点调用 LLM，并决定是否调用工具。</p>
+<p>在状态 schema 下方添加以下内容：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SystemMessage</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LLM decides whether to call a tool or not&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">model_with_tools</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">SystemMessage</span><span class="p">(</span>
+                        <span class="n">content</span><span class="o">=</span><span class="s2">&quot;You are a helpful assistant tasked with performing arithmetic on a set of inputs.&quot;</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+                <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;llm_calls&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;llm_calls&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="p">}</span>
+</code></pre></div>
+<h2 id="5.-定义工具节点">5. 定义工具节点<a class="h-anchor" href="#5.-定义工具节点" aria-label="本节链接">#</a></h2>
+<p>工具节点调用工具并返回结果。</p>
+<p>在模型节点下方添加以下内容：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolMessage</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">tool_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Performs the tool call&quot;&quot;&quot;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">tool_call</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+        <span class="n">tool</span> <span class="o">=</span> <span class="n">tools_by_name</span><span class="p">[</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span>
+        <span class="n">observation</span> <span class="o">=</span> <span class="n">tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">])</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ToolMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">observation</span><span class="p">,</span> <span class="n">tool_call_id</span><span class="o">=</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">}</span>
+</code></pre></div>
+<h2 id="6.-定义结束逻辑">6. 定义结束逻辑<a class="h-anchor" href="#6.-定义结束逻辑" aria-label="本节链接">#</a></h2>
+<p>条件边函数根据 LLM 是否发起工具调用，路由到工具节点或结束。</p>
+<p>在工具节点下方添加以下内容：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">should_continue</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decide if we should continue the loop or stop based upon whether the LLM made a tool call&quot;&quot;&quot;</span>
+
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+    <span class="n">last_message</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># If the LLM makes a tool call, then perform an action</span>
+    <span class="k">if</span> <span class="n">last_message</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;tool_node&quot;</span>
+
+    <span class="c1"># Otherwise, we stop (reply to the user)</span>
+    <span class="k">return</span> <span class="n">END</span>
+</code></pre></div>
+<h2 id="7.-构建并编译智能体">7. 构建并编译智能体<a class="h-anchor" href="#7.-构建并编译智能体" aria-label="本节链接">#</a></h2>
+<p>在路由函数下方添加以下内容。使用 <a href="https://reference.langchain.com/python/langgraph/graph/state/StateGraph" target="_blank" rel="noreferrer"> 0 </a> 构建图，并使用 <a href="https://reference.langchain.com/python/langgraph/graph/state/StateGraph/compile" target="_blank" rel="noreferrer"> 1 </a> 编译它：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="c1"># Build workflow</span>
+<span class="n">agent_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">)</span>
+
+<span class="c1"># Add nodes</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;llm_call&quot;</span><span class="p">,</span> <span class="n">llm_call</span><span class="p">)</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="n">tool_node</span><span class="p">)</span>
+
+<span class="c1"># Add edges to connect nodes</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;llm_call&quot;</span><span class="p">)</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+    <span class="s2">&quot;llm_call&quot;</span><span class="p">,</span>
+    <span class="n">should_continue</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="s2">&quot;llm_call&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compile the agent</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">agent_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="8.-设置-langsmith-追踪">8. 设置 LangSmith 追踪<a class="h-anchor" href="#8.-设置-langsmith-追踪" aria-label="本节链接">#</a></h2>
+<p><a href="https://smith.langchain.com?utm_source=docs&amp;utm_medium=cta&amp;utm_campaign=langsmith-signup&amp;utm_content=oss-langgraph-quickstart" target="_blank" rel="noreferrer">LangSmith</a> 会在智能体运行时展示工具调用和模型响应。</p>
+<p>此步骤是可选的。在 <a href="https://smith.langchain.com?utm_source=docs&amp;utm_medium=cta&amp;utm_campaign=langsmith-signup&amp;utm_content=oss-langgraph-quickstart" target="_blank" rel="noreferrer">smith.langchain.com</a> 注册、创建 API 密钥，并在运行智能体之前于 shell 中设置以下环境变量：</p>
+<div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash"><span class="nb">export</span><span class="w"> </span><span class="nv">LANGSMITH_TRACING</span><span class="o">=</span><span class="nb">true</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LANGSMITH_API_KEY</span><span class="o">=</span><span class="s2">&quot;your-langsmith-api-key&quot;</span>
+</code></pre></div>
+<h2 id="9.-运行智能体">9. 运行智能体<a class="h-anchor" href="#9.-运行智能体" aria-label="本节链接">#</a></h2>
+<p>在编译后的图下方添加以下内容：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">HumanMessage</span>
+
+<span class="n">messages</span> <span class="o">=</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Add 3 and 4.&quot;</span><span class="p">)]</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">messages</span><span class="p">})</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]:</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">()</span>
+</code></pre></div>
+<p>运行该文件：</p>
+<div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">python<span class="w"> </span>agent.py
+</code></pre></div>
+<p>你应当会看到人类消息、对 <code>add</code> 的工具调用、工具结果 <code>7</code>，以及最终的助手回复。具体文本因模型而异，但工具结果是 <code>7</code>。</p>
+<p>要检查你的文件，请与完整示例进行对比：</p>
+<details class="accordion"><summary>完整代码示例</summary><div class="accordion-body"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="c1"># Step 2: Define tools and model</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span>
+    <span class="s2">&quot;claude-sonnet-4-6&quot;</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+
+
+<span class="c1"># Define tools</span>
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiply `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">divide</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Divide `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">b</span>
+
+
+<span class="c1"># Augment the LLM with tools</span>
+<span class="n">tools</span> <span class="o">=</span> <span class="p">[</span><span class="n">add</span><span class="p">,</span> <span class="n">multiply</span><span class="p">,</span> <span class="n">divide</span><span class="p">]</span>
+<span class="n">tools_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">tool</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">tools</span><span class="p">}</span>
+<span class="n">model_with_tools</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">bind_tools</span><span class="p">(</span><span class="n">tools</span><span class="p">)</span>
+
+<span class="c1"># Step 3: Define state</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span><span class="p">,</span> <span class="n">Annotated</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MessagesState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">messages</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AnyMessage</span><span class="p">],</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">]</span>
+    <span class="n">llm_calls</span><span class="p">:</span> <span class="nb">int</span>
+
+<span class="c1"># Step 4: Define model node</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SystemMessage</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LLM decides whether to call a tool or not&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">model_with_tools</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">SystemMessage</span><span class="p">(</span>
+                        <span class="n">content</span><span class="o">=</span><span class="s2">&quot;You are a helpful assistant tasked with performing arithmetic on a set of inputs.&quot;</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+                <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;llm_calls&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;llm_calls&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="p">}</span>
+
+
+<span class="c1"># Step 5: Define tool node</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolMessage</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">tool_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Performs the tool call&quot;&quot;&quot;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">tool_call</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+        <span class="n">tool</span> <span class="o">=</span> <span class="n">tools_by_name</span><span class="p">[</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span>
+        <span class="n">observation</span> <span class="o">=</span> <span class="n">tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">])</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ToolMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">observation</span><span class="p">,</span> <span class="n">tool_call_id</span><span class="o">=</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">}</span>
+
+<span class="c1"># Step 6: Define end logic</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span>
+
+
+<span class="c1"># Conditional edge function to route to the tool node or end based upon whether the LLM made a tool call</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">should_continue</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decide if we should continue the loop or stop based upon whether the LLM made a tool call&quot;&quot;&quot;</span>
+
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+    <span class="n">last_message</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># If the LLM makes a tool call, then perform an action</span>
+    <span class="k">if</span> <span class="n">last_message</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;tool_node&quot;</span>
+
+    <span class="c1"># Otherwise, we stop (reply to the user)</span>
+    <span class="k">return</span> <span class="n">END</span>
+
+<span class="c1"># Step 7: Build and compile the agent</span>
+
+<span class="c1"># Build workflow</span>
+<span class="n">agent_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">)</span>
+
+<span class="c1"># Add nodes</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;llm_call&quot;</span><span class="p">,</span> <span class="n">llm_call</span><span class="p">)</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="n">tool_node</span><span class="p">)</span>
+
+<span class="c1"># Add edges to connect nodes</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;llm_call&quot;</span><span class="p">)</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+    <span class="s2">&quot;llm_call&quot;</span><span class="p">,</span>
+    <span class="n">should_continue</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="s2">&quot;llm_call&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compile the agent</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">agent_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+
+<span class="c1"># Step 8: Set up LangSmith tracing (optional)</span>
+<span class="c1"># export LANGSMITH_TRACING=true</span>
+<span class="c1"># export LANGSMITH_API_KEY=&quot;your-langsmith-api-key&quot;</span>
+
+<span class="c1"># Step 9: Run the agent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">HumanMessage</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Add 3 and 4.&quot;</span><span class="p">)]</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">messages</span><span class="p">})</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]:</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">()</span>
+</code></pre></div></div></details></div><div class="tab-panel" id="tabs-1" role="tabpanel"><span class="tab-anchor" id="使用-functional-api"></span><p>构建 LangGraph Functional API 计算器快速入门</p>
+<p>按照 LangGraph 快速入门，在当前工作目录中使用 Functional API 构建一个 LangGraph 计算器智能体。</p>
+<h2 id="第-1-步阅读指南-2">第 1 步：阅读指南<a class="h-anchor" href="#第-1-步阅读指南-2" aria-label="本节链接">#</a></h2>
+<p>判断该项目使用的是 Python 还是 TypeScript/JavaScript。获取并遵循匹配的页面；将其作为包名、模型字符串和代码的权威依据：</p>
+<ul><li>Python：<a href="quickstart.html">https://docs.langchain.com/oss/python/langgraph/quickstart.md</a></li><li>TypeScript：<a href="https://docs.langchain.com/oss/javascript/langgraph/quickstart" target="_blank" rel="noreferrer">https://docs.langchain.com/oss/javascript/langgraph/quickstart.md</a></li></ul>
+<p>仅使用 <strong>Use the Functional API</strong> 标签页。不要实现 Graph API 路径。</p>
+<h2 id="第-2-步安装依赖-2">第 2 步：安装依赖<a class="h-anchor" href="#第-2-步安装依赖-2" aria-label="本节链接">#</a></h2>
+<p>使用本项目已在使用的包管理器，安装 Functional API 路径所需的包。</p>
+<h2 id="第-3-步配置模型凭证">第 3 步：配置模型凭证<a class="h-anchor" href="#第-3-步配置模型凭证" aria-label="本节链接">#</a></h2>
+<p>本快速入门默认使用 Anthropic。检查是否已设置 <code>ANTHROPIC_API_KEY</code>。如果未设置，请让用户创建密钥，并在 shell 或 <code>.env</code> 文件中设置，然后停止并等待确认。不要编造、硬编码或提交 API 密钥。如果用户更倾向于使用集成文档中的其他聊天模型提供商，请在确认后相应地调整示例。</p>
+<h2 id="第-4-步实现计算器智能体-2">第 4 步：实现计算器智能体<a class="h-anchor" href="#第-4-步实现计算器智能体-2" aria-label="本节链接">#</a></h2>
+<p>定义工具和模型，然后定义指南中的 Functional API 任务和入口点。</p>
+<h2 id="第-5-步可选的-langsmith-追踪-2">第 5 步：可选的 LangSmith 追踪<a class="h-anchor" href="#第-5-步可选的-langsmith-追踪-2" aria-label="本节链接">#</a></h2>
+<p>询问用户是否需要追踪。如果需要，请他们自行设置 <code>LANGSMITH_TRACING=true</code> 和 <code>LANGSMITH_API_KEY</code>。不要编造 LangSmith 密钥。</p>
+<h2 id="第-6-步运行智能体-2">第 6 步：运行智能体<a class="h-anchor" href="#第-6-步运行智能体-2" aria-label="本节链接">#</a></h2>
+<p>针对指南中的一个示例算术查询调用智能体，并打印最终结果。</p>
+<h2 id="规则-2">规则<a class="h-anchor" href="#规则-2" aria-label="本节链接">#</a></h2>
+<ul><li>将范围限制在本快速入门内。除非用户要求，否则不要添加部署、评测或无关的框架。</li><li>优先采用所获取指南中展示的 Functional API 结构，而不是自行设计不同的智能体模式。</li><li>当密钥、提供商选择或项目约定不明确时，应询问而不是猜测。</li></ul>
+<h2 id="2.-定义工具和模型-2">2. 定义工具和模型<a class="h-anchor" href="#2.-定义工具和模型-2" aria-label="本节链接">#</a></h2>
+<p>本示例使用 Claude Sonnet 模型，并定义用于加法、乘法和除法的工具。</p>
+<p>为智能体创建一个文件（<code>agent.py</code> 或 <code>agent.ts</code>）。添加以下内容：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span>
+    <span class="s2">&quot;claude-sonnet-4-6&quot;</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+
+
+<span class="c1"># Define tools</span>
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiply `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">divide</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Divide `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">b</span>
+
+
+<span class="c1"># Augment the LLM with tools</span>
+<span class="n">tools</span> <span class="o">=</span> <span class="p">[</span><span class="n">add</span><span class="p">,</span> <span class="n">multiply</span><span class="p">,</span> <span class="n">divide</span><span class="p">]</span>
+<span class="n">tools_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">tool</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">tools</span><span class="p">}</span>
+<span class="n">model_with_tools</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">bind_tools</span><span class="p">(</span><span class="n">tools</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_messages</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SystemMessage</span><span class="p">,</span>
+    <span class="n">HumanMessage</span><span class="p">,</span>
+    <span class="n">ToolCall</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+</code></pre></div>
+<h2 id="3.-定义模型任务">3. 定义模型任务<a class="h-anchor" href="#3.-定义模型任务" aria-label="本节链接">#</a></h2>
+<p>模型任务调用 LLM，并决定是否调用工具。</p>
+<p>在工具和模型下方添加以下内容：</p>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p><a href="https://reference.langchain.com/python/langgraph/func/task" target="_blank" rel="noreferrer"> 0 </a> 装饰器将函数标记为智能体中的任务。可以在入口点中同步或异步调用任务。</p></div></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_llm</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LLM decides whether to call a tool or not&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">model_with_tools</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">SystemMessage</span><span class="p">(</span>
+                <span class="n">content</span><span class="o">=</span><span class="s2">&quot;You are a helpful assistant tasked with performing arithmetic on a set of inputs.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+        <span class="o">+</span> <span class="n">messages</span>
+    <span class="p">)</span>
+</code></pre></div>
+<h2 id="4.-定义工具任务">4. 定义工具任务<a class="h-anchor" href="#4.-定义工具任务" aria-label="本节链接">#</a></h2>
+<p>工具任务调用工具并返回结果。</p>
+<p>在模型任务下方添加以下内容：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_tool</span><span class="p">(</span><span class="n">tool_call</span><span class="p">:</span> <span class="n">ToolCall</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Performs the tool call&quot;&quot;&quot;</span>
+    <span class="n">tool</span> <span class="o">=</span> <span class="n">tools_by_name</span><span class="p">[</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">tool_call</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="5.-定义智能体">5. 定义智能体<a class="h-anchor" href="#5.-定义智能体" aria-label="本节链接">#</a></h2>
+<p>在任务下方添加以下内容。使用 <a href="https://reference.langchain.com/python/langgraph/func/entrypoint" target="_blank" rel="noreferrer"> 0 </a> 定义智能体：</p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>Functional API 在单个函数中使用普通控制流（循环和条件语句），而不是显式的节点和边。</p></div></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="nd">@entrypoint</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">agent</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+    <span class="n">model_response</span> <span class="o">=</span> <span class="n">call_llm</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">model_response</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c1"># Execute tools</span>
+        <span class="n">tool_result_futures</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">call_tool</span><span class="p">(</span><span class="n">tool_call</span><span class="p">)</span> <span class="k">for</span> <span class="n">tool_call</span> <span class="ow">in</span> <span class="n">model_response</span><span class="o">.</span><span class="n">tool_calls</span>
+        <span class="p">]</span>
+        <span class="n">tool_results</span> <span class="o">=</span> <span class="p">[</span><span class="n">fut</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">fut</span> <span class="ow">in</span> <span class="n">tool_result_futures</span><span class="p">]</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="p">[</span><span class="n">model_response</span><span class="p">,</span> <span class="o">*</span><span class="n">tool_results</span><span class="p">])</span>
+        <span class="n">model_response</span> <span class="o">=</span> <span class="n">call_llm</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="n">model_response</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">messages</span>
+</code></pre></div>
+<h2 id="6.-设置-langsmith-追踪">6. 设置 LangSmith 追踪<a class="h-anchor" href="#6.-设置-langsmith-追踪" aria-label="本节链接">#</a></h2>
+<p><a href="https://smith.langchain.com?utm_source=docs&amp;utm_medium=cta&amp;utm_campaign=langsmith-signup&amp;utm_content=oss-langgraph-quickstart" target="_blank" rel="noreferrer">LangSmith</a> 会在智能体运行时显示工具调用和模型响应。</p>
+<p>此步骤是可选的。在 <a href="https://smith.langchain.com?utm_source=docs&amp;utm_medium=cta&amp;utm_campaign=langsmith-signup&amp;utm_content=oss-langgraph-quickstart" target="_blank" rel="noreferrer">smith.langchain.com</a> 注册、创建 API 密钥，并在运行智能体之前于 shell 中设置以下环境变量：</p>
+<div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash"><span class="nb">export</span><span class="w"> </span><span class="nv">LANGSMITH_TRACING</span><span class="o">=</span><span class="nb">true</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LANGSMITH_API_KEY</span><span class="o">=</span><span class="s2">&quot;your-langsmith-api-key&quot;</span>
+</code></pre></div>
+<h2 id="7.-运行智能体">7. 运行智能体<a class="h-anchor" href="#7.-运行智能体" aria-label="本节链接">#</a></h2>
+<p>在入口点下方添加以下内容：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">HumanMessage</span>
+
+<span class="n">messages</span> <span class="o">=</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Add 3 and 4.&quot;</span><span class="p">)]</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">()</span>
+</code></pre></div>
+<p>运行该文件：</p>
+<div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">python<span class="w"> </span>agent.py
+</code></pre></div>
+<p>你应该会看到人类消息、对 <code>add</code> 的工具调用、工具结果 <code>7</code>，以及最终的助手回复。具体文本因模型而异，但工具结果应为 <code>7</code>。</p>
+<p>要检查你的文件，请将其与完整示例进行对比：</p>
+<details class="accordion"><summary>完整代码示例</summary><div class="accordion-body"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="c1"># Step 2: Define tools and model</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span>
+    <span class="s2">&quot;claude-sonnet-4-6&quot;</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+
+
+<span class="c1"># Define tools</span>
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiply `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">divide</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Divide `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">b</span>
+
+
+<span class="c1"># Augment the LLM with tools</span>
+<span class="n">tools</span> <span class="o">=</span> <span class="p">[</span><span class="n">add</span><span class="p">,</span> <span class="n">multiply</span><span class="p">,</span> <span class="n">divide</span><span class="p">]</span>
+<span class="n">tools_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">tool</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">tools</span><span class="p">}</span>
+<span class="n">model_with_tools</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">bind_tools</span><span class="p">(</span><span class="n">tools</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_messages</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SystemMessage</span><span class="p">,</span>
+    <span class="n">HumanMessage</span><span class="p">,</span>
+    <span class="n">ToolCall</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+
+
+<span class="c1"># Step 3: Define model task</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_llm</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LLM decides whether to call a tool or not&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">model_with_tools</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">SystemMessage</span><span class="p">(</span>
+                <span class="n">content</span><span class="o">=</span><span class="s2">&quot;You are a helpful assistant tasked with performing arithmetic on a set of inputs.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+        <span class="o">+</span> <span class="n">messages</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># Step 4: Define tool task</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_tool</span><span class="p">(</span><span class="n">tool_call</span><span class="p">:</span> <span class="n">ToolCall</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Performs the tool call&quot;&quot;&quot;</span>
+    <span class="n">tool</span> <span class="o">=</span> <span class="n">tools_by_name</span><span class="p">[</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">tool_call</span><span class="p">)</span>
+
+
+<span class="c1"># Step 5: Define agent</span>
+
+<span class="nd">@entrypoint</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">agent</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+    <span class="n">model_response</span> <span class="o">=</span> <span class="n">call_llm</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">model_response</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c1"># Execute tools</span>
+        <span class="n">tool_result_futures</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">call_tool</span><span class="p">(</span><span class="n">tool_call</span><span class="p">)</span> <span class="k">for</span> <span class="n">tool_call</span> <span class="ow">in</span> <span class="n">model_response</span><span class="o">.</span><span class="n">tool_calls</span>
+        <span class="p">]</span>
+        <span class="n">tool_results</span> <span class="o">=</span> <span class="p">[</span><span class="n">fut</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">fut</span> <span class="ow">in</span> <span class="n">tool_result_futures</span><span class="p">]</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="p">[</span><span class="n">model_response</span><span class="p">,</span> <span class="o">*</span><span class="n">tool_results</span><span class="p">])</span>
+        <span class="n">model_response</span> <span class="o">=</span> <span class="n">call_llm</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="n">model_response</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">messages</span>
+
+<span class="c1"># Step 6: Set up LangSmith tracing (optional)</span>
+<span class="c1"># export LANGSMITH_TRACING=true</span>
+<span class="c1"># export LANGSMITH_API_KEY=&quot;your-langsmith-api-key&quot;</span>
+
+<span class="c1"># Step 7: Run the agent</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Add 3 and 4.&quot;</span><span class="p">)]</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">()</span>
+</code></pre></div></div></details></div></div></div>
+<h2 id="后续步骤">后续步骤<a class="h-anchor" href="#后续步骤" aria-label="本节链接">#</a></h2>
+<p>你现在已经有了一个可用的计算器智能体。可以继续学习以下任一主题：</p>
+<ul><li><strong>学习这些 API</strong>：先阅读<a href="choosing-apis.html">在 Graph API 与 Functional API 之间做选择</a>，然后阅读<a href="use-graph-api.html">Graph API 的构建清单</a>或<a href="use-functional-api.html">Functional API 的构建清单</a>。</li><li><strong>添加持久化</strong>：使用<a href="persistence.html">检查点保存器</a>，使运行能够跨会话暂停与恢复。</li><li><strong>添加人在回路</strong>：通过<a href="interrupts.html">中断</a>暂停，以进行审批或编辑。</li><li><strong>流式输出结果</strong>：参阅<a href="streaming.html">流式输出</a>，了解 token 与状态更新。</li><li><strong>深入探索</strong>：<a href="thinking-in-graph-api.html">在 Graph API 中思考</a>、<a href="thinking-in-functional-api.html">在 Functional API 中思考</a>，以及<a href="workflows-agents.html">工作流与智能体</a>。</li><li><strong>部署</strong>：使用 <a href="https://docs.langchain.com/langsmith/deployment" target="_blank" rel="noreferrer">LangSmith Deployment</a> 托管智能体。</li><li><strong>评估</strong>：使用 <a href="https://docs.langchain.com/langsmith/evaluation-quickstart" target="_blank" rel="noreferrer">LangSmith 评估</a>测试行为。</li></ul>
+<hr class="rule">
+<p>通过 MCP 将这些文档<a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">接入</a>你所选的智能体，以获取实时回答。</p>
+<p>在 GitHub 上<a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/quickstart.mdx" target="_blank" rel="noreferrer">编辑此页面</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="overview.html"><span class="lbl">上一页</span><span class="ttl">概览</span></a><a class="next" href="choosing-apis.html"><span class="lbl">下一页</span><span class="ttl">选择 API</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#前提条件">前提条件</a></li><li class="lvl-2"><a href="#设置">设置</a></li><li class="lvl-2"><a href="#1.-选择-api">1. 选择 API</a></li><li class="lvl-2"><a href="#后续步骤">后续步骤</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

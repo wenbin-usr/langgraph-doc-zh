@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中断 · LangGraph 中文文档</title>
+<meta name="description" content="中断">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link active" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/interrupts" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>核心能力</span><span class="sep">/</span><span>中断</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">核心能力</span>
+          <h1>中断</h1>
+          
+        </div>
+        <div class="doc-body"><p>中断允许你在图的特定位置暂停执行，等待外部输入后再继续。这使人在回路的模式成为可能：你需要外部输入才能继续推进。当中断被触发时，LangGraph 使用其<a href="persistence.html">持久化</a>层保存图状态，并无限期等待，直到你恢复执行。</p>
+<p>中断的工作原理是在图节点中的任意位置调用 <code>interrupt()</code> 函数。该函数接受任意 JSON 可序列化的值，并将其呈现给调用方。当你准备继续时，通过使用 <code>Command</code> 重新调用图来恢复执行，该值随后成为节点内部 <code>interrupt()</code> 调用的返回值。</p>
+<p>与静态断点（在特定节点之前或之后暂停）不同，中断是<strong>动态的</strong>：它们可以放在代码中的任何位置，并且可以根据应用逻辑设置条件。</p>
+<ul><li><strong>检查点保存你的进度：</strong> 检查点保存器会写入精确的图状态，以便你稍后恢复，即使处于错误状态也是如此。</li><li><strong><code>thread_id</code> 是你的指针：</strong> 设置 <code>config={"configurable": {"thread_id": ...}}</code> 以告知检查点保存器要加载哪个状态。</li><li><strong>中断负载通过 <code>stream.interrupts</code> 呈现：</strong> 使用<a href="event-streaming.html">事件流式输出</a>（<code>graph.stream_events(..., version="v3")</code>）时，你传给 <code>interrupt()</code> 的值会出现在 <code>stream.interrupts</code> 上，而 <code>stream.interrupted</code> 在运行因等待输入而暂停时为 <code>True</code>。</li></ul>
+<p>你选择的 <code>thread_id</code> 实际上就是你的持久游标。复用它将会恢复同一个检查点；使用新值则会以一个空状态开启一个全新的线程。</p>
+<h2 id="使用-interrupt-暂停">使用 <code>interrupt</code> 暂停<a class="h-anchor" href="#使用-interrupt-暂停" aria-label="本节链接">#</a></h2>
+<p><a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 函数会暂停图执行并向调用方返回一个值。当你在节点内调用 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 1 </a> 时，LangGraph 会保存当前图状态，并等待你带着输入恢复执行。</p>
+<p>要使用 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a>，你需要：</p>
+<ol><li>一个<strong>检查点保存器</strong>来持久化图状态（生产环境请使用持久化检查点保存器）</li><li>配置中有一个<strong>线程 ID</strong>，以便运行时知道要从哪个状态恢复</li><li>在你想暂停的位置调用 <code>interrupt()</code>（负载必须可 JSON 序列化）</li></ol>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">interrupt</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">approval_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># Pause and ask for approval</span>
+    <span class="n">approved</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;Do you approve this action?&quot;</span><span class="p">)</span>
+
+    <span class="c1"># When you resume, Command(resume=...) returns that value here</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;approved&quot;</span><span class="p">:</span> <span class="n">approved</span><span class="p">}</span>
+</code></pre></div>
+<p>当你调用 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 时，会发生以下情况：</p>
+<ol><li><strong>图执行被挂起</strong>，位置正是调用 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 的那一点</li><li><strong>状态被保存</strong>，通过检查点保存器完成，以便稍后可以恢复执行。在生产环境中，这应当是一个持久化检查点保存器（例如由数据库支撑）</li><li><strong>值被返回</strong>给调用方：使用<a href="event-streaming.html">事件流式输出</a>（<code>graph.stream_events(..., version="v3")</code>）时出现在 <code>stream.interrupts</code> 上，使用默认的 <code>invoke()</code> API 时出现在 <code>__interrupt__</code> 下；该值可以是任意 JSON 可序列化的值（字符串、对象、数组等）</li><li><strong>图无限期等待</strong>，直到你带着响应恢复执行</li><li><strong>响应被回传</strong>到节点中，在你恢复时成为 <code>interrupt()</code> 调用的返回值</li></ol>
+<h2 id="恢复中断">恢复中断<a class="h-anchor" href="#恢复中断" aria-label="本节链接">#</a></h2>
+<p>中断暂停执行后，你通过再次调用图来恢复它，并传入一个包含恢复值的 <code>Command</code>。恢复值会被回传给 <code>interrupt</code> 调用，使节点能够带着外部输入继续执行。</p>
+<p>驱动可能发生中断的图的推荐方式是<a href="event-streaming.html">事件流式输出</a>——它通过 <code>stream.interrupts</code> 和 <code>stream.interrupted</code> 呈现中断，并通过 <code>stream.output</code> 暴露最终状态。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
+
+<span class="c1"># Initial run - hits the interrupt and pauses</span>
+<span class="c1"># thread_id is the persistent pointer (stores a stable ID in production)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;thread-1&quot;</span><span class="p">}}</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;data&quot;</span><span class="p">},</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+
+<span class="c1"># Drain the stream to drive the run; stream.output awaits the final state.</span>
+<span class="n">final</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">output</span>
+
+<span class="c1"># stream.interrupted is True when the run paused for human input, and</span>
+<span class="c1"># stream.interrupts contains the payloads passed to interrupt().</span>
+<span class="k">if</span> <span class="n">stream</span><span class="o">.</span><span class="n">interrupted</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">interrupts</span><span class="p">)</span>
+    <span class="c1"># &gt; (Interrupt(value=&#39;Do you approve this action?&#39;),)</span>
+
+<span class="c1"># Resume with the human&#39;s response</span>
+<span class="c1"># The resume payload becomes the return value of interrupt() inside the node</span>
+<span class="n">resumed</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="n">final</span> <span class="o">=</span> <span class="n">resumed</span><span class="o">.</span><span class="n">output</span>
+</code></pre></div>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="https://smith.langchain.com/public/cd7406ad-294e-4d98-b0ae-d9ed7930e117/r" target="_blank" rel="noreferrer">查看示例追踪</a></div><div class="card-body"><p>打开此示例对应的公开 LangSmith 运行记录。</p></div></div></div>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>默认的 <code>graph.invoke(...)</code> API 仍然可用，并在 <code>result["__interrupt__"]</code> 下呈现中断。当你不需要流式投影时可以使用它；否则优先使用 <code>graph.stream_events(..., version="v3")</code>。</p></div></div>
+<p><strong>关于恢复的要点：</strong></p>
+<ul><li>恢复时必须使用与中断发生时<strong>相同的线程 ID</strong></li><li>传给 <code>Command(resume=...)</code> 的值会成为 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 1 </a> 调用的返回值</li><li>恢复时，节点会从调用 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 的那个节点开头重新开始，因此 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 1 </a> 之前的任何代码都会再次运行</li><li>你可以传入任意 JSON 可序列化的值作为恢复值，若指定了带类型的 <code>response_schema</code>，则需接受校验</li></ul>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-icon">⚠</span><span>警告</span></div><div class="callout-body"><p><code>Command(resume=...)</code> 是<strong>唯一</strong>预期作为 <code>invoke()</code>/<code>stream()</code>/<code>stream_events()</code> 输入的 <code>Command</code> 模式。其他 <code>Command</code> 参数（<code>update</code>、<code>goto</code>、<code>graph</code>）是为<a href="graph-api.html#command">从节点函数返回</a>而设计的。不要传入 <code>Command(update=...)</code> 作为输入来继续多轮对话——请改为传入一个普通输入字典。</p></div></div>
+<h2 id="定义中断响应-schema">定义中断响应 Schema<a class="h-anchor" href="#定义中断响应-schema" aria-label="本节链接">#</a></h2>
+<p><a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 的 <code>response_schema</code> 参数描述了你恢复图时所期望的输入。客户端可以使用该 Schema 渲染带类型的输入表单。</p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>中断响应 Schema 需要 <code>langgraph&gt;=1.2.12</code>。</p></div></div>
+<p>传入一个 Pydantic 模型类、来自 <code>typing_extensions</code> 的 <code>TypedDict</code>，或一个 dataclass 来校验恢复值。LangGraph 会将类型转换为 JSON Schema，并将其包含在 <code>Interrupt.response_schema</code> 中，与中断的 <code>value</code> 负载分开存放。该 Schema 在返回给调用方的中断中以及在检查点任务的中断中都可用。</p>
+<p>此示例使用了 LangGraph 中断测试中的审批 Schema：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">interrupt</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Decision</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">approved</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">note</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">answer</span><span class="p">:</span> <span class="n">Any</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">({</span><span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="s2">&quot;approve?&quot;</span><span class="p">},</span> <span class="n">response_schema</span><span class="o">=</span><span class="n">Decision</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;answer&quot;</span><span class="p">:</span> <span class="n">answer</span><span class="p">}</span>
+
+
+<span class="n">graph</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">InMemorySaver</span><span class="p">())</span>
+<span class="p">)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;answer&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">config</span><span class="p">)</span>
+<span class="n">pending</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;__interrupt__&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">pending</span><span class="o">.</span><span class="n">response_schema</span> <span class="o">==</span> <span class="n">Decision</span><span class="o">.</span><span class="n">model_json_schema</span><span class="p">()</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;approved&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span> <span class="n">config</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;answer&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Decision</span><span class="p">(</span><span class="n">approved</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p>使用带类型的 Schema 时，<code>interrupt()</code> 会返回校验后的对象：Pydantic 模型实例、<code>TypedDict</code> 对应的字典，或 dataclass 实例。Pydantic 的校验与强制转换规则适用。无效输入会抛出 <code>pydantic.ValidationError</code>；你可以使用同一个线程 ID 以修正后的 <code>Command(resume=...)</code> 重试。</p>
+<p>你也可以传入一个 JSON Schema 字典作为 <code>response_schema</code>。LangGraph 会原样暴露该字典，但<strong>不会</strong>据此校验恢复值。当你省略 <code>response_schema</code> 时，其值为 <code>None</code>，恢复值会不经 Schema 校验直接传入。</p>
+<p>Studio 会将中断响应 Schema 渲染为带类型的输入字段，而不是 JSON 编辑器。此 Studio 组件预览使用了包含审批、备注和数字金额字段的示例数据。</p>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/u62GP5wl5NeQqwjE/images/langgraph-interrupt-response-schema.png?fit=max&amp;auto=format&amp;n=u62GP5wl5NeQqwjE&amp;q=85&amp;s=b10304786d356849862616a60b74aa3d" alt="Studio interrupt form with an approval toggle, a note field, and a numeric amount set to 125.50" loading="lazy" class="md-img"></p>
+<h2 id="常见模式">常见模式<a class="h-anchor" href="#常见模式" aria-label="本节链接">#</a></h2>
+<p>中断带来的关键能力是能够暂停执行并等待外部输入。这在多种用例中很有用，包括：</p>
+<ul><li><a href="#批准或拒绝">审批工作流</a>：在执行关键操作（API 调用、数据库变更、金融交易）之前暂停</li><li><a href="#处理多个中断">处理多个中断</a>：在同一次调用中恢复多个中断时，将中断 ID 与恢复值配对</li><li><a href="#审核并编辑状态">审查与编辑</a>：让人类在继续之前审查和修改 LLM 输出或工具调用</li><li><a href="#工具中的中断">中断工具调用</a>：在执行工具调用之前暂停，以便在执行前审查和编辑该工具调用</li><li><a href="#校验人类输入">校验人类输入</a>：在进入下一步之前暂停以校验人类输入</li></ul>
+<h3 id="使用人在回路hitl中断进行流式输出">使用人在回路（HITL）中断进行流式输出<a class="h-anchor" href="#使用人在回路hitl中断进行流式输出" aria-label="本节链接">#</a></h3>
+<p>在使用人在回路工作流构建交互式智能体时，你可以使用<a href="event-streaming.html">事件流式输出</a>，在并发消费消息块与状态快照的同时处理中断。</p>
+<p>使用 <code>graph.stream_events(..., version="v3")</code> 返回的带类型投影，在循环中执行直到运行结束：</p>
+<ul><li>通过 <code>stream.messages</code> 逐 token 流式输出 AI 响应</li><li>通过 <code>stream.values</code> 观察每一步的状态快照</li><li>通过 <code>stream.interrupted</code> 检测中断，并从 <code>stream.interrupts</code> 读取其负载</li><li>通过以 <code>Command(resume=...)</code> 再次调用 <code>stream_events</code> 来恢复执行，并重复此过程，直到 <code>stream.interrupted</code> 为 false</li></ul>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
+
+<span class="n">stream_input</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="n">Command</span> <span class="o">=</span> <span class="n">initial_input</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="n">stream_input</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Stream LLM message chunks (including any in subgraphs) as they arrive.</span>
+    <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+            <span class="n">display_streaming_content</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+
+    <span class="c1"># After the run finishes (or pauses), check for interrupts and resume.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">stream</span><span class="o">.</span><span class="n">interrupted</span><span class="p">:</span>
+        <span class="n">final_state</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">output</span>
+        <span class="k">break</span>
+
+    <span class="n">interrupt_info</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">interrupts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">user_response</span> <span class="o">=</span> <span class="n">get_user_input</span><span class="p">(</span><span class="n">interrupt_info</span><span class="p">)</span>
+    <span class="n">stream_input</span> <span class="o">=</span> <span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="n">user_response</span><span class="p">)</span>
+</code></pre></div>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="https://smith.langchain.com/public/acab7c09-a2a5-46f3-96fb-15bd36c8df80/r" target="_blank" rel="noreferrer">查看示例追踪</a></div><div class="card-body"><p>打开此示例对应的公开 LangSmith 运行记录。</p></div></div></div>
+<ul><li><strong><code>stream.messages</code></strong>：以内容块形式呈现的聊天模型输出；遍历每个 <code>message.text</code> 以获取 token 增量。对于嵌套子图，请从 <code>stream.subgraphs[*].messages</code> 读取消息块。</li><li><strong><code>stream.values</code></strong>：每一步之后的完整状态快照</li><li><strong><code>stream.interrupted</code> / <code>stream.interrupts</code></strong>：每次运行后检查图是否暂停；从 <code>stream.interrupts</code> 读取负载</li><li><strong><code>Command(resume=...)</code></strong>：作为下一次 <code>stream_events</code> 的输入传入以恢复执行；循环直到运行完成且不再中断</li></ul>
+<h3 id="处理多个中断">处理多个中断<a class="h-anchor" href="#处理多个中断" aria-label="本节链接">#</a></h3>
+<p>当并行分支同时中断时（例如扇出到多个节点，每个节点都调用 <code>interrupt()</code>），你可能需要在单次调用中恢复多个中断。 在单次调用中恢复多个中断时，请将每个中断 ID 映射到其恢复值。 这能确保每个响应在运行时与正确的中断配对。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">TypedDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">interrupt</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">vals</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;question_a&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;vals&quot;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;a:</span><span class="si">{</span><span class="n">answer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_b</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;question_b&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;vals&quot;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;b:</span><span class="si">{</span><span class="n">answer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]}</span>
+
+
+<span class="n">graph</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">node_a</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">node_b</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">InMemorySaver</span><span class="p">())</span>
+<span class="p">)</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+
+<span class="c1"># Step 1: stream events to drive the run; both parallel nodes hit interrupt() and pause</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span><span class="s2">&quot;vals&quot;</span><span class="p">:</span> <span class="p">[]},</span> <span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">output</span>  <span class="c1"># drive the stream to completion</span>
+<span class="c1"># stream.interrupts contains the pending Interrupt payloads</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">interrupts</span><span class="p">)</span>
+<span class="c1"># &gt; (Interrupt(value=&#39;question_a&#39;, id=&#39;...&#39;), Interrupt(value=&#39;question_b&#39;, id=&#39;...&#39;))</span>
+
+<span class="c1"># Step 2: resume all pending interrupts at once</span>
+<span class="n">resume_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">i</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;answer for </span><span class="si">{</span><span class="n">i</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">interrupts</span>
+<span class="p">}</span>
+<span class="n">resumed</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="n">resume_map</span><span class="p">),</span> <span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final state:&quot;</span><span class="p">,</span> <span class="n">resumed</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+<span class="c1"># Final state: {&#39;vals&#39;: [&#39;a:answer for question_a&#39;, &#39;b:answer for question_b&#39;]}</span>
+</code></pre></div>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="https://smith.langchain.com/public/abe5fd52-e2d3-41fc-ab1d-c812bc885c3e/r" target="_blank" rel="noreferrer">查看示例追踪</a></div><div class="card-body"><p>打开此示例对应的公开 LangSmith 运行记录。</p></div></div></div>
+<h3 id="批准或拒绝">批准或拒绝<a class="h-anchor" href="#批准或拒绝" aria-label="本节链接">#</a></h3>
+<p>中断最常见的用途之一，是在执行关键操作之前暂停并请求批准。例如，你可能想让人工批准一次 API 调用、一次数据库变更，或任何其他重要决策。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">interrupt</span><span class="p">,</span> <span class="n">Command</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">approval_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Command</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;proceed&quot;</span><span class="p">,</span> <span class="s2">&quot;cancel&quot;</span><span class="p">]]:</span>
+    <span class="c1"># Pause execution; payload shows up on stream.interrupts (with stream_events) or result[&quot;__interrupt__&quot;] (with invoke)</span>
+    <span class="n">is_approved</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">({</span>
+        <span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="s2">&quot;Do you want to proceed with this action?&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;details&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;action_details&quot;</span><span class="p">]</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Route based on the response</span>
+    <span class="k">if</span> <span class="n">is_approved</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Command</span><span class="p">(</span><span class="n">goto</span><span class="o">=</span><span class="s2">&quot;proceed&quot;</span><span class="p">)</span>  <span class="c1"># Runs after the resume payload is provided</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Command</span><span class="p">(</span><span class="n">goto</span><span class="o">=</span><span class="s2">&quot;cancel&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>恢复图时，传入 <code>True</code> 表示批准，传入 <code>False</code> 表示拒绝：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="c1"># To approve</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">output</span>
+
+<span class="c1"># To reject</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">output</span>
+</code></pre></div>
+<details class="accordion"><summary>完整示例</summary><div class="accordion-body"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypedDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">interrupt</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ApprovalState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">action_details</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;pending&quot;</span><span class="p">,</span> <span class="s2">&quot;approved&quot;</span><span class="p">,</span> <span class="s2">&quot;rejected&quot;</span><span class="p">]]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">approval_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ApprovalState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Command</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;proceed&quot;</span><span class="p">,</span> <span class="s2">&quot;cancel&quot;</span><span class="p">]]:</span>
+    <span class="c1"># Expose details so the caller can render them in a UI</span>
+    <span class="n">decision</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="s2">&quot;Approve this action?&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;details&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;action_details&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Route to the appropriate node after resume</span>
+    <span class="k">return</span> <span class="n">Command</span><span class="p">(</span><span class="n">goto</span><span class="o">=</span><span class="s2">&quot;proceed&quot;</span> <span class="k">if</span> <span class="n">decision</span> <span class="k">else</span> <span class="s2">&quot;cancel&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">proceed_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ApprovalState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;approved&quot;</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cancel_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ApprovalState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;rejected&quot;</span><span class="p">}</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">ApprovalState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;approval&quot;</span><span class="p">,</span> <span class="n">approval_node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;proceed&quot;</span><span class="p">,</span> <span class="n">proceed_node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">,</span> <span class="n">cancel_node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;approval&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;proceed&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="c1"># Use a more durable checkpointer in production</span>
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;approval-123&quot;</span><span class="p">}}</span>
+<span class="n">initial</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;action_details&quot;</span><span class="p">:</span> <span class="s2">&quot;Transfer $500&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;pending&quot;</span><span class="p">},</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">initial</span><span class="o">.</span><span class="n">output</span>  <span class="c1"># drive the stream to completion</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">initial</span><span class="o">.</span><span class="n">interrupts</span><span class="p">)</span>  <span class="c1"># -&gt; (Interrupt(value={&#39;question&#39;: ..., &#39;details&#39;: ...}),)</span>
+
+<span class="c1"># Resume with the decision; True routes to proceed, False to cancel</span>
+<span class="n">resumed</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">resumed</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">])</span>
+</code></pre></div>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="https://smith.langchain.com/public/125fbf83-2cf8-4dc7-a148-94f39bc31b8a/r" target="_blank" rel="noreferrer">查看示例追踪</a></div><div class="card-body"><p>打开此示例对应的公开 LangSmith 运行记录。</p></div></div></div></div></details>
+<h3 id="审核并编辑状态">审核并编辑状态<a class="h-anchor" href="#审核并编辑状态" aria-label="本节链接">#</a></h3>
+<p>有时你希望让人工在继续之前审核并编辑图状态的一部分。这适用于纠正 LLM、补充缺失信息或做出调整。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">interrupt</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">review_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># Pause and show the current content for review (payload surfaces on stream.interrupts)</span>
+    <span class="n">edited_content</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">({</span>
+        <span class="s2">&quot;instruction&quot;</span><span class="p">:</span> <span class="s2">&quot;Review and edit this content&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;generated_text&quot;</span><span class="p">]</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Update the state with the edited version</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;generated_text&quot;</span><span class="p">:</span> <span class="n">edited_content</span><span class="p">}</span>
+</code></pre></div>
+<p>恢复时，提供编辑后的内容：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="s2">&quot;The edited and improved text&quot;</span><span class="p">),</span>  <span class="c1"># Value becomes the return from interrupt()</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">output</span>
+</code></pre></div>
+<details class="accordion"><summary>完整示例</summary><div class="accordion-body"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">interrupt</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ReviewState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">generated_text</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">review_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ReviewState</span><span class="p">):</span>
+    <span class="c1"># Ask a reviewer to edit the generated content</span>
+    <span class="n">updated</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;instruction&quot;</span><span class="p">:</span> <span class="s2">&quot;Review and edit this content&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;generated_text&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;generated_text&quot;</span><span class="p">:</span> <span class="n">updated</span><span class="p">}</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">ReviewState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;review&quot;</span><span class="p">,</span> <span class="n">review_node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;review&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;review&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">MemorySaver</span><span class="p">()</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;review-42&quot;</span><span class="p">}}</span>
+<span class="n">initial</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;generated_text&quot;</span><span class="p">:</span> <span class="s2">&quot;Initial draft&quot;</span><span class="p">},</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span>
+<span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">initial</span><span class="o">.</span><span class="n">output</span>  <span class="c1"># drive the stream to completion</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">initial</span><span class="o">.</span><span class="n">interrupts</span><span class="p">)</span>  <span class="c1"># -&gt; (Interrupt(value={&#39;instruction&#39;: ..., &#39;content&#39;: ...}),)</span>
+
+<span class="c1"># Resume with the edited text from the reviewer</span>
+<span class="n">final_state</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="s2">&quot;Improved draft after review&quot;</span><span class="p">),</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">final_state</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;generated_text&quot;</span><span class="p">])</span>  <span class="c1"># -&gt; &quot;Improved draft after review&quot;</span>
+</code></pre></div>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="https://smith.langchain.com/public/0698f1a4-d39f-459b-be4c-1d189f830d06/r" target="_blank" rel="noreferrer">查看示例追踪</a></div><div class="card-body"><p>打开此示例对应的公开 LangSmith 运行记录。</p></div></div></div></div></details>
+<h3 id="工具中的中断">工具中的中断<a class="h-anchor" href="#工具中的中断" aria-label="本节链接">#</a></h3>
+<p>你也可以直接在工具函数内部放置中断。这样，工具在被调用时就会暂停以等待批准，并允许在执行工具调用之前对其进行人工审查与编辑。</p>
+<p>首先，定义一个使用 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 的工具：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">interrupt</span>
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">send_email</span><span class="p">(</span><span class="n">to</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Send an email to a recipient.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Pause before sending; payload surfaces on stream.interrupts when using event streaming</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">({</span>
+        <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;send_email&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="n">to</span><span class="p">,</span>
+        <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">,</span>
+        <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="n">body</span><span class="p">,</span>
+        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Approve sending this email?&quot;</span>
+    <span class="p">})</span>
+
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;approve&quot;</span><span class="p">:</span>
+        <span class="c1"># Resume value can override inputs before executing</span>
+        <span class="n">final_to</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="n">to</span><span class="p">)</span>
+        <span class="n">final_subject</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject&quot;</span><span class="p">,</span> <span class="n">subject</span><span class="p">)</span>
+        <span class="n">final_body</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Email sent to </span><span class="si">{</span><span class="n">final_to</span><span class="si">}</span><span class="s2"> with subject &#39;</span><span class="si">{</span><span class="n">final_subject</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;Email cancelled by user&quot;</span>
+</code></pre></div>
+<p>当你希望审批逻辑与工具本身放在一起，使其可在图的不同部分复用时，这种方式很有用。LLM 可以自然地调用该工具，而中断会在工具被调用时暂停执行，让你可以批准、编辑或取消该操作。</p>
+<details class="accordion"><summary>完整示例</summary><div class="accordion-body"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span><span class="p">,</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">Literal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_anthropic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatAnthropic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.sqlite</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqliteSaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">interrupt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyMessage</span><span class="p">,</span> <span class="n">SystemMessage</span><span class="p">,</span> <span class="n">ToolMessage</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AgentState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">messages</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AnyMessage</span><span class="p">],</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">]</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">send_email</span><span class="p">(</span><span class="n">to</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Send an email to a recipient.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Pause before sending; payload surfaces on stream.interrupts when using event streaming</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">({</span>
+        <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;send_email&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;to&quot;</span><span class="p">:</span> <span class="n">to</span><span class="p">,</span>
+        <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">,</span>
+        <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="n">body</span><span class="p">,</span>
+        <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Approve sending this email?&quot;</span><span class="p">,</span>
+    <span class="p">})</span>
+
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;approve&quot;</span><span class="p">:</span>
+        <span class="n">final_to</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="n">to</span><span class="p">)</span>
+        <span class="n">final_subject</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subject&quot;</span><span class="p">,</span> <span class="n">subject</span><span class="p">)</span>
+        <span class="n">final_body</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+
+        <span class="c1"># Actually send the email (your implementation here)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[send_email] to=</span><span class="si">{</span><span class="n">final_to</span><span class="si">}</span><span class="s2"> subject=</span><span class="si">{</span><span class="n">final_subject</span><span class="si">}</span><span class="s2"> body=</span><span class="si">{</span><span class="n">final_body</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Email sent to </span><span class="si">{</span><span class="n">final_to</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">return</span> <span class="s2">&quot;Email cancelled by user&quot;</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatAnthropic</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;claude-sonnet-4-6&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">bind_tools</span><span class="p">([</span><span class="n">send_email</span><span class="p">])</span>
+<span class="n">tools_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;send_email&quot;</span><span class="p">:</span> <span class="n">send_email</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">agent_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">AgentState</span><span class="p">):</span>
+    <span class="c1"># LLM may decide to call the tool; interrupt pauses before sending</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">result</span><span class="p">]}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">tool_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">AgentState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Performs the tool call&quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">tool_call</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+        <span class="n">tool</span> <span class="o">=</span> <span class="n">tools_by_name</span><span class="p">[</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span>
+        <span class="n">observation</span> <span class="o">=</span> <span class="n">tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">])</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ToolMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">observation</span><span class="p">,</span> <span class="n">tool_call_id</span><span class="o">=</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">should_continue</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">AgentState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decide if we should continue the loop or stop based upon whether the LLM made a tool call&quot;&quot;&quot;</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+    <span class="n">last_message</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">last_message</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;tool_node&quot;</span>
+    <span class="k">return</span> <span class="n">END</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">AgentState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;agent&quot;</span><span class="p">,</span> <span class="n">agent_node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="n">tool_node</span><span class="p">)</span>
+
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;agent&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span><span class="s2">&quot;agent&quot;</span><span class="p">,</span> <span class="n">should_continue</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">])</span>  <span class="c1"># Routes to &quot;tools&quot; or END</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="s2">&quot;agent&quot;</span><span class="p">)</span>  <span class="c1"># Loop back after tools</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">SqliteSaver</span><span class="p">(</span>
+    <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;tool-approval.db&quot;</span><span class="p">,</span> <span class="n">check_same_thread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;email-workflow&quot;</span><span class="p">}}</span>
+<span class="n">initial</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Send an email to alice@example.com about the meeting&quot;</span><span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">initial</span><span class="o">.</span><span class="n">output</span>  <span class="c1"># drive the stream to completion</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">initial</span><span class="o">.</span><span class="n">interrupts</span><span class="p">)</span>  <span class="c1"># -&gt; (Interrupt(value={&#39;action&#39;: &#39;send_email&#39;, ...}),)</span>
+
+<span class="c1"># Resume with approval and optionally edited arguments</span>
+<span class="n">resumed</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;approve&quot;</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="s2">&quot;Updated subject&quot;</span><span class="p">}),</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">resumed</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># -&gt; Tool result returned by send_email</span>
+</code></pre></div></div></details>
+<h3 id="校验人类输入">校验人类输入<a class="h-anchor" href="#校验人类输入" aria-label="本节链接">#</a></h3>
+<p>有时你需要校验来自人类的输入，并在值无效时重新提示。推荐的做法是<strong>每次节点调用只调用一次 <code>interrupt()</code></strong>，从节点返回并将错误消息存储在状态中，然后使用<strong>条件边</strong>循环回到该节点，直到提供有效的值。</p>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-icon">⚠</span><span>警告</span></div><div class="callout-body"><p><strong>避免在单个节点内使用 <code>while True</code> + <code>interrupt()</code> 循环。</strong> 因为节点在每次恢复时都会从头重新运行（参见<a href="#中断的规则">中断规则</a>），一个多次调用 <code>interrupt()</code> 的循环会导致每次恢复都重放之前的所有迭代：第一次恢复重放 1 次迭代，第二次重放 2 次，依此类推。</p></div></div>
+<p>正确的模式：</p>
+<ol><li>将重新提示的问题存储在状态中（例如 <code>pending_question</code>）。</li><li>在节点中<strong>恰好调用一次</strong> <code>interrupt()</code>，并传入状态中的当前问题。</li><li>如果答案无效，返回更新后的 <code>pending_question</code>，以便下次调用时重新提示。</li><li>使用 <code>add_conditional_edges</code> 路由回该节点，直到收集到有效的值。</li></ol>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">interrupt</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FormState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">pending_question</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_age_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">FormState</span><span class="p">):</span>
+    <span class="n">question</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pending_question&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;What is your age?&quot;</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="n">question</span><span class="p">)</span>  <span class="c1"># called exactly once per invocation</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">answer</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">answer</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="n">answer</span><span class="p">,</span> <span class="s2">&quot;pending_question&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;pending_question&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">answer</span><span class="si">}</span><span class="s2">&#39; is not a valid age. Please enter a positive number.&quot;</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">route</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">FormState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">END</span> <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;collect_age&quot;</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">FormState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;collect_age&quot;</span><span class="p">,</span> <span class="n">get_age_node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;collect_age&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span><span class="s2">&quot;collect_age&quot;</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
+</code></pre></div>
+<p>在这个示例中，无效的回答会使节点返回更新后的问题。在同一次图运行期间，条件边会再次调用该节点，而这次新的调用会在 <code>interrupt()</code> 处暂停。在后续恢复时，节点仍会从头开始重新执行，因此 <code>interrupt()</code> 之前的任何代码都会再次运行。参见<a href="#中断的规则">中断规则</a>。</p>
+<details class="accordion"><summary>完整示例</summary><div class="accordion-body"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">interrupt</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FormState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">pending_question</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_age_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">FormState</span><span class="p">):</span>
+    <span class="n">question</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pending_question&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;What is your age?&quot;</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="n">question</span><span class="p">)</span>  <span class="c1"># called exactly once per node invocation</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I got </span><span class="si">{</span><span class="n">answer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># runs exactly once per resume</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">answer</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">answer</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="n">answer</span><span class="p">,</span> <span class="s2">&quot;pending_question&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;pending_question&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">answer</span><span class="si">}</span><span class="s2">&#39; is not a valid age. Please enter a positive number.&quot;</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">route</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">FormState</span><span class="p">):</span>
+    <span class="c1"># Loop back to collect_age until we have a valid age</span>
+    <span class="k">return</span> <span class="n">END</span> <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;collect_age&quot;</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">FormState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;collect_age&quot;</span><span class="p">,</span> <span class="n">get_age_node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;collect_age&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span><span class="s2">&quot;collect_age&quot;</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;form-1&quot;</span><span class="p">}}</span>
+<span class="n">first</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span><span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;pending_question&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="n">output</span>  <span class="c1"># drive the stream to completion</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">first</span><span class="o">.</span><span class="n">interrupts</span><span class="p">)</span>  <span class="c1"># -&gt; (Interrupt(value=&#39;What is your age?&#39;, ...),)</span>
+
+<span class="c1"># Provide invalid data; the node re-prompts via the conditional edge</span>
+<span class="n">retry</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="s2">&quot;thirty&quot;</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">retry</span><span class="o">.</span><span class="n">output</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">retry</span><span class="o">.</span><span class="n">interrupts</span><span class="p">)</span>  <span class="c1"># -&gt; (Interrupt(value=&quot;&#39;thirty&#39; is not a valid age...&quot;, ...),)</span>
+
+<span class="c1"># Provide valid data; route() returns END and the graph finishes</span>
+<span class="n">final</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">final</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">])</span>  <span class="c1"># -&gt; 30</span>
+</code></pre></div></div></details>
+<h2 id="中断的规则">中断的规则<a class="h-anchor" href="#中断的规则" aria-label="本节链接">#</a></h2>
+<p>当你在节点内调用 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 时，LangGraph 会通过抛出一个异常来挂起执行，该异常会通知运行时暂停。这个异常会沿着调用栈向上传播并被运行时捕获，运行时随后通知图保存当前状态并等待外部输入。</p>
+<p>当执行恢复时（在你提供了所请求的输入之后），运行时会把整个节点从头重新启动——它不会从调用 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 的那一行继续。这意味着在 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 1 </a> 之前运行过的代码都会再次执行。因此，在使用中断时有一些重要规则需要遵循，以确保它们按预期表现。</p>
+<h3 id="不要在-tryexcept-中包裹-interrupt-调用">不要在 try/except 中包裹 <code>interrupt</code> 调用<a class="h-anchor" href="#不要在-tryexcept-中包裹-interrupt-调用" aria-label="本节链接">#</a></h3>
+<p><a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 在调用点暂停执行的方式是抛出一个特殊异常。如果你把 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 1 </a> 调用包裹在 try/except 块中，你就会捕获到这个异常，中断就不会被传回图。</p>
+<ul><li>✅ 把 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 调用与容易出错的代码分开</li><li>✅ 在 try/except 块中使用具体的异常类型</li></ul>
+<div class="tabs code-tabs" data-tabs data-group="code"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-0">Separating</button><button class="tab-btn" role="tab" data-target="code-1">Explicit</button></div><div class="tab-panels"><div class="tab-panel active" id="code-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ✅ Good: interrupting first, then handling</span>
+    <span class="c1"># error conditions separately</span>
+    <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;What&#39;s your name?&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fetch_data</span><span class="p">()</span>  <span class="c1"># This can fail</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">state</span>
+</code></pre></div></div><div class="tab-panel" id="code-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ✅ Good: catching specific exception types</span>
+    <span class="c1"># will not catch the interrupt exception</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;What&#39;s your name?&quot;</span><span class="p">)</span>
+        <span class="n">fetch_data</span><span class="p">()</span>  <span class="c1"># This can fail</span>
+    <span class="k">except</span> <span class="n">NetworkException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">state</span>
+</code></pre></div></div></div></div>
+<ul><li>🔴 不要把 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 调用包裹在裸露的 try/except 块中</li></ul>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ❌ Bad: wrapping interrupt in bare try/except</span>
+    <span class="c1"># will catch the interrupt exception</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;What&#39;s your name?&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">state</span>
+</code></pre></div>
+<h3 id="不要调整节点内-interrupt-调用的顺序">不要调整节点内 <code>interrupt</code> 调用的顺序<a class="h-anchor" href="#不要调整节点内-interrupt-调用的顺序" aria-label="本节链接">#</a></h3>
+<p>在单个节点中使用多个中断很常见，但如果处理不当，这可能导致意外的行为。</p>
+<p>当一个节点包含多个中断调用时，LangGraph 会为该节点所执行的任务保存一份专门的恢复值列表。每当执行恢复时，它都会从节点头部开始。对于遇到的每个中断，LangGraph 会检查任务的恢复列表中是否存在匹配的值。匹配是<strong>严格基于索引的</strong>，因此节点内中断调用的顺序很重要。</p>
+<ul><li>✅ 在节点的多次执行之间保持 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 调用一致</li></ul>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ✅ Good: interrupt calls happen in the same order every time</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;What&#39;s your name?&quot;</span><span class="p">)</span>
+    <span class="n">age</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;What&#39;s your age?&quot;</span><span class="p">)</span>
+    <span class="n">city</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;What&#39;s your city?&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="n">age</span><span class="p">,</span>
+        <span class="s2">&quot;city&quot;</span><span class="p">:</span> <span class="n">city</span>
+    <span class="p">}</span>
+</code></pre></div>
+<ul><li>🔴 不要在节点内有条件地跳过 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 调用</li><li>🔴 不要使用在多次执行之间不确定的逻辑来循环 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 调用，包括 <code>while True</code> 校验循环。请改用条件边（参见<a href="#校验人类输入">校验人类输入</a>）</li></ul>
+<div class="tabs code-tabs" data-tabs data-group="code-2"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-2-0">Skipping</button><button class="tab-btn" role="tab" data-target="code-2-1">Looping</button></div><div class="tab-panels"><div class="tab-panel active" id="code-2-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ❌ Bad: conditionally skipping interrupts changes the order</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;What&#39;s your name?&quot;</span><span class="p">)</span>
+
+    <span class="c1"># On first run, this might skip the interrupt</span>
+    <span class="c1"># On resume, it might not skip it - causing index mismatch</span>
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;needs_age&quot;</span><span class="p">):</span>
+        <span class="n">age</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;What&#39;s your age?&quot;</span><span class="p">)</span>
+
+    <span class="n">city</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;What&#39;s your city?&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;city&quot;</span><span class="p">:</span> <span class="n">city</span><span class="p">}</span>
+</code></pre></div></div><div class="tab-panel" id="code-2-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ❌ Bad: looping based on non-deterministic data</span>
+    <span class="c1"># The number of interrupts changes between executions</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dynamic_list&quot;</span><span class="p">,</span> <span class="p">[]):</span>  <span class="c1"># List might change between runs</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Approve </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">?&quot;</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">}</span>
+</code></pre></div></div></div></div>
+<h3 id="不要在-interrupt-调用中返回复杂值">不要在 <code>interrupt</code> 调用中返回复杂值<a class="h-anchor" href="#不要在-interrupt-调用中返回复杂值" aria-label="本节链接">#</a></h3>
+<p>取决于所使用的检查点存储，复杂值可能无法序列化（例如你无法序列化一个函数）。为了让你的图能够适配任何部署环境，最佳实践是只使用可以合理序列化的值。</p>
+<ul><li>✅ 向 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 传递简单的、可 JSON 序列化的类型</li><li>✅ 传递包含简单值的字典/对象</li></ul>
+<div class="tabs code-tabs" data-tabs data-group="code-3"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-3-0">Simple</button><button class="tab-btn" role="tab" data-target="code-3-1">Structured</button></div><div class="tab-panels"><div class="tab-panel active" id="code-3-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ✅ Good: passing simple types that are serializable</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;What&#39;s your name?&quot;</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">approved</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="n">count</span><span class="p">,</span> <span class="s2">&quot;approved&quot;</span><span class="p">:</span> <span class="n">approved</span><span class="p">}</span>
+</code></pre></div></div><div class="tab-panel" id="code-3-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ✅ Good: passing dictionaries with simple values</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">({</span>
+        <span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="s2">&quot;Enter user details&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;current_values&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="p">})</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">response</span><span class="p">}</span>
+</code></pre></div></div></div></div>
+<ul><li>🔴 不要向 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 传递函数、类实例或其他复杂对象</li></ul>
+<div class="tabs code-tabs" data-tabs data-group="code-4"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-4-0">Functions</button><button class="tab-btn" role="tab" data-target="code-4-1">Class</button></div><div class="tab-panels"><div class="tab-panel active" id="code-4-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">validate_input</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ❌ Bad: passing a function to interrupt</span>
+    <span class="c1"># The function cannot be serialized</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">({</span>
+        <span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="s2">&quot;What&#39;s your name?&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;validator&quot;</span><span class="p">:</span> <span class="n">validate_input</span>  <span class="c1"># This will fail</span>
+    <span class="p">})</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">response</span><span class="p">}</span>
+</code></pre></div></div><div class="tab-panel" id="code-4-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">class</span><span class="w"> </span><span class="nc">DataProcessor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="n">processor</span> <span class="o">=</span> <span class="n">DataProcessor</span><span class="p">({</span><span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;strict&quot;</span><span class="p">})</span>
+
+    <span class="c1"># ❌ Bad: passing a class instance to interrupt</span>
+    <span class="c1"># The instance cannot be serialized</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">({</span>
+        <span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="s2">&quot;Enter data to process&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;processor&quot;</span><span class="p">:</span> <span class="n">processor</span>  <span class="c1"># This will fail</span>
+    <span class="p">})</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">response</span><span class="p">}</span>
+</code></pre></div></div></div></div>
+<h3 id="在-interrupt-之前调用的副作用必须是幂等的">在 <code>interrupt</code> 之前调用的副作用必须是幂等的<a class="h-anchor" href="#在-interrupt-之前调用的副作用必须是幂等的" aria-label="本节链接">#</a></h3>
+<p>由于中断的工作方式是在调用它们的节点上重新运行，所以在 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 之前调用的副作用应当（最好是）幂等。作为背景，幂等意味着同一操作可以多次应用，而不会在首次执行之外改变结果。</p>
+<p>举个例子，你可能在节点内有一次用于更新记录的 API 调用。如果在这次调用之后调用了 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a>，那么当节点恢复时，该调用会被重新运行多次，可能会覆盖最初的更新或创建重复记录。</p>
+<ul><li>✅ 在 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 之前使用幂等操作</li><li>✅ 把副作用放在 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 调用之后</li><li>✅ 在可能的情况下把副作用拆分到独立的节点中</li></ul>
+<p>在下面这些审批后的示例中，副作用只在审批成功时才运行。如果节点在提交副作用之后、完成之前失败，重试该节点可能会重复该副作用。请使用幂等操作，或在外部系统中对写入去重。</p>
+<div class="tabs code-tabs" data-tabs data-group="code-5"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-5-0">Idempotent</button><button class="tab-btn" role="tab" data-target="code-5-1">Side</button><button class="tab-btn" role="tab" data-target="code-5-2">Separating</button></div><div class="tab-panels"><div class="tab-panel active" id="code-5-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ✅ Good: using upsert operation which is idempotent</span>
+    <span class="c1"># Running this multiple times will have the same result</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">upsert_user</span><span class="p">(</span>
+        <span class="n">user_id</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">],</span>
+        <span class="n">status</span><span class="o">=</span><span class="s2">&quot;pending_approval&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">approved</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;Approve this change?&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;approved&quot;</span><span class="p">:</span> <span class="n">approved</span><span class="p">}</span>
+</code></pre></div></div><div class="tab-panel" id="code-5-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ✅ Good: placing side effect after the interrupt</span>
+    <span class="c1"># Approval gates this side effect; retries still need idempotency</span>
+    <span class="n">approved</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;Approve this change?&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">approved</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">create_audit_log</span><span class="p">(</span>
+            <span class="n">user_id</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">],</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;approved&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;approved&quot;</span><span class="p">:</span> <span class="n">approved</span><span class="p">}</span>
+</code></pre></div></div><div class="tab-panel" id="code-5-2" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">approval_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ✅ Good: only handling the interrupt in this node</span>
+    <span class="n">approved</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;Approve this change?&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;approved&quot;</span><span class="p">:</span> <span class="n">approved</span><span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">notification_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ✅ Good: side effect happens in a separate node</span>
+    <span class="c1"># Approval gates this side effect; retries still need idempotency</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">approved</span><span class="p">):</span>
+        <span class="n">send_notification</span><span class="p">(</span>
+            <span class="n">user_id</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">],</span>
+            <span class="n">status</span><span class="o">=</span><span class="s2">&quot;approved&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">state</span>
+</code></pre></div></div></div></div>
+<ul><li>🔴 不要在 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 之前执行非幂等操作</li><li>🔴 不要在未检查记录是否存在的情况下创建新记录</li></ul>
+<div class="tabs code-tabs" data-tabs data-group="code-6"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-6-0">Creating</button><button class="tab-btn" role="tab" data-target="code-6-1">Appending</button></div><div class="tab-panels"><div class="tab-panel active" id="code-6-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ❌ Bad: creating a new record before interrupt</span>
+    <span class="c1"># This will create duplicate records on each resume</span>
+    <span class="n">audit_id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_audit_log</span><span class="p">({</span>
+        <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;pending_approval&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="p">})</span>
+
+    <span class="n">approved</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;Approve this change?&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;approved&quot;</span><span class="p">:</span> <span class="n">approved</span><span class="p">,</span> <span class="s2">&quot;audit_id&quot;</span><span class="p">:</span> <span class="n">audit_id</span><span class="p">}</span>
+</code></pre></div></div><div class="tab-panel" id="code-6-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># ❌ Bad: appending to a list before interrupt</span>
+    <span class="c1"># This will add duplicate entries on each resume</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">append_to_history</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">],</span> <span class="s2">&quot;approval_requested&quot;</span><span class="p">)</span>
+
+    <span class="n">approved</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;Approve this change?&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;approved&quot;</span><span class="p">:</span> <span class="n">approved</span><span class="p">}</span>
+</code></pre></div></div></div></div>
+<h2 id="以函数方式调用子图时的使用">以函数方式调用子图时的使用<a class="h-anchor" href="#以函数方式调用子图时的使用" aria-label="本节链接">#</a></h2>
+<p>在节点内调用子图时，父图会从调用子图并触发 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 的<strong>节点开头</strong>处恢复执行。同样，<strong>子图</strong>也会从调用 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 1 </a> 的节点开头处恢复执行。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node_in_parent_graph</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="n">some_code</span><span class="p">()</span>  <span class="c1"># &lt;-- This will re-execute when resumed</span>
+    <span class="c1"># Invoke a subgraph as a function.</span>
+    <span class="c1"># The subgraph contains an `interrupt` call.</span>
+    <span class="n">subgraph_result</span> <span class="o">=</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">some_input</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_in_subgraph</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="n">some_other_code</span><span class="p">()</span>  <span class="c1"># &lt;-- This will also re-execute when resumed</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;What&#39;s your name?&quot;</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+</code></pre></div>
+<h2 id="使用中断进行调试">使用中断进行调试<a class="h-anchor" href="#使用中断进行调试" aria-label="本节链接">#</a></h2>
+<p>为了调试和测试图，你可以将静态中断用作断点，从而逐个节点地步进执行图。静态中断会在节点执行之前或之后的指定位置触发。你可以在编译图时通过指定 <code>interrupt_before</code> 和 <code>interrupt_after</code> 来设置这些中断。</p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>静态中断<strong>不</strong>推荐用于人在回路工作流。请改用 <a href="https://reference.langchain.com/python/langgraph/types/interrupt" target="_blank" rel="noreferrer"> 0 </a> 函数。</p></div></div>
+<div class="tabs" data-tabs data-group="tabs"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" aria-selected="true" data-target="tabs-0">编译时</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-1">运行时</button></div><div class="tab-panels"><div class="tab-panel active" id="tabs-0" role="tabpanel"><span class="tab-anchor" id="编译时"></span><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+<span class="code-line hl">    <span class="n">interrupt_before</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;node_a&quot;</span><span class="p">],</span></span>
+<span class="code-line hl">    <span class="n">interrupt_after</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;node_b&quot;</span><span class="p">,</span> <span class="s2">&quot;node_c&quot;</span><span class="p">],</span></span>
+    <span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Pass a thread ID to the graph</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;some_thread&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># Run the graph until the breakpoint</span>
+<span class="code-line hl"><span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span></span>
+
+<span class="c1"># Resume the graph</span>
+<span class="code-line hl"><span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span></span>
+</code></pre></div>
+<ol><li>断点在 <code>compile</code> 期间设置。</li><li><code>interrupt_before</code> 指定在节点执行之前应暂停执行的节点。</li><li><code>interrupt_after</code> 指定在节点执行之后应暂停执行的节点。</li><li>需要检查点器才能启用断点。</li><li>图会运行至命中第一个断点为止。</li><li>通过为输入传入 <code>None</code> 来恢复图。这将运行图直到命中下一个断点。</li></ol></div><div class="tab-panel" id="tabs-1" role="tabpanel"><span class="tab-anchor" id="运行时"></span><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;some_thread&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># Run the graph until the breakpoint</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="p">,</span>
+<span class="code-line hl">    <span class="n">interrupt_before</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;node_a&quot;</span><span class="p">],</span></span>
+<span class="code-line hl">    <span class="n">interrupt_after</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;node_b&quot;</span><span class="p">,</span> <span class="s2">&quot;node_c&quot;</span><span class="p">],</span></span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Resume the graph</span>
+<span class="code-line hl"><span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span></span>
+</code></pre></div>
+<ol><li>调用 <code>graph.invoke</code> 时会传入 <code>interrupt_before</code> 和 <code>interrupt_after</code> 参数。这是运行时配置，每次调用都可以更改。</li><li><code>interrupt_before</code> 指定在节点执行之前应暂停执行的节点。</li><li><code>interrupt_after</code> 指定在节点执行之后应暂停执行的节点。</li><li>图会运行至命中第一个断点为止。</li><li>通过为输入传入 <code>None</code> 来恢复图。这将运行图直到命中下一个断点。</li></ol></div></div></div>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p>如需调试中断，请使用 <a href="https://docs.langchain.com/langsmith/observability" target="_blank" rel="noreferrer">LangSmith</a>。</p></div></div>
+<h3 id="使用-langsmith-studio">使用 LangSmith Studio<a class="h-anchor" href="#使用-langsmith-studio" aria-label="本节链接">#</a></h3>
+<p>你可以在运行图之前，使用 <a href="https://docs.langchain.com/langsmith/studio" target="_blank" rel="noreferrer">LangSmith Studio</a> 在 UI 中为图设置静态中断。你也可以使用该 UI 在执行过程中的任意时刻检查图状态。</p>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/dL5Sn6Cmy9pwtY0V/oss/images/static-interrupt.png?fit=max&amp;auto=format&amp;n=dL5Sn6Cmy9pwtY0V&amp;q=85&amp;s=5aa4e7cea2ab147cef5b4e210dd6c4a1" alt="image" loading="lazy" class="md-img"></p>
+<hr class="rule">
+<p>通过 MCP 将<a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">这些文档</a>连接到你所选择的智能体，以获取实时答案。</p>
+<p>在 GitHub 上<a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/interrupts.mdx" target="_blank" rel="noreferrer">编辑此页面</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="streaming.html"><span class="lbl">上一页</span><span class="ttl">流式输出</span></a><a class="next" href="use-time-travel.html"><span class="lbl">下一页</span><span class="ttl">时间旅行</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#使用-interrupt-暂停">使用 `interrupt` 暂停</a></li><li class="lvl-2"><a href="#恢复中断">恢复中断</a></li><li class="lvl-2"><a href="#定义中断响应-schema">定义中断响应 Schema</a></li><li class="lvl-2"><a href="#常见模式">常见模式</a></li><li class="lvl-3"><a href="#使用人在回路hitl中断进行流式输出">使用人在回路（HITL）中断进行流式输出</a></li><li class="lvl-3"><a href="#处理多个中断">处理多个中断</a></li><li class="lvl-3"><a href="#批准或拒绝">批准或拒绝</a></li><li class="lvl-3"><a href="#审核并编辑状态">审核并编辑状态</a></li><li class="lvl-3"><a href="#工具中的中断">工具中的中断</a></li><li class="lvl-3"><a href="#校验人类输入">校验人类输入</a></li><li class="lvl-2"><a href="#中断的规则">中断的规则</a></li><li class="lvl-3"><a href="#不要在-tryexcept-中包裹-interrupt-调用">不要在 try/except 中包裹 `interrupt` 调用</a></li><li class="lvl-3"><a href="#不要调整节点内-interrupt-调用的顺序">不要调整节点内 `interrupt` 调用的顺序</a></li><li class="lvl-3"><a href="#不要在-interrupt-调用中返回复杂值">不要在 `interrupt` 调用中返回复杂值</a></li><li class="lvl-3"><a href="#在-interrupt-之前调用的副作用必须是幂等的">在 `interrupt` 之前调用的副作用必须是幂等的</a></li><li class="lvl-2"><a href="#以函数方式调用子图时的使用">以函数方式调用子图时的使用</a></li><li class="lvl-2"><a href="#使用中断进行调试">使用中断进行调试</a></li><li class="lvl-3"><a href="#使用-langsmith-studio">使用 LangSmith Studio</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

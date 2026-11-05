@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>使用 Functional API 添加记忆 · LangGraph 中文文档</title>
+<meta name="description" content="在 Functional API 工作流中使用短期检查点和长期存储记忆。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link active" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/functional-api-memory" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>使用 Functional API 构建</span><span class="sep">/</span><span>使用 Functional API 添加记忆</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">使用 Functional API 构建</span>
+          <h1>使用 Functional API 添加记忆</h1>
+          <p class="page-desc">在 Functional API 工作流中使用短期检查点和长期存储记忆。</p>
+        </div>
+        <div class="doc-body"><p>为 Functional API <a href="functional-api.html#entrypoint">入口点</a>添加记忆，需要配置<a href="persistence.html">检查点</a>，还可以选择配置<a href="stores.html">存储</a>。检查点会在同一 <code>thread_id</code> 的多次调用之间持久化状态。存储则会跨线程 ID 持久化事实。</p>
+<p>概念说明请参阅 <a href="functional-api.html">Functional API 概览</a>。Graph API 的记忆实现方案请参阅 <a href="add-memory.html">Memory</a>。</p>
+<h2 id="在线程上保存状态">在线程上保存状态<a class="h-anchor" href="#在线程上保存状态" aria-label="本节链接">#</a></h2>
+<p>在创建入口点时传入检查点。使用 <code>thread_id</code> 标识每次运行。</p>
+<p>添加一个仅限关键字的 <code>previous</code> 参数。LangGraph 会将其设置为该线程上最后保存的值。首次运行时它为 <code>None</code>。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">accumulate</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">previous</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="n">previous</span> <span class="o">=</span> <span class="n">previous</span> <span class="ow">or</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">previous</span> <span class="o">+</span> <span class="n">n</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">accumulate</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">config</span><span class="p">))</span>  <span class="c1"># 1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">accumulate</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">config</span><span class="p">))</span>  <span class="c1"># 3</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">accumulate</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">config</span><span class="p">))</span>  <span class="c1"># 6</span>
+</code></pre></div>
+<h2 id="返回不同的已保存值">返回不同的已保存值<a class="h-anchor" href="#返回不同的已保存值" aria-label="本节链接">#</a></h2>
+<p>当调用方应收到一个值、而下一次运行应读取另一个值时，请使用 <a href="https://reference.langchain.com/python/langgraph/func/entrypoint/final" target="_blank" rel="noreferrer"> 0 </a>。<code>value</code> 会返回给调用方。</p>
+<p><code>save</code> 则是下一次 <code>previous</code> 读取时看到的内容。</p>
+<p>例如，返回状态或摘要，并保存完整的内部状态。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">accumulate</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">previous</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">entrypoint</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="n">previous</span> <span class="o">=</span> <span class="n">previous</span> <span class="ow">or</span> <span class="mi">0</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">previous</span> <span class="o">+</span> <span class="n">n</span>
+    <span class="c1"># Return the *previous* value to the caller but save the *new* total.</span>
+    <span class="k">return</span> <span class="n">entrypoint</span><span class="o">.</span><span class="n">final</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">previous</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="n">total</span><span class="p">)</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;my-thread&quot;</span><span class="p">}}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">accumulate</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">))</span>  <span class="c1"># 0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">accumulate</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">))</span>  <span class="c1"># 1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">accumulate</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">))</span>  <span class="c1"># 3</span>
+</code></pre></div>
+<h2 id="检查检查点">检查检查点<a class="h-anchor" href="#检查检查点" aria-label="本节链接">#</a></h2>
+<p>查看或删除 <a href="#返回不同的已保存值">返回不同的已保存值</a> 中 <code>accumulate</code> 工作流的检查点。<code>values</code> 是已保存的检查点（<code>save</code>），而不是返回给调用方的值。</p>
+<h3 id="查看线程状态">查看线程状态<a class="h-anchor" href="#查看线程状态" aria-label="本节链接">#</a></h3>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="code-line hl">        <span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;my-thread&quot;</span><span class="p">,</span></span>
+        <span class="c1"># optionally provide an ID for a specific checkpoint,</span>
+        <span class="c1"># otherwise the latest checkpoint is shown</span>
+<span class="code-line hl">        <span class="c1"># &quot;checkpoint_id&quot;: &quot;1f1c1826-2179-626c-8004-96dc43069e17&quot;</span></span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="code-line hl"><span class="nb">print</span><span class="p">(</span><span class="n">accumulate</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">config</span><span class="p">))</span></span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">StateSnapshot(
+    values=3,
+    next=(),
+    config={'configurable': {'thread_id': 'my-thread', 'checkpoint_ns': '', 'checkpoint_id': '1f1c1826-2179-626c-8004-96dc43069e17'}},
+    metadata={'source': 'loop', 'step': 4, 'parents': {}},
+    created_at='2026-10-06T12:35:16.081724+00:00',
+    parent_config={'configurable': {'thread_id': 'my-thread', 'checkpoint_ns': '', 'checkpoint_id': '1f1c1826-2178-6682-8003-feda9f2ec8db'}},
+    tasks=(),
+    interrupts=()
+)</code></pre></div>
+<h3 id="查看线程历史">查看线程历史<a class="h-anchor" href="#查看线程历史" aria-label="本节链接">#</a></h3>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="code-line hl"><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;my-thread&quot;</span><span class="p">}}</span></span>
+<span class="code-line hl"><span class="n">history</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">accumulate</span><span class="o">.</span><span class="n">get_state_history</span><span class="p">(</span><span class="n">config</span><span class="p">))</span></span>
+<span class="nb">print</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">StateSnapshot(
+    values=3,
+    next=(),
+    config={'configurable': {'thread_id': 'my-thread', 'checkpoint_ns': '', 'checkpoint_id': '1f1c1826-2179-626c-8004-96dc43069e17'}},
+    metadata={'source': 'loop', 'step': 4, 'parents': {}},
+    created_at='2026-10-06T12:35:16.081724+00:00',
+    parent_config={'configurable': {'thread_id': 'my-thread', 'checkpoint_ns': '', 'checkpoint_id': '1f1c1826-2178-6682-8003-feda9f2ec8db'}},
+    tasks=(),
+    interrupts=()
+)
+# ... earlier snapshots, including values=1, values=0, and values=None</code></pre></div>
+<h3 id="删除某个线程的检查点">删除某个线程的检查点<a class="h-anchor" href="#删除某个线程的检查点" aria-label="本节链接">#</a></h3>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">checkpointer</span><span class="o">.</span><span class="n">delete_thread</span><span class="p">(</span><span class="s2">&quot;my-thread&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">accumulate</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
+<span class="c1"># StateSnapshot(values={}, next=(), config={&#39;configurable&#39;: {&#39;thread_id&#39;: &#39;my-thread&#39;}}, ...)</span>
+</code></pre></div>
+<h2 id="使用检查点构建聊天机器人">使用检查点构建聊天机器人<a class="h-anchor" href="#使用检查点构建聊天机器人" aria-label="本节链接">#</a></h2>
+<p>让对话保持在同一个线程上。将模型消息返回给调用方，并使用 <code>entrypoint.final</code> 保存完整列表以供下一轮使用。</p>
+<div class="tabs code-tabs" data-tabs data-group="code"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-0">Google</button><button class="tab-btn" role="tab" data-target="code-1">OpenAI</button><button class="tab-btn" role="tab" data-target="code-2">Anthropic</button><button class="tab-btn" role="tab" data-target="code-3">OpenRouter</button><button class="tab-btn" role="tab" data-target="code-4">Fireworks</button><button class="tab-btn" role="tab" data-target="code-5">Baseten</button><button class="tab-btn" role="tab" data-target="code-6">Ollama</button></div><div class="tab-panels"><div class="tab-panel active" id="code-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_anthropic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatAnthropic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_messages</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatAnthropic</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;google_genai:gemini-3.6-flash&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_model</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">previous</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">previous</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">call_model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">entrypoint</span><span class="o">.</span><span class="n">final</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">response</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="n">add_messages</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">response</span><span class="p">))</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;hi! I&#39;m bob&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage with a greeting that uses the name Bob</span>
+
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;what&#39;s my name?&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage that answers &quot;Bob&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_anthropic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatAnthropic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_messages</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatAnthropic</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;openai:gpt-5.5&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_model</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">previous</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">previous</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">call_model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">entrypoint</span><span class="o">.</span><span class="n">final</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">response</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="n">add_messages</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">response</span><span class="p">))</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;hi! I&#39;m bob&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage with a greeting that uses the name Bob</span>
+
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;what&#39;s my name?&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage that answers &quot;Bob&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-2" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_anthropic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatAnthropic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_messages</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatAnthropic</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;anthropic:claude-sonnet-4-6&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_model</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">previous</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">previous</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">call_model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">entrypoint</span><span class="o">.</span><span class="n">final</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">response</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="n">add_messages</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">response</span><span class="p">))</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;hi! I&#39;m bob&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage with a greeting that uses the name Bob</span>
+
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;what&#39;s my name?&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage that answers &quot;Bob&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-3" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_anthropic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatAnthropic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_messages</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatAnthropic</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;openrouter:z-ai/glm-5.2&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_model</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">previous</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">previous</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">call_model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">entrypoint</span><span class="o">.</span><span class="n">final</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">response</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="n">add_messages</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">response</span><span class="p">))</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;hi! I&#39;m bob&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage with a greeting that uses the name Bob</span>
+
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;what&#39;s my name?&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage that answers &quot;Bob&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-4" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_anthropic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatAnthropic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_messages</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatAnthropic</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;fireworks:accounts/fireworks/models/glm-5p2&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_model</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">previous</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">previous</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">call_model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">entrypoint</span><span class="o">.</span><span class="n">final</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">response</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="n">add_messages</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">response</span><span class="p">))</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;hi! I&#39;m bob&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage with a greeting that uses the name Bob</span>
+
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;what&#39;s my name?&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage that answers &quot;Bob&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-5" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_anthropic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatAnthropic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_messages</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatAnthropic</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;baseten:zai-org/GLM-5.2&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_model</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">previous</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">previous</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">call_model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">entrypoint</span><span class="o">.</span><span class="n">final</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">response</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="n">add_messages</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">response</span><span class="p">))</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;hi! I&#39;m bob&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage with a greeting that uses the name Bob</span>
+
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;what&#39;s my name?&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage that answers &quot;Bob&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-6" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_anthropic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatAnthropic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_messages</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatAnthropic</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;ollama:north-mini-code-1.0&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_model</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">previous</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">previous</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">call_model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">entrypoint</span><span class="o">.</span><span class="n">final</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">response</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="n">add_messages</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">response</span><span class="p">))</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;hi! I&#39;m bob&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage with a greeting that uses the name Bob</span>
+
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;what&#39;s my name?&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">input_message</span><span class="p">],</span> <span class="n">config</span><span class="p">))</span>
+<span class="c1"># -&gt; AIMessage that answers &quot;Bob&quot;</span>
+</code></pre></div></div></div></div>
+<h2 id="跨线程保存事实">跨线程保存事实<a class="h-anchor" href="#跨线程保存事实" aria-label="本节链接">#</a></h2>
+<p><a href="https://docs.langchain.com/oss/python/concepts/memory#long-term-memory" target="_blank" rel="noreferrer">长期记忆</a>存放在<a href="stores.html">存储</a>中，而不是检查点中。在一个 <code>thread_id</code> 上保存事实，在另一个 <code>thread_id</code> 上读取它。</p>
+<p>在装饰入口点时传入 <a href="https://reference.langchain.com/python/langchain-core/stores/InMemoryStore" target="_blank" rel="noreferrer"> 0 </a>。通过 <code>runtime.store</code> 读取它。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">Runtime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.store.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemoryStore</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+<span class="n">store</span> <span class="o">=</span> <span class="n">InMemoryStore</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="n">store</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">remember</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">runtime</span><span class="p">:</span> <span class="n">Runtime</span><span class="p">):</span>
+    <span class="n">memory_store</span> <span class="o">=</span> <span class="n">runtime</span><span class="o">.</span><span class="n">store</span>
+    <span class="n">namespace</span> <span class="o">=</span> <span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">],</span> <span class="s2">&quot;memories&quot;</span><span class="p">)</span>
+    <span class="n">fact</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fact&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fact</span><span class="p">:</span>
+        <span class="n">memory_store</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">namespace</span><span class="p">,</span> <span class="s2">&quot;profile&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;fact&quot;</span><span class="p">:</span> <span class="n">fact</span><span class="p">})</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="n">memory_store</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
+
+
+<span class="n">config_a</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;thread-a&quot;</span><span class="p">}}</span>
+<span class="n">config_b</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;thread-b&quot;</span><span class="p">}}</span>
+
+<span class="n">remember</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="s2">&quot;user-1&quot;</span><span class="p">,</span> <span class="s2">&quot;fact&quot;</span><span class="p">:</span> <span class="s2">&quot;Prefers dark mode&quot;</span><span class="p">},</span>
+    <span class="n">config_a</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">remember</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="s2">&quot;user-1&quot;</span><span class="p">},</span> <span class="n">config_b</span><span class="p">))</span>
+<span class="c1"># -&gt; [{&#39;fact&#39;: &#39;Prefers dark mode&#39;}]</span>
+</code></pre></div>
+<h2 id="另请参阅">另请参阅<a class="h-anchor" href="#另请参阅" aria-label="本节链接">#</a></h2>
+<ul><li><a href="functional-api.html">Functional API 概览</a></li><li><a href="use-functional-api.html">Functional API 构建清单</a></li><li><a href="add-memory.html">记忆</a></li><li><a href="persistence.html">持久化</a></li><li><a href="stores.html">存储</a></li><li><a href="functional-api-human-in-the-loop.html">使用 Functional API 添加人在回路</a></li></ul>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档</a>通过 MCP 连接到你所选择的智能体，以获得实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/functional-api-memory.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="functional-api-human-in-the-loop.html"><span class="lbl">上一页</span><span class="ttl">人在回路</span></a><a class="next" href="local-server.html"><span class="lbl">下一页</span><span class="ttl">本地服务器</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#在线程上保存状态">在线程上保存状态</a></li><li class="lvl-2"><a href="#返回不同的已保存值">返回不同的已保存值</a></li><li class="lvl-2"><a href="#检查检查点">检查检查点</a></li><li class="lvl-3"><a href="#查看线程状态">查看线程状态</a></li><li class="lvl-3"><a href="#查看线程历史">查看线程历史</a></li><li class="lvl-3"><a href="#删除某个线程的检查点">删除某个线程的检查点</a></li><li class="lvl-2"><a href="#使用检查点构建聊天机器人">使用检查点构建聊天机器人</a></li><li class="lvl-2"><a href="#跨线程保存事实">跨线程保存事实</a></li><li class="lvl-2"><a href="#另请参阅">另请参阅</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

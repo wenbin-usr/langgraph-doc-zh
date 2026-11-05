@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>配置 Functional API 任务 · LangGraph 中文文档</title>
+<meta name="description" content="为 Functional API 的任务和入口点添加重试、超时、缓存和错误恢复。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link active" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/functional-api-tasks" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>使用 Functional API 构建</span><span class="sep">/</span><span>配置 Functional API 任务</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">使用 Functional API 构建</span>
+          <h1>配置 Functional API 任务</h1>
+          <p class="page-desc">为 Functional API 的任务和入口点添加重试、超时、缓存和错误恢复。</p>
+        </div>
+        <div class="doc-body"><p><a href="functional-api.html#task">任务</a>是一个独立的工作单元，其结果可以被单独<a href="persistence.html">检查点</a>保存。当<a href="functional-api.html#entrypoint">入口点</a>或 <a href="graph-api.html#using-tasks-in-nodes">Graph API 节点</a>执行多个操作时，应把每个操作都包裹在任务中，而不是把所有工作都放在一个函数体里。配合检查点保存器，已完成的任务结果会被保存，因此恢复的线程可以跳过已完成的工作，从下一个任务继续。</p>
+<p>本页介绍任务的重试、超时、缓存和错误恢复。概念部分请参阅 <a href="functional-api.html">Functional API 概览</a>。按顺序的构建路径请参阅 <a href="use-functional-api.html">Functional API 构建清单</a>。共享的重试与超时生命周期请参阅<a href="fault-tolerance.html">容错</a>。</p>
+<h2 id="添加重试策略">添加重试策略<a class="h-anchor" href="#添加重试策略" aria-label="本节链接">#</a></h2>
+<p>在 <code>@task</code> 上传入 <code>retry_policy</code>。默认的 <code>RetryPolicy</code> 会对选定的网络错误和 HTTP 5xx 错误进行重试，但不会重试 <code>ValueError</code>。本示例对 <code>ValueError</code> 进行重试。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryPolicy</span>
+
+<span class="c1"># Used only to simulate a transient failure. Do not use a global like this in production.</span>
+<span class="n">attempts</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">retry_policy</span> <span class="o">=</span> <span class="n">RetryPolicy</span><span class="p">(</span><span class="n">retry_on</span><span class="o">=</span><span class="ne">ValueError</span><span class="p">)</span>
+
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">retry_policy</span><span class="o">=</span><span class="n">retry_policy</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_info</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">attempts</span>
+    <span class="n">attempts</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">attempts</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failure&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;OK&quot;</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">get_info</span><span class="p">()</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">main</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;any_input&quot;</span><span class="p">:</span> <span class="s2">&quot;foobar&quot;</span><span class="p">}))</span>
+<span class="c1"># &#39;OK&#39;</span>
+</code></pre></div>
+<h2 id="设置超时">设置超时<a class="h-anchor" href="#设置超时" aria-label="本节链接">#</a></h2>
+<p>限制单次异步尝试可以运行多长时间。如果重试策略会重试该超时错误，则计时器在下一次尝试时重置。</p>
+<p>在 <code>@task</code> 或 <code>@entrypoint</code> 上以秒为单位或使用 <code>datetime.timedelta</code> 传入 <code>timeout</code>。超时仅适用于异步任务和入口点。在同步函数上设置 <code>timeout</code> 会在声明时引发错误。</p>
+<p>第一次尝试的休眠时间超过了超时限制，并引发 <a href="https://reference.langchain.com/python/langgraph/errors/NodeTimeoutError" target="_blank" rel="noreferrer"> 0 </a>，它是 <code>TimeoutError</code> 的子类。重试策略会重试该错误。第二次尝试立即返回。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NodeTimeoutError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryPolicy</span>
+
+<span class="n">attempts</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<span class="nd">@task</span><span class="p">(</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">retry_policy</span><span class="o">=</span><span class="n">RetryPolicy</span><span class="p">(</span><span class="n">retry_on</span><span class="o">=</span><span class="n">NodeTimeoutError</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">call_api</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">global</span> <span class="n">attempts</span>
+    <span class="n">attempts</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">attempts</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;result from </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">call_api</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">])</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">ainvoke</span><span class="p">({</span><span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://example.com&quot;</span><span class="p">})))</span>
+<span class="c1"># &#39;result from https://example.com&#39;</span>
+</code></pre></div>
+<h2 id="缓存任务">缓存任务<a class="h-anchor" href="#缓存任务" aria-label="本节链接">#</a></h2>
+<p>按输入缓存任务结果。在<a href="functional-api.html#entrypoint">入口点</a>上传入缓存，在任务上传入策略。<code>ttl</code> 以秒为单位。第二次调用命中缓存，因此本次运行大约耗时 1 秒，而不是 2 秒。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.cache.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemoryCache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">CachePolicy</span>
+
+
+<span class="code-line hl"><span class="nd">@task</span><span class="p">(</span><span class="n">cache_policy</span><span class="o">=</span><span class="n">CachePolicy</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">120</span><span class="p">))</span></span>
+<span class="k">def</span><span class="w"> </span><span class="nf">slow_add</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="n">InMemoryCache</span><span class="p">())</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="n">result1</span> <span class="o">=</span> <span class="n">slow_add</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="n">result2</span> <span class="o">=</span> <span class="n">slow_add</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;result1&quot;</span><span class="p">:</span> <span class="n">result1</span><span class="p">,</span> <span class="s2">&quot;result2&quot;</span><span class="p">:</span> <span class="n">result2</span><span class="p">}</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">main</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}))</span>
+<span class="c1"># {&#39;result1&#39;: 10, &#39;result2&#39;: 10}</span>
+</code></pre></div>
+<h2 id="出错后恢复">出错后恢复<a class="h-anchor" href="#出错后恢复" aria-label="本节链接">#</a></h2>
+<p>需要<a href="persistence.html">检查点保存器</a>，以便已完成的任务结果能在运行失败后保留下来。</p>
+<p>恢复会从入口点的开头开始。LangGraph 会从检查点恢复已完成 <code>slow_task</code> 的结果，因此其函数体不会再次运行。失败的 <code>get_info</code> 任务会再次运行并返回 <code>"OK"</code>。下面的执行日志区分了入口点的重新进入与任务的重新执行。</p>
+<p>用 <code>None</code> 恢复同一个 <code>thread_id</code>。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="c1"># Used only to simulate a transient failure. Do not use a global like this in production.</span>
+<span class="n">attempts</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">called</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="nd">@task</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_info</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">attempts</span>
+    <span class="n">called</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;get_info&quot;</span><span class="p">)</span>
+    <span class="n">attempts</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">attempts</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failure&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;OK&quot;</span>
+
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">slow_task</span><span class="p">():</span>
+    <span class="n">called</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;slow_task&quot;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;Ran slow task.&quot;</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
+    <span class="n">called</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;entrypoint&quot;</span><span class="p">)</span>
+    <span class="n">slow_task_result</span> <span class="o">=</span> <span class="n">slow_task</span><span class="p">()</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="n">get_info</span><span class="p">()</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>  <span class="c1"># raises ValueError on the first run</span>
+    <span class="k">return</span> <span class="n">slow_task_result</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">main</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;any_input&quot;</span><span class="p">:</span> <span class="s2">&quot;foobar&quot;</span><span class="p">},</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="k">assert</span> <span class="n">called</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;entrypoint&quot;</span><span class="p">,</span> <span class="s2">&quot;slow_task&quot;</span><span class="p">,</span> <span class="s2">&quot;get_info&quot;</span><span class="p">]</span>
+<span class="n">called</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">main</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">))</span>
+<span class="c1"># &#39;Ran slow task.&#39;</span>
+<span class="k">assert</span> <span class="n">called</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;entrypoint&quot;</span><span class="p">,</span> <span class="s2">&quot;get_info&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">called</span><span class="p">)</span>
+<span class="c1"># [&#39;entrypoint&#39;, &#39;get_info&#39;]</span>
+</code></pre></div>
+<p>再次传入原始输入会启动一次新的调用，而不是恢复失败的那次调用。请参阅<a href="checkpointers.html#choose-how-to-continue-a-thread">选择如何继续线程</a>。</p>
+<p>恢复会还原已完成任务的结果，但不会选择性地重新运行某个已完成的任务。Functional API 的任务结果共享入口点的检查点，而不是在每个任务之前创建完整的检查点。若要从图中特定的步骤回放，请使用 Graph API 的<a href="use-time-travel.html">时间旅行</a>。</p>
+<h2 id="另请参阅">另请参阅<a class="h-anchor" href="#另请参阅" aria-label="本节链接">#</a></h2>
+<ul><li><a href="functional-api.html">Functional API 概览</a></li><li><a href="use-functional-api.html">Functional API 构建清单</a></li><li><a href="fault-tolerance.html">容错</a></li><li><a href="functional-api-streaming.html">使用 Functional API 进行流式输出</a></li><li><a href="functional-api-memory.html">使用 Functional API 添加记忆</a></li></ul>
+<hr class="rule">
+<p>通过 MCP 将<a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">这些文档</a>连接到你所选的智能体，以获取实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/functional-api-tasks.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="functional-api-workflows.html"><span class="lbl">上一页</span><span class="ttl">工作流</span></a><a class="next" href="functional-api-streaming.html"><span class="lbl">下一页</span><span class="ttl">流式输出</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#添加重试策略">添加重试策略</a></li><li class="lvl-2"><a href="#设置超时">设置超时</a></li><li class="lvl-2"><a href="#缓存任务">缓存任务</a></li><li class="lvl-2"><a href="#出错后恢复">出错后恢复</a></li><li class="lvl-2"><a href="#另请参阅">另请参阅</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>使用 Functional API 进行流式输出 · LangGraph 中文文档</title>
+<meta name="description" content="从 Functional API 入口点发出自定义进度，或从 values 流中读取状态快照。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link active" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/functional-api-streaming" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>使用 Functional API 构建</span><span class="sep">/</span><span>使用 Functional API 进行流式输出</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">使用 Functional API 构建</span>
+          <h1>使用 Functional API 进行流式输出</h1>
+          <p class="page-desc">从 Functional API 入口点发出自定义进度，或从 values 流中读取状态快照。</p>
+        </div>
+        <div class="doc-body"><p>有两种方式可以从 Functional API 的<a href="functional-api.html#entrypoint">入口点</a>进行流式输出。自定义数据是一条旁路通道：你用 writer 推送进度，然后读取 <code>custom</code> 数据块。values 是运行时记录的状态快照，包括入口点的返回值。对于 values，你无需调用 writer。</p>
+<p>关于概念，请参阅 <a href="functional-api.html">Functional API 概览</a>。关于消息及其他类型化投影，请参阅<a href="event-streaming.html">事件流式输出</a>。</p>
+<h2 id="发出自定义数据">发出自定义数据<a class="h-anchor" href="#发出自定义数据" aria-label="本节链接">#</a></h2>
+<p>Functional API 使用与 <a href="graph-api.html">Graph API</a> 相同的流。用 writer 发出数据，然后消费 <code>custom</code> 数据块。关于流模式，请参阅<a href="streaming.html">流式输出</a>。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.utils.uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid7</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_stream_writer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="n">get_stream_writer</span><span class="p">()</span>
+    <span class="n">writer</span><span class="p">(</span><span class="s2">&quot;Started processing&quot;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="n">writer</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result is </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid7</span><span class="p">())}}</span>
+
+<span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">main</span><span class="o">.</span><span class="n">stream</span><span class="p">({</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">config</span><span class="p">,</span> <span class="n">stream_mode</span><span class="o">=</span><span class="s2">&quot;custom&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+<span class="c1"># Started processing</span>
+<span class="c1"># Result is 10</span>
+</code></pre></div>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="https://smith.langchain.com/public/39b6ad85-7072-4290-8ae4-3f0f76c9c28a/r" target="_blank" rel="noreferrer">查看示例 trace</a></div><div class="card-body"><p>打开此示例对应的公开 LangSmith 运行记录。</p></div></div></div>
+<ol><li>从 <code>langgraph.config</code> 导入 <a href="https://reference.langchain.com/python/langgraph/config/get_stream_writer" target="_blank" rel="noreferrer"> 1 </a>。</li><li>在入口点内部调用它，以获得一个 writer。</li><li>在计算前后发出自定义数据。</li><li>调用 <code>stream(..., stream_mode="custom")</code> 并迭代数据块。</li></ol>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-icon">⚠</span><span>警告</span></div><div class="callout-body"><p><strong>Python \&lt; 3.11 下的异步</strong> 在 Python \&lt; 3.11 的异步代码中，<a href="https://reference.langchain.com/python/langgraph/config/get_stream_writer" target="_blank" rel="noreferrer"> 0 </a> 无法使用。请改用可注入的 <code>StreamWriter</code> 参数。请参阅 <a href="streaming.html#async">Python \&lt; 3.11 下的异步</a>。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamWriter</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="code-line hl"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">writer</span><span class="p">:</span> <span class="n">StreamWriter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span></span>
+    <span class="n">writer</span><span class="p">(</span><span class="s2">&quot;Started processing&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+</code></pre></div></div></div>
+<h2 id="流式输出-values">流式输出 values<a class="h-anchor" href="#流式输出-values" aria-label="本节链接">#</a></h2>
+<p>复用<a href="#发出自定义数据">发出自定义数据</a>中的 <code>main</code> 入口点。迭代 <code>stream.values</code> 以获取状态快照。关于消息及其他投影，请参阅<a href="event-streaming.html">事件流式输出</a>。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">values_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid7</span><span class="p">())}}</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">main</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">config</span><span class="o">=</span><span class="n">values_config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">snapshot</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
+<span class="c1"># 10</span>
+</code></pre></div>
+<h2 id="另请参阅">另请参阅<a class="h-anchor" href="#另请参阅" aria-label="本节链接">#</a></h2>
+<ul><li><a href="functional-api.html">Functional API 概览</a></li><li><a href="use-functional-api.html">Functional API 构建清单</a></li><li><a href="event-streaming.html">事件流式输出</a></li><li><a href="streaming.html">流式输出</a></li><li><a href="functional-api-human-in-the-loop.html">使用 Functional API 添加人在回路</a></li></ul>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档连接</a>到你所选的智能体，通过 MCP 获取实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/functional-api-streaming.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="functional-api-tasks.html"><span class="lbl">上一页</span><span class="ttl">任务</span></a><a class="next" href="functional-api-human-in-the-loop.html"><span class="lbl">下一页</span><span class="ttl">人在回路</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#发出自定义数据">发出自定义数据</a></li><li class="lvl-2"><a href="#流式输出-values">流式输出 values</a></li><li class="lvl-2"><a href="#另请参阅">另请参阅</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

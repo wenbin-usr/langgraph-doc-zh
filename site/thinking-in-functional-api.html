@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>使用 Functional API 进行思考 · LangGraph 中文文档</title>
+<meta name="description" content="学习如何使用入口点、任务和普通控制流，通过 LangGraph Functional API 设计智能体。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link active" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/thinking-in-functional-api" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>使用 Functional API 构建</span><span class="sep">/</span><span>使用 Functional API 进行思考</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">使用 Functional API 构建</span>
+          <h1>使用 Functional API 进行思考</h1>
+          <p class="page-desc">学习如何使用入口点、任务和普通控制流，通过 LangGraph Functional API 设计智能体。</p>
+        </div>
+        <div class="doc-body"><p>当你使用<a href="functional-api.html">Functional API</a> 构建智能体时，你会把流程拆分为称为<strong>任务</strong>的离散工作单元。你在<strong>入口点</strong>内使用普通的语言控制流（<code>if</code>/<code>else</code>、循环和函数调用）组合这些任务。值以返回值的形式在任务之间传递，而不是通过共享的图状态模式。</p>
+<p>本演练使用 Functional API 构建一个客户支持邮件智能体。如需了解使用 Graph API 实现同一场景，请参阅<a href="thinking-in-graph-api.html">使用 Graph API 进行思考</a>。如需在两种 API 之间做选择，请参阅<a href="choosing-apis.html">在 Graph API 与 Functional API 之间选择</a>。</p>
+<h2 id="从你想要自动化的流程开始">从你想要自动化的流程开始<a class="h-anchor" href="#从你想要自动化的流程开始" aria-label="本节链接">#</a></h2>
+<p>假设你需要构建一个处理客户支持邮件的 AI 智能体。你的产品团队给出了以下需求：</p>
+<div class="code-block" data-lang="txt"><div class="code-head"><span class="code-lang">txt</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-txt">The agent should:
+
+- Read incoming customer emails
+- Classify them by urgency and topic
+- Search relevant documentation to answer questions
+- Draft appropriate responses
+- Escalate complex issues to human agents
+
+Example scenarios to handle:
+
+1. Simple product question: "How do I reset my password?"
+2. Bug report: "The export feature crashes when I select PDF format"
+3. Urgent billing issue: "I was charged twice for my subscription!"
+4. Feature request: "Can you add dark mode to the mobile app?"
+5. Complex technical issue: "Our API integration fails intermittently with 504 errors"</code></pre></div>
+<p>要使用 Functional API 实现智能体，请遵循以下五个步骤。步骤 1 和步骤 2 是规划。步骤 3 到步骤 5 将这份计划转化为可运行的类型、任务和入口点。</p>
+<h2 id="步骤-1将工作流拆解为离散步骤">步骤 1：将工作流拆解为离散步骤<a class="h-anchor" href="#步骤-1将工作流拆解为离散步骤" aria-label="本节链接">#</a></h2>
+<p>首先识别流程中各个不同的步骤。每个步骤都会成为一个<strong>任务</strong>（执行某一特定功能的函数）。然后勾勒出入口点如何调用这些任务以及如何分支。在编写代码之前完成这一步。</p>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/fVUPpLd2squx_ubj/images/langgraph-functional-thinking-flow.svg?fit=max&amp;auto=format&amp;n=fVUPpLd2squx_ubj&amp;q=85&amp;s=1909c205ed0b1d9932a59dc8a1714bac" alt="Functional API 控制流：左侧为收集与起草，右侧为审核与发送" loading="lazy" class="md-img"></p>
+<p>该草图与入口点相对应：左侧是顺序调用和 <code>if</code>/<code>else</code>，右侧是人工审核。Graph API 会将相同的路径编码为节点和边。</p>
+<p>现在组件已经确定，请明确每个步骤需要做什么：</p>
+<ul><li><code>Read Email</code>：提取并解析邮件内容</li><li><code>Classify Intent</code>：使用 LLM 对紧急程度和主题进行分类</li><li><code>Doc Search</code>：查询知识库以获取相关信息</li><li><code>Bug Track</code>：在跟踪系统中创建或更新 issue</li><li><code>Draft Reply</code>：生成合适的回复</li><li><code>Human Review</code>：升级给人工客服进行审批或处理</li><li><code>Send Reply</code>：发送邮件回复</li></ul>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p>有些步骤总是按顺序执行（<code>Read Email</code> 然后 <code>Classify Intent</code>）。其他步骤则是有条件的（<code>Doc Search</code> 用于问题和功能请求，<code>Bug Track</code> 仅用于缺陷）。在入口点中使用普通控制流来编码这些分支。</p></div></div>
+<h2 id="步骤-2确定每个步骤需要做什么">步骤 2：确定每个步骤需要做什么<a class="h-anchor" href="#步骤-2确定每个步骤需要做什么" aria-label="本节链接">#</a></h2>
+<p>对于步骤 1 中的每个步骤，判断它属于哪类工作以及需要哪些输入。使用下面的分类，然后展开邮件智能体示例以了解具体字段和重试选择。</p>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="#llm-步骤">LLM 步骤</a></div><div class="card-body"><p>当你需要理解、分析、生成文本或做出推理决策时使用</p></div></div><div class="card"><div class="card-title"><a href="#数据步骤">数据步骤</a></div><div class="card-body"><p>当你需要从外部来源检索信息时使用</p></div></div><div class="card"><div class="card-title"><a href="#操作步骤">操作步骤</a></div><div class="card-body"><p>当你需要执行外部操作时使用</p></div></div><div class="card"><div class="card-title"><a href="#用户输入步骤">用户输入步骤</a></div><div class="card-body"><p>当你需要人工介入时使用</p></div></div></div>
+<h3 id="llm-步骤">LLM 步骤<a class="h-anchor" href="#llm-步骤" aria-label="本节链接">#</a></h3>
+<p>当一个步骤需要理解、分析、生成文本或做出推理决策时：</p>
+<details class="accordion"><summary>分类意图</summary><div class="accordion-body"><ul><li>静态上下文（提示词）：分类类别、紧急程度定义、响应格式</li><li>动态上下文（参数）：邮件内容、发件人信息</li><li>期望结果：驱动后续分支的结构化分类</li></ul></div></details>
+<details class="accordion"><summary>起草回复</summary><div class="accordion-body"><ul><li>静态上下文（提示词）：语气指南、公司政策、回复模板</li><li>动态上下文（参数）：分类结果、搜索结果</li><li>期望结果：可供审核的专业邮件回复</li></ul></div></details>
+<h3 id="数据步骤">数据步骤<a class="h-anchor" href="#数据步骤" aria-label="本节链接">#</a></h3>
+<p>当一个步骤需要从外部来源检索信息时：</p>
+<details class="accordion"><summary>文档搜索</summary><div class="accordion-body"><ul><li>参数：根据意图和主题构建的查询</li><li>重试策略：是，对暂时性故障采用指数退避</li><li>缓存：可以缓存常见查询以减少 API 调用</li></ul></div></details>
+<h3 id="操作步骤">操作步骤<a class="h-anchor" href="#操作步骤" aria-label="本节链接">#</a></h3>
+<p>当一个步骤需要执行外部操作时：</p>
+<details class="accordion"><summary>发送回复</summary><div class="accordion-body"><ul><li>执行时机：审批之后（人工或自动）</li><li>重试策略：是，针对网络问题采用指数退避</li><li>不应缓存：每次发送都是唯一的操作</li></ul></div></details>
+<details class="accordion"><summary>缺陷跟踪</summary><div class="accordion-body"><ul><li>执行时机：当意图为 "bug" 时总是执行</li><li>重试策略：是，不丢失缺陷报告至关重要</li><li>返回：要包含在回复中的工单 ID</li></ul></div></details>
+<h3 id="用户输入步骤">用户输入步骤<a class="h-anchor" href="#用户输入步骤" aria-label="本节链接">#</a></h3>
+<p>当一个步骤需要人工介入时：</p>
+<details class="accordion"><summary>人工审核</summary><div class="accordion-body"><ul><li>决策所需上下文：原始邮件、草稿回复、紧急程度、分类</li><li>预期输入格式：审批布尔值加上可选的编辑后回复</li><li>触发时机：高紧急程度、复杂问题或质量疑虑</li></ul></div></details>
+<h2 id="步骤-3决定任务之间传递哪些数据">步骤 3：决定任务之间传递哪些数据<a class="h-anchor" href="#步骤-3决定任务之间传递哪些数据" aria-label="本节链接">#</a></h2>
+<p>在 Functional API 中，没有共享的图状态模式。每个任务接收参数并返回一个值。入口点将中间结果保存在局部变量中，并传递给下一个任务。</p>
+<p>针对每一份数据，问自己以下问题：</p>
+<div class="card-grid"><div class="card"><div class="card-title">在任务之间共享</div><div class="card-body"><p>后续任务是否需要这个值？如果需要，从创建它的任务中<strong>返回</strong>该值，将其存储在入口点的局部变量中，然后作为参数<strong>传递</strong>给需要它的任务。</p></div></div><div class="card"><div class="card-title">保留在单个任务内部</div><div class="card-body"><p>它是否只用于在一个任务内部格式化提示词或发起调用？如果是，请将其保留在该任务本地。不要返回它。</p></div></div></div>
+<p>对于邮件智能体，入口点需要携带：</p>
+<ul><li>原始邮件和发件人信息（工作流的输入）</li><li>分类结果（后续分支和起草步骤需要）</li><li>搜索结果（重新获取成本高）</li><li>草稿回复（审核和发送过程需要）</li></ul>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p>存储并传递原始数据，而不是格式化后的提示词文本。在调用模型的任务内部格式化提示词。这样可以保持任务可复用，并使检查点更容易检查。</p></div></div>
+<p>为任务之间交换的值定义类型。这些是普通的 TypedDict 或 TypeScript 类型，而不是 Graph API 的状态模式。现在就将它们添加到你的文件中；后续步骤中的任务和入口点会用到它们。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypedDict</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EmailClassification</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">intent</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;question&quot;</span><span class="p">,</span> <span class="s2">&quot;bug&quot;</span><span class="p">,</span> <span class="s2">&quot;billing&quot;</span><span class="p">,</span> <span class="s2">&quot;feature&quot;</span><span class="p">,</span> <span class="s2">&quot;complex&quot;</span><span class="p">]</span>
+    <span class="n">urgency</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;low&quot;</span><span class="p">,</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="s2">&quot;high&quot;</span><span class="p">,</span> <span class="s2">&quot;critical&quot;</span><span class="p">]</span>
+    <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">summary</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EmailInput</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">email_content</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">sender_email</span><span class="p">:</span> <span class="nb">str</span>
+</code></pre></div>
+<h2 id="步骤-4构建你的任务">步骤 4：构建你的任务<a class="h-anchor" href="#步骤-4构建你的任务" aria-label="本节链接">#</a></h2>
+<p>把步骤 1 中的每个工作单元变成一个任务。任务会独立地写入检查点、在失败时重试，并返回入口点可以等待的值。</p>
+<p><a href="https://reference.langchain.com/python/langgraph/func/task" target="_blank" rel="noreferrer"> 0 </a> 是一个 Python 函数，它完成一个工作单元并返回结果。在入口点中调用它，并用 <code>.result()</code> 解析结果（或在异步入口点中 <code>await</code>）。</p>
+<h3 id="恰当地处理错误">恰当地处理错误<a class="h-anchor" href="#恰当地处理错误" aria-label="本节链接">#</a></h3>
+<p>在填写任务主体之前，先考虑每个任务可能如何失败。为瞬时错误在任务上附加重试。在入口点中使用 <code>interrupt()</code> 获取人工输入。以下表作为指引：</p>
+<div class="table-wrap"><table><thead><tr><th>错误类型</th><th>由谁修复</th><th>策略</th><th>何时使用</th></tr></thead><tbody><tr><td>瞬时错误（网络问题、速率限制）</td><td>系统（自动）</td><td>任务上的重试策略</td><td>通常在重试后即可解决的临时失败</td></tr><tr><td>LLM 可恢复的错误（工具失败、解析问题）</td><td>LLM</td><td>返回错误，并在入口点中分支或重试</td><td>模型可以借助更多上下文自行调整</td></tr><tr><td>用户可修复的错误（信息缺失、指令不清）</td><td>人</td><td>用 <code>interrupt()</code> 暂停</td><td>需要用户输入才能继续</td></tr><tr><td>意外错误</td><td>开发者</td><td>让本次运行失败</td><td>需要修复代码的 bug</td></tr></tbody></table></div>
+<h3 id="实现邮件智能体任务">实现邮件智能体任务<a class="h-anchor" href="#实现邮件智能体任务" aria-label="本节链接">#</a></h3>
+<p>为步骤 1 中的每个步骤添加一个任务（人工审核除外，它在步骤 5 中通过入口点里的 <code>interrupt()</code> 实现）。下面的桩函数展示了邮件智能体的函数签名、返回结构和重试策略。用真实的 LLM 调用和 API 集成替换占位的函数体。把这些任务与步骤 3 中的类型放在同一个文件里。</p>
+<p>这里的 <code>read_email</code> 是一个透传任务。即便如此，把它保留为独立任务仍能在分类之前获得一个检查点，并留出一个后续添加真实 MIME 解析的位置。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryPolicy</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_email</span><span class="p">(</span><span class="n">email_content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sender_email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse and normalize the incoming email.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;email_content&quot;</span><span class="p">:</span> <span class="n">email_content</span><span class="p">,</span>
+        <span class="s2">&quot;sender_email&quot;</span><span class="p">:</span> <span class="n">sender_email</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">classify_intent</span><span class="p">(</span><span class="n">email_content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sender_email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EmailClassification</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Classify intent and urgency with an LLM.&quot;&quot;&quot;</span>
+    <span class="c1"># Placeholder: replace with a real LLM call.</span>
+    <span class="c1"># This heuristic matches the try-out sample so interrupt() runs.</span>
+    <span class="n">lowered</span> <span class="o">=</span> <span class="n">email_content</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s2">&quot;charged&quot;</span> <span class="ow">in</span> <span class="n">lowered</span> <span class="ow">or</span> <span class="s2">&quot;billing&quot;</span> <span class="ow">in</span> <span class="n">lowered</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;intent&quot;</span><span class="p">:</span> <span class="s2">&quot;billing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;urgency&quot;</span><span class="p">:</span> <span class="s2">&quot;high&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="s2">&quot;billing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="s2">&quot;Customer reports a billing problem&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="k">if</span> <span class="s2">&quot;crash&quot;</span> <span class="ow">in</span> <span class="n">lowered</span> <span class="ow">or</span> <span class="s2">&quot;bug&quot;</span> <span class="ow">in</span> <span class="n">lowered</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;intent&quot;</span><span class="p">:</span> <span class="s2">&quot;bug&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;urgency&quot;</span><span class="p">:</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="s2">&quot;product bug&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="s2">&quot;Customer reports a bug&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;intent&quot;</span><span class="p">:</span> <span class="s2">&quot;question&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;urgency&quot;</span><span class="p">:</span> <span class="s2">&quot;low&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="s2">&quot;general&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="s2">&quot;Customer question&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">retry_policy</span><span class="o">=</span><span class="n">RetryPolicy</span><span class="p">(</span><span class="n">max_attempts</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">search_documentation</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">summary</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Query the knowledge base for relevant chunks.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Docs related to </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">retry_policy</span><span class="o">=</span><span class="n">RetryPolicy</span><span class="p">(</span><span class="n">max_attempts</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_bug_ticket</span><span class="p">(</span>
+    <span class="n">email_content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sender_email</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">summary</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a ticket and return its ID.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;TICKET-123&quot;</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">draft_response</span><span class="p">(</span>
+    <span class="n">email_content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">classification</span><span class="p">:</span> <span class="n">EmailClassification</span><span class="p">,</span>
+    <span class="n">context</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draft a reply from the email, classification, and gathered context.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Thanks for your email about </span><span class="si">{</span><span class="n">classification</span><span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">send_reply</span><span class="p">(</span><span class="n">draft</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sender_email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Send the approved reply.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+<p>现在你有了可调用的任务。接下来，在入口点中把它们组合起来。</p>
+<h2 id="步骤-5组合入口点">步骤 5：组合入口点<a class="h-anchor" href="#步骤-5组合入口点" aria-label="本节链接">#</a></h2>
+<p>入口点就是工作流。把它添加在任务下方。它会按顺序调用这些任务，用 <code>if</code>/<code>else</code> 进行分支（即步骤 1 中的控制流），并用 <code>interrupt()</code> 为人工暂停。当你需要持久执行和人在回路时，请提供<a href="persistence.html">检查点保存器</a>。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">interrupt</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">email_agent</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">EmailInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">parsed</span> <span class="o">=</span> <span class="n">read_email</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;email_content&quot;</span><span class="p">],</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;sender_email&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="n">classification</span> <span class="o">=</span> <span class="n">classify_intent</span><span class="p">(</span>
+        <span class="n">parsed</span><span class="p">[</span><span class="s2">&quot;email_content&quot;</span><span class="p">],</span> <span class="n">parsed</span><span class="p">[</span><span class="s2">&quot;sender_email&quot;</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+    <span class="n">context</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">classification</span><span class="p">[</span><span class="s2">&quot;intent&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;question&quot;</span><span class="p">,</span> <span class="s2">&quot;feature&quot;</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">search_documentation</span><span class="p">(</span>
+            <span class="n">classification</span><span class="p">[</span><span class="s2">&quot;topic&quot;</span><span class="p">],</span> <span class="n">classification</span><span class="p">[</span><span class="s2">&quot;summary&quot;</span><span class="p">]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">classification</span><span class="p">[</span><span class="s2">&quot;intent&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;bug&quot;</span><span class="p">:</span>
+        <span class="n">ticket_id</span> <span class="o">=</span> <span class="n">create_bug_ticket</span><span class="p">(</span>
+            <span class="n">parsed</span><span class="p">[</span><span class="s2">&quot;email_content&quot;</span><span class="p">],</span>
+            <span class="n">parsed</span><span class="p">[</span><span class="s2">&quot;sender_email&quot;</span><span class="p">],</span>
+            <span class="n">classification</span><span class="p">[</span><span class="s2">&quot;summary&quot;</span><span class="p">],</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Ticket created: </span><span class="si">{</span><span class="n">ticket_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+
+    <span class="n">draft</span> <span class="o">=</span> <span class="n">draft_response</span><span class="p">(</span>
+        <span class="n">parsed</span><span class="p">[</span><span class="s2">&quot;email_content&quot;</span><span class="p">],</span> <span class="n">classification</span><span class="p">,</span> <span class="n">context</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+    <span class="c1"># Pause for human review on billing, urgent, or complex issues</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">classification</span><span class="p">[</span><span class="s2">&quot;intent&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;billing&quot;</span><span class="p">,</span> <span class="s2">&quot;complex&quot;</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="n">classification</span><span class="p">[</span><span class="s2">&quot;urgency&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;high&quot;</span><span class="p">,</span> <span class="s2">&quot;critical&quot;</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="n">human_decision</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;email_content&quot;</span><span class="p">:</span> <span class="n">parsed</span><span class="p">[</span><span class="s2">&quot;email_content&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;draft_response&quot;</span><span class="p">:</span> <span class="n">draft</span><span class="p">,</span>
+                <span class="s2">&quot;classification&quot;</span><span class="p">:</span> <span class="n">classification</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">human_decision</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;approved&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;escalated&quot;</span><span class="p">,</span> <span class="s2">&quot;draft&quot;</span><span class="p">:</span> <span class="n">draft</span><span class="p">}</span>
+        <span class="n">draft</span> <span class="o">=</span> <span class="n">human_decision</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;edited_response&quot;</span><span class="p">,</span> <span class="n">draft</span><span class="p">)</span>
+
+    <span class="n">send_reply</span><span class="p">(</span><span class="n">draft</span><span class="p">,</span> <span class="n">parsed</span><span class="p">[</span><span class="s2">&quot;sender_email&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;sent&quot;</span><span class="p">,</span> <span class="s2">&quot;draft&quot;</span><span class="p">:</span> <span class="n">draft</span><span class="p">,</span> <span class="s2">&quot;classification&quot;</span><span class="p">:</span> <span class="n">classification</span><span class="p">}</span>
+</code></pre></div>
+<h3 id="试用你的智能体">试用你的智能体<a class="h-anchor" href="#试用你的智能体" aria-label="本节链接">#</a></h3>
+<p>入口点定义好之后，用一封示例邮件调用它。使用上面占位版的分类器时，这封紧急的账单邮件会被判定为高紧急程度，因此本次运行会命中 <code>interrupt()</code>，你可以练习恢复。首次调用和恢复调用要使用相同的 <code>thread_id</code>。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;customer_123&quot;</span><span class="p">}}</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">email_agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;email_content&quot;</span><span class="p">:</span> <span class="s2">&quot;I was charged twice for my subscription! This is urgent!&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sender_email&quot;</span><span class="p">:</span> <span class="s2">&quot;customer@example.com&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">config</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># The workflow pauses at interrupt() when urgency is high</span>
+
+<span class="c1"># Resume with the human decision</span>
+<span class="n">email_agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="n">Command</span><span class="p">(</span>
+        <span class="n">resume</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;approved&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;edited_response&quot;</span><span class="p">:</span> <span class="s2">&quot;We sincerely apologize for the double charge. I&#39;ve initiated an immediate refund...&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">),</span>
+    <span class="n">config</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>工作流在 <code>interrupt()</code> 处暂停，把已完成任务的结果保存到检查点保存器，然后等待。当你用 <code>Command(resume=...)</code> 恢复时，已完成的任务会从检查点重新加载，而不是重新运行。<code>thread_id</code> 把这轮对话的状态维系在一起。</p>
+<h2 id="总结与后续步骤">总结与后续步骤<a class="h-anchor" href="#总结与后续步骤" aria-label="本节链接">#</a></h2>
+<h3 id="关键要点">关键要点<a class="h-anchor" href="#关键要点" aria-label="本节链接">#</a></h3>
+<p>构建这个邮件智能体展示了 Functional API 的思维方式：</p>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="#步骤-1将工作流拆解为离散步骤">拆分为独立的任务</a></div><div class="card-body"><p>每个任务只做好一件事。任务边界是结果写入检查点的地方，因此失败和恢复时需要重做的工作更少。</p></div></div><div class="card"><div class="card-title"><a href="#步骤-3决定任务之间传递哪些数据">传递值，而不是共享图状态</a></div><div class="card-body"><p>从任务返回原始数据，并将其作为参数传递。把提示词格式化留在需要它的任务内部。</p></div></div><div class="card"><div class="card-title"><a href="#步骤-5组合入口点">入口点掌控控制流</a></div><div class="card-body"><p>使用 <code>if</code>/<code>else</code>、循环和调用。你无需声明边或条件边映射。</p></div></div><div class="card"><div class="card-title"><a href="#恰当地处理错误">错误是流程的一部分</a></div><div class="card-body"><p>瞬时故障交给任务重试策略，用户可修复的问题通过 <code>interrupt()</code> 暂停，意外错误则使本次运行失败。</p></div></div><div class="card"><div class="card-title"><a href="interrupts.html">人类输入是一等公民</a></div><div class="card-body"><p><code>interrupt()</code> 会暂停执行、保存已完成任务的结果，并在你提供输入后恢复。</p></div></div><div class="card"><div class="card-title"><a href="#步骤-5组合入口点">组合仍留在代码中</a></div><div class="card-body"><p>工作流读起来就像普通函数。这契合既有的过程式代码和快速迭代。</p></div></div></div>
+<h3 id="任务粒度的权衡">任务粒度的权衡<a class="h-anchor" href="#任务粒度的权衡" aria-label="本节链接">#</a></h3>
+<p>大多数应用都可以采用上述拆分方式。当你需要决定合并还是拆分任务时，请阅读本节。</p>
+<p>LangGraph 会在入口点内部的 <strong>任务</strong> 边界处设置检查点。当一次运行在中断或失败后恢复时，已完成任务的结果会从检查点加载。位于任务之外、直接写在入口点主体中的工作可能会重新执行。</p>
+<p>为什么这种拆分适合这个邮件智能体：</p>
+<ul><li><strong>隔离外部服务：</strong> 文档搜索和缺陷跟踪是各自独立的任务，因此重试和失败都被限制在这些 API 调用范围内。</li><li><strong>可见性：</strong> 分类是独立任务，因此你可以在分支之前检查结构化结果。</li><li><strong>不同的失败模式：</strong> LLM 调用、数据库查询和邮件发送采用不同的重试策略。</li><li><strong>测试：</strong> 更小的任务更容易做单元测试和复用。</li></ul>
+<p>将 <code>read_email</code> 和 <code>classify_intent</code> 合并为一个任务也是可行的。但你会失去两者之间的检查点，失败时需要重复执行这两个任务。对大多数智能体而言，拆分任务带来的可观测性收益是值得的。</p>
+<h3 id="接下来去哪里">接下来去哪里<a class="h-anchor" href="#接下来去哪里" aria-label="本节链接">#</a></h3>
+<p>本演练介绍了 Functional API 的设计方式。你可以进一步拓展：</p>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="use-functional-api.html">构建清单</a></div><div class="card-body"><p>关于工作流、任务、流式输出、中断和记忆的决策指南</p></div></div><div class="card"><div class="card-title"><a href="thinking-in-graph-api.html">以 Graph API 的思维思考</a></div><div class="card-body"><p>用节点、边和共享状态实现的同一个邮件智能体</p></div></div><div class="card"><div class="card-title"><a href="functional-api-workflows.html">组合工作流</a></div><div class="card-body"><p>并行任务、调用图以及嵌套入口点</p></div></div><div class="card"><div class="card-title"><a href="functional-api-tasks.html">配置任务</a></div><div class="card-body"><p>重试、超时、缓存以及出错后恢复</p></div></div><div class="card"><div class="card-title"><a href="functional-api-human-in-the-loop.html">人在回路</a></div><div class="card-body"><p>用于审批和工具审查的中断模式</p></div></div><div class="card"><div class="card-title"><a href="functional-api-memory.html">添加记忆</a></div><div class="card-body"><p>短期检查点器与长期存储</p></div></div></div>
+<hr class="rule">
+<p>通过 MCP 将<a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">这些文档</a>接入你选择的智能体，以获取实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/thinking-in-functional-api.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="graph-api-visualize.html"><span class="lbl">上一页</span><span class="ttl">可视化图</span></a><a class="next" href="use-functional-api.html"><span class="lbl">下一页</span><span class="ttl">构建清单</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#从你想要自动化的流程开始">从你想要自动化的流程开始</a></li><li class="lvl-2"><a href="#步骤-1将工作流拆解为离散步骤">步骤 1：将工作流拆解为离散步骤</a></li><li class="lvl-2"><a href="#步骤-2确定每个步骤需要做什么">步骤 2：确定每个步骤需要做什么</a></li><li class="lvl-3"><a href="#llm-步骤">LLM 步骤</a></li><li class="lvl-3"><a href="#数据步骤">数据步骤</a></li><li class="lvl-3"><a href="#操作步骤">操作步骤</a></li><li class="lvl-3"><a href="#用户输入步骤">用户输入步骤</a></li><li class="lvl-2"><a href="#步骤-3决定任务之间传递哪些数据">步骤 3：决定任务之间传递哪些数据</a></li><li class="lvl-2"><a href="#步骤-4构建你的任务">步骤 4：构建你的任务</a></li><li class="lvl-3"><a href="#恰当地处理错误">恰当地处理错误</a></li><li class="lvl-3"><a href="#实现邮件智能体任务">实现邮件智能体任务</a></li><li class="lvl-2"><a href="#步骤-5组合入口点">步骤 5：组合入口点</a></li><li class="lvl-3"><a href="#试用你的智能体">试用你的智能体</a></li><li class="lvl-2"><a href="#总结与后续步骤">总结与后续步骤</a></li><li class="lvl-3"><a href="#关键要点">关键要点</a></li><li class="lvl-3"><a href="#任务粒度的权衡">任务粒度的权衡</a></li><li class="lvl-3"><a href="#接下来去哪里">接下来去哪里</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>概览 · LangGraph 中文文档</title>
+<meta name="description" content="将 LangGraph 智能体渲染到前端">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link active" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/frontend/overview" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>前端</span><span class="sep">/</span><span>概览</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">前端</span>
+          <h1>概览</h1>
+          <p class="page-desc">将 LangGraph 智能体渲染到前端</p>
+        </div>
+        <div class="doc-body"><p>构建能够实时可视化 LangGraph 流水线的前端。这些模式展示了如何渲染多步图执行，并呈现每个节点的状态以及来自自定义 <code>StateGraph</code> 工作流的流式输出内容。</p>
+<p>LangGraph 的前端优势在于，UI 可以遵循与图相同的结构。节点、状态键、检查点、中断、子图和流式消息都是可见的运行时概念，因此你可以构建出能解释系统正在做什么的界面，而不是把执行过程隐藏在一段助手消息之后。</p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>这些模式使用 v1 版本的前端 SDK 包。如果你使用的是更早的版本，请参阅 <a href="https://github.com/langchain-ai/langgraphjs/blob/main/libs/sdk-react/docs/v1-migration.md" target="_blank" rel="noreferrer">React</a>、<a href="https://github.com/langchain-ai/langgraphjs/blob/main/libs/sdk-vue/docs/v1-migration.md" target="_blank" rel="noreferrer">Vue</a>、<a href="https://github.com/langchain-ai/langgraphjs/blob/main/libs/sdk-svelte/docs/v1-migration.md" target="_blank" rel="noreferrer">Svelte</a> 和 <a href="https://github.com/langchain-ai/langgraphjs/blob/main/libs/sdk-angular/docs/v1-migration.md" target="_blank" rel="noreferrer">Angular</a> 的迁移指南。</p></div></div>
+<h2 id="架构">架构<a class="h-anchor" href="#架构" aria-label="本节链接">#</a></h2>
+<p>LangGraph 图由通过边连接的具名节点组成。每个节点执行一个步骤（分类、检索、分析、综合），并将输出写入特定的状态键。在前端，SDK 的流句柄提供对节点输出、流式 token 和已发现子图的响应式访问，因此你可以将每个节点映射到一张 UI 卡片。</p>
+<div class="code-block" data-lang="mermaid"><div class="code-head"><span class="code-lang">mermaid</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-mermaid">%%{
+  init: {
+    "fontFamily": "monospace",
+    "flowchart": {
+      "curve": "curve"
+    }
+  }
+}%%
+graph LR
+  FRONTEND["useStream()"]
+  GRAPH["StateGraph"]
+  N1["Node A"]
+  N2["Node B"]
+  N3["Node C"]
+
+  GRAPH --"stream"--&gt; FRONTEND
+  FRONTEND --"submit"--&gt; GRAPH
+  GRAPH --&gt; N1
+  N1 --&gt; N2
+  N2 --&gt; N3
+
+  classDef blueHighlight fill:#DBEAFE,stroke:#2563EB,color:#1E3A8A;
+  classDef greenHighlight fill:#DCFCE7,stroke:#16A34A,color:#14532D;
+  classDef orangeHighlight fill:#FEF3C7,stroke:#D97706,color:#92400E;
+  class FRONTEND blueHighlight;
+  class GRAPH greenHighlight;
+  class N1,N2,N3 orangeHighlight;</code></pre></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">MessagesState</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">):</span>
+    <span class="n">classification</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">research</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">analysis</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">synthesis</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;classify&quot;</span><span class="p">,</span> <span class="n">classify_node</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;do_research&quot;</span><span class="p">,</span> <span class="n">research_node</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;analyze&quot;</span><span class="p">,</span> <span class="n">analyze_node</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;synthesize&quot;</span><span class="p">,</span> <span class="n">synthesize_node</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;classify&quot;</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;classify&quot;</span><span class="p">,</span> <span class="s2">&quot;do_research&quot;</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;do_research&quot;</span><span class="p">,</span> <span class="s2">&quot;analyze&quot;</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;analyze&quot;</span><span class="p">,</span> <span class="s2">&quot;synthesize&quot;</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;synthesize&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</code></pre></div>
+<p>在前端，<a href="https://reference.langchain.com/javascript/langchain-react/index/useStream" target="_blank" rel="noreferrer"> 0 </a> 暴露了用于图节点发现的 <code>stream.subgraphs</code>，以及诸如 <code>useMessages(stream, node)</code> 之类的选择器辅助函数，用于获取节点范围内的流式内容。当你需要诸如最终的 <code>synthesis</code> 这类字段时，<code>stream.values</code> 仍会持有完整的图状态。Angular 通过 <a href="https://reference.langchain.com/javascript/langchain-angular/injectStream" target="_blank" rel="noreferrer"> 5 </a> 使用相同形态的流 API。</p>
+<div class="code-block" data-lang="ts"><div class="code-head"><span class="code-lang">ts</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-ts"><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useStream</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@langchain/react&quot;</span><span class="p">;</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">Pipeline</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useStream</span><span class="o">&lt;</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">graph</span><span class="o">&gt;</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">apiUrl</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:2024&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">assistantId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;pipeline&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">});</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">classification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">stream</span><span class="p">.</span><span class="nx">values</span><span class="o">?</span><span class="p">.</span><span class="nx">classification</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">research</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">stream</span><span class="p">.</span><span class="nx">values</span><span class="o">?</span><span class="p">.</span><span class="nx">research</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">analysis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">stream</span><span class="p">.</span><span class="nx">values</span><span class="o">?</span><span class="p">.</span><span class="nx">analysis</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">graphNodes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[...</span><span class="nx">stream</span><span class="p">.</span><span class="nx">subgraphs</span><span class="p">.</span><span class="nx">values</span><span class="p">()];</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="与聊天流的区别">与聊天流的区别<a class="h-anchor" href="#与聊天流的区别" aria-label="本节链接">#</a></h2>
+<p>自定义图通常支撑着产品工作流：检索流水线、审批流、数据流水线、数据增强、代码审查、规划以及多步分析。前端 SDK 让你可以使用图原生信号来渲染这些工作流：</p>
+<div class="table-wrap"><table><thead><tr><th>运行时概念</th><th>前端用户体验</th></tr></thead><tbody><tr><td><strong>具名节点</strong></td><td>每个图节点对应一张卡片、一个时间线步骤或一个状态徽章。</td></tr><tr><td><strong>状态键</strong></td><td>为分类、来源、分析和最终综合等类型化输出提供专门的 UI 区域。</td></tr><tr><td><strong>流式元数据</strong></td><td>将部分消息路由到产生它的节点。</td></tr><tr><td><strong>检查点</strong></td><td>检查或从先前的图状态恢复，用于调试和审计。</td></tr><tr><td><strong>中断</strong></td><td>暂停某个节点以等待人工输入、审批或修正，然后再继续。</td></tr><tr><td><strong>子图</strong></td><td>仅在用户需要更多细节时才展示嵌套执行。</td></tr></tbody></table></div>
+<p>由于 SDK 直接暴露这些概念，你可以从简单的聊天面板扩展到完整的工作流调试器，而无需更改后端协议。</p>
+<h2 id="模式">模式<a class="h-anchor" href="#模式" aria-label="本节链接">#</a></h2>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="frontend-graph-execution.html">图执行</a></div><div class="card-body"><p>可视化多步图流水线，并呈现每个节点的状态和流式内容。</p></div></div><div class="card"><div class="card-title"><a href="frontend-custom-stream-channels.html">自定义流通道</a></div><div class="card-body"><p>将自定义的服务端数据流式输出到前端，并使用 <code>useExtension</code> 和 <code>useChannel</code> 读取。</p></div></div></div>
+<h2 id="相关模式">相关模式<a class="h-anchor" href="#相关模式" aria-label="本节链接">#</a></h2>
+<p><a href="https://docs.langchain.com/oss/python/langchain/frontend/overview" target="_blank" rel="noreferrer">LangChain 前端模式</a>——Markdown 消息、工具调用、人在回路、可恢复流和时间旅行——适用于任何 LangGraph 图。无论你使用 <code>createAgent</code>、<code>createDeepAgent</code> 还是自定义 <code>StateGraph</code>，流 API 都提供相同的核心数据模型。</p>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档连接</a>到你所选的智能体，通过 MCP 获取实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/frontend/overview.md" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a> 或 <a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="observability.html"><span class="lbl">上一页</span><span class="ttl">可观测性</span></a><a class="next" href="frontend-graph-execution.html"><span class="lbl">下一页</span><span class="ttl">图执行</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#架构">架构</a></li><li class="lvl-2"><a href="#与聊天流的区别">与聊天流的区别</a></li><li class="lvl-2"><a href="#模式">模式</a></li><li class="lvl-2"><a href="#相关模式">相关模式</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

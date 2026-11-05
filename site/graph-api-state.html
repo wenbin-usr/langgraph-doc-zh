@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>定义和更新状态 · LangGraph 中文文档</title>
+<meta name="description" content="在 LangGraph Graph API 中定义图状态 schema、归并函数、消息和私有状态。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link active" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/graph-api-state" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>使用 Graph API 构建</span><span class="sep">/</span><span>定义和更新状态</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">使用 Graph API 构建</span>
+          <h1>定义和更新状态</h1>
+          <p class="page-desc">在 LangGraph Graph API 中定义图状态 schema、归并函数、消息和私有状态。</p>
+        </div>
+        <div class="doc-body"><p><a href="graph-api.html#state">State</a> 是节点读写的共享 schema。<a href="graph-api.html#reducers">Reducers</a> 控制每次更新如何合并到当前值。本页涵盖：</p>
+<ol><li>如何使用状态定义图的 <a href="graph-api.html#schema">schema</a></li><li>如何使用归并函数控制状态更新的处理方式</li></ol>
+<h2 id="定义状态">定义状态<a class="h-anchor" href="#定义状态" aria-label="本节链接">#</a></h2>
+<p>LangGraph 中的 <a href="graph-api.html#state">State</a> 可以是 <code>TypedDict</code>、<code>Pydantic</code> 模型或 dataclass。下面的示例使用 <code>TypedDict</code>。大多数图都优先使用这种形式；当你需要对输入进行运行时校验时，参见<a href="#使用-pydantic-模型作为图状态">使用 Pydantic 模型作为图状态</a>。</p>
+<p>默认情况下，图对输入和输出使用相同的 schema，而状态决定了该 schema。若要使用不同的输入和输出 schema，参见<a href="#定义输入和输出-schema">定义输入和输出 schema</a>。</p>
+<p>从一个 <a href="graph-api.html#working-with-messages-in-graph-state">messages</a> 字段开始。这种形态适合许多 LLM 应用。更多细节，参见<a href="graph-api.html#working-with-messages-in-graph-state">在图状态中使用消息</a>。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AnyMessage</span><span class="p">]</span>
+    <span class="n">extra_field</span><span class="p">:</span> <span class="nb">int</span>
+</code></pre></div>
+<p>该状态跟踪一个 <a href="https://docs.langchain.com/oss/python/langchain/messages" target="_blank" rel="noreferrer">message</a> 对象列表和一个额外的整数字段。目前还没有归并函数，因此更新 <code>messages</code> 的节点必须返回完整列表。</p>
+<h2 id="更新状态">更新状态<a class="h-anchor" href="#更新状态" aria-label="本节链接">#</a></h2>
+<p>构建一个只包含单个<a href="graph-api.html#nodes">节点</a>的图。节点是一个 Python 函数，它读取图状态并返回更新。第一个参数始终是状态：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">AIMessage</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+    <span class="n">new_message</span> <span class="o">=</span> <span class="n">AIMessage</span><span class="p">(</span><span class="s2">&quot;Hello!&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">messages</span> <span class="o">+</span> <span class="p">[</span><span class="n">new_message</span><span class="p">],</span> <span class="s2">&quot;extra_field&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+</code></pre></div>
+<p>该节点通过在返回值中拼接来追加一条消息（还没有归并函数），并设置 <code>extra_field</code>。</p>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-icon">⚠</span><span>警告</span></div><div class="callout-body"><p>节点应直接返回对状态的更新，而不是原地修改状态。</p></div></div>
+<p>用这个节点定义一个简单的图。使用 <a href="graph-api.html#stategraph"> 0 </a> 来构建处理该状态的图，然后用 <a href="graph-api.html#nodes"> 1 </a> 填充图：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">set_entry_point</span><span class="p">(</span><span class="s2">&quot;node&quot;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</code></pre></div>
+<p>LangGraph 提供了用于可视化图的内置工具。详情参见<a href="graph-api-visualize.html">可视化你的图</a>。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">display</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">draw_mermaid_png</span><span class="p">()))</span>
+</code></pre></div>
+<div class="code-block" data-lang="mermaid"><div class="code-head"><span class="code-lang">mermaid</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-mermaid">%%{init:{'theme':'base','themeVariables':{'lineColor':'#40668D','primaryColor':'#E5F4FF','primaryTextColor':'#030710','primaryBorderColor':'#006DDD'}}}%%
+flowchart LR
+    startNode([START]) --&gt; n[node]
+
+    classDef process fill:#E5F4FF,stroke:#006DDD,stroke-width:2px,color:#030710
+    classDef terminal fill:#F2FAFF,stroke:#40668D,stroke-width:2px,color:#030710
+    class n process
+    class startNode terminal</code></pre></div>
+<p>该图执行单个节点。调用它：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">HumanMessage</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="s2">&quot;Hi&quot;</span><span class="p">)]})</span>
+<span class="n">result</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">{'messages': [HumanMessage(content='Hi'), AIMessage(content='Hello!')], 'extra_field': 10}</code></pre></div>
+<p>注意：</p>
+<ul><li>调用是通过更新状态中的单个键启动的。</li><li>调用结果包含完整的状态。</li></ul>
+<p>用 pretty-print 查看 <a href="https://docs.langchain.com/oss/python/langchain/messages" target="_blank" rel="noreferrer">message</a> 内容：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]:</span>
+    <span class="n">message</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">()</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">================================ Human Message ================================
+
+Hi
+================================== Ai Message ==================================
+
+Hello!</code></pre></div>
+<h2 id="使用归并函数处理状态更新">使用归并函数处理状态更新<a class="h-anchor" href="#使用归并函数处理状态更新" aria-label="本节链接">#</a></h2>
+<p>状态中的每个键都可以有自己的<a href="graph-api.html#reducers">归并函数</a>，它控制来自节点的更新如何被应用。如果未指定归并函数，对该键的更新会替换之前的值。</p>
+<p>对于 <code>TypedDict</code> 状态 schema，通过用归并函数标注字段来定义归并函数。</p>
+<p>在前面的示例中，节点通过返回完整的拼接列表来更新 <code>"messages"</code>。添加一个归并函数，使更新自动追加：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Can also import `add` from the `operator` built-in.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">left</span> <span class="o">+</span> <span class="n">right</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+<span class="code-line hl">    <span class="n">messages</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AnyMessage</span><span class="p">],</span> <span class="n">add</span><span class="p">]</span></span>
+    <span class="n">extra_field</span><span class="p">:</span> <span class="nb">int</span>
+</code></pre></div>
+<p>此后节点只需返回新消息：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="n">new_message</span> <span class="o">=</span> <span class="n">AIMessage</span><span class="p">(</span><span class="s2">&quot;Hello!&quot;</span><span class="p">)</span>
+<span class="code-line hl">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">new_message</span><span class="p">],</span> <span class="s2">&quot;extra_field&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span></span>
+</code></pre></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">START</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="s2">&quot;Hi&quot;</span><span class="p">)]})</span>
+
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]:</span>
+    <span class="n">message</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">()</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">================================ Human Message ================================
+
+Hi
+================================== Ai Message ==================================
+
+Hello!</code></pre></div>
+<h3 id="messagesstate">MessagesState<a class="h-anchor" href="#messagesstate" aria-label="本节链接">#</a></h3>
+<p>在实践中，消息列表需要的不仅仅是简单的拼接：</p>
+<ul><li>按 ID 更新状态中已有的消息。</li><li>接受简写的<a href="graph-api.html#serialization">消息格式</a>，例如 <code>{"role": "user", "content": "..."}</code>。</li></ul>
+<p>LangGraph 包含一个内置归并函数 <a href="https://reference.langchain.com/python/langgraph/graph/message/add_messages" target="_blank" rel="noreferrer"> 0 </a>，它可以处理这些情况：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph.message</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_messages</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+<span class="code-line hl">    <span class="n">messages</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AnyMessage</span><span class="p">],</span> <span class="n">add_messages</span><span class="p">]</span></span>
+    <span class="n">extra_field</span><span class="p">:</span> <span class="nb">int</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="n">new_message</span> <span class="o">=</span> <span class="n">AIMessage</span><span class="p">(</span><span class="s2">&quot;Hello!&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">new_message</span><span class="p">],</span> <span class="s2">&quot;extra_field&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="n">set_entry_point</span><span class="p">(</span><span class="s2">&quot;node&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</code></pre></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="code-line hl"><span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Hi&quot;</span><span class="p">}</span></span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">input_message</span><span class="p">]})</span>
+
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]:</span>
+    <span class="n">message</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">()</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">================================ Human Message ================================
+
+Hi
+================================== Ai Message ==================================
+
+Hello!</code></pre></div>
+<p>这种形态适合使用<a href="https://docs.langchain.com/oss/python/langchain/models" target="_blank" rel="noreferrer">聊天模型</a>的应用。为方便起见，可以继承预置的 <code>MessagesState</code>：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">MessagesState</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">):</span>
+    <span class="n">extra_field</span><span class="p">:</span> <span class="nb">int</span>
+</code></pre></div>
+<h2 id="重置归并函数字段">重置归并函数字段<a class="h-anchor" href="#重置归并函数字段" aria-label="本节链接">#</a></h2>
+<p>使用归并函数时一个常见的困惑来源是：对于合并型归并函数，返回空值并不会清空该字段。归并函数会把右侧参数合并进左侧参数，因此空更新会被合并进去，之前累积的值会被保留。</p>
+<p>这个模式对于必须在重试尝试之间清空的错误缓冲区或重试计数器很重要：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">add</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">errors</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">add</span><span class="p">]</span>
+
+
+<span class="c1"># node A returns {&quot;errors&quot;: [&quot;bad sql&quot;]}</span>
+<span class="c1"># node B returns {&quot;errors&quot;: []}</span>
+<span class="c1"># state[&quot;errors&quot;] is still [&quot;bad sql&quot;]; the empty list is merged in, not cleared</span>
+</code></pre></div>
+<p>要在保留合并型归并函数的同时清空字段，用 <a href="https://reference.langchain.com/python/langgraph/types/" target="_blank" rel="noreferrer"> 0 </a> 包裹更新：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">add</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Overwrite</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">errors</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">add</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">clear_errors</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># Bypass the merging reducer and clear the field</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="n">Overwrite</span><span class="p">([])}</span>
+</code></pre></div>
+<p>更多信息，参见<a href="#使用-overwrite-绕过归并函数">使用 Overwrite 绕过归并函数</a>。</p>
+<h2 id="使用-overwrite-绕过归并函数">使用 <code>Overwrite</code> 绕过归并函数<a class="h-anchor" href="#使用-overwrite-绕过归并函数" aria-label="本节链接">#</a></h2>
+<p>在某些情况下，你可能希望绕过归并函数，直接覆盖状态值。当节点返回一个用 <code>Overwrite</code> 包裹的值时，归并函数会被绕过，通道会直接设置为该值。</p>
+<p>当你想要重置或替换累积的状态，而不是将其与现有值合并时，这很有用。</p>
+<p>LangGraph 为此提供了 <a href="https://reference.langchain.com/python/langgraph/types/" target="_blank" rel="noreferrer"> 0 </a> 类型。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Overwrite</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">TypedDict</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">messages</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">add_message</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;first message&quot;</span><span class="p">]}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">replace_messages</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># Bypass the reducer and replace the entire messages list</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">Overwrite</span><span class="p">([</span><span class="s2">&quot;replacement message&quot;</span><span class="p">])}</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;add_message&quot;</span><span class="p">,</span> <span class="n">add_message</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;replace_messages&quot;</span><span class="p">,</span> <span class="n">replace_messages</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;add_message&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;add_message&quot;</span><span class="p">,</span> <span class="s2">&quot;replace_messages&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;replace_messages&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;initial&quot;</span><span class="p">]})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">])</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">['replacement message']</code></pre></div>
+<p>你也可以使用带有特殊键 <code>"__overwrite__"</code> 的 JSON 格式：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">replace_messages</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;__overwrite__&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;replacement message&quot;</span><span class="p">]}}</span>
+</code></pre></div>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-icon">⚠</span><span>警告</span></div><div class="callout-body"><p>当节点并行执行时，在同一个超步中，只有一个节点能对同一个状态键使用 <code>Overwrite</code>。如果多个节点在同一个超步中尝试覆盖同一个键，就会抛出 <code>InvalidUpdateError</code>。</p></div></div>
+<h2 id="定义输入和输出-schema">定义输入和输出 schema<a class="h-anchor" href="#定义输入和输出-schema" aria-label="本节链接">#</a></h2>
+<p>默认情况下，<code>StateGraph</code> 使用单个 schema 运行，所有节点都使用该 schema 进行通信。你也可以定义不同的输入和输出 schema。</p>
+<p>当指定了不同的 schema 时，节点之间的通信仍然使用一个内部 schema。输入 schema 会校验传入的输入。输出 schema 会过滤内部数据，因此 <code>invoke</code> 只返回输出 schema 中的字段。</p>
+<p>定义不同的输入和输出 schema：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+
+<span class="c1"># Define the schema for the input</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InputState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">question</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="c1"># Define the schema for the output</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OutputState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">answer</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="c1"># Define the overall schema, combining both input and output</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OverallState</span><span class="p">(</span><span class="n">InputState</span><span class="p">,</span> <span class="n">OutputState</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="c1"># Define the node that processes the input and generates an answer</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">answer_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">InputState</span><span class="p">):</span>
+    <span class="c1"># Example answer and an extra key</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;answer&quot;</span><span class="p">:</span> <span class="s2">&quot;bye&quot;</span><span class="p">,</span> <span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;question&quot;</span><span class="p">]}</span>
+
+
+<span class="c1"># Build the graph with input and output schemas specified</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">OverallState</span><span class="p">,</span> <span class="n">input_schema</span><span class="o">=</span><span class="n">InputState</span><span class="p">,</span> <span class="n">output_schema</span><span class="o">=</span><span class="n">OutputState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">answer_node</span><span class="p">)</span>  <span class="c1"># Add the answer node</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;answer_node&quot;</span><span class="p">)</span>  <span class="c1"># Define the starting edge</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;answer_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>  <span class="c1"># Define the ending edge</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>  <span class="c1"># Compile the graph</span>
+
+<span class="c1"># Invoke the graph with an input and print the result</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="s2">&quot;hi&quot;</span><span class="p">}))</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">{'answer': 'bye'}</code></pre></div>
+<p>请注意，<code>invoke</code> 的输出只包含输出 schema。</p>
+<h2 id="在节点之间传递私有状态">在节点之间传递私有状态<a class="h-anchor" href="#在节点之间传递私有状态" aria-label="本节链接">#</a></h2>
+<p>节点有时需要一些中间数据，这些数据不应出现在图的主输入或输出 schema 中。请将这些数据保持私有，只让需要它的节点读取。</p>
+<p>下面的顺序图包含三个节点。私有数据在前两步之间传递。第三步只能看到公开的整体状态。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+
+<span class="c1"># The overall state of the graph (this is the public state shared across nodes)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OverallState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">a</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="c1"># Output from node_1 contains private data that is not part of the overall state</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Node1Output</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">private_data</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="c1"># The private data is only shared between node_1 and node_2</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">node_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Node1Output</span><span class="p">:</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;private_data&quot;</span><span class="p">:</span> <span class="s2">&quot;set by node_1&quot;</span><span class="p">}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entered node `node_1`:</span><span class="se">\n\t</span><span class="s2">Input: </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">.</span><span class="se">\n\t</span><span class="s2">Returned: </span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output</span>
+
+
+<span class="c1"># Node 2 input only requests the private data available after node_1</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Node2Input</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">private_data</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_2</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">Node2Input</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OverallState</span><span class="p">:</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="s2">&quot;set by node_2&quot;</span><span class="p">}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entered node `node_2`:</span><span class="se">\n\t</span><span class="s2">Input: </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">.</span><span class="se">\n\t</span><span class="s2">Returned: </span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output</span>
+
+
+<span class="c1"># Node 3 only has access to the overall state (no access to private data from node_1)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">node_3</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OverallState</span><span class="p">:</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="s2">&quot;set by node_3&quot;</span><span class="p">}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entered node `node_3`:</span><span class="se">\n\t</span><span class="s2">Input: </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">.</span><span class="se">\n\t</span><span class="s2">Returned: </span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output</span>
+
+
+<span class="c1"># Connect nodes in a sequence</span>
+<span class="c1"># node_2 accepts private data from node_1, whereas</span>
+<span class="c1"># node_3 does not see the private data.</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">OverallState</span><span class="p">)</span><span class="o">.</span><span class="n">add_sequence</span><span class="p">([</span><span class="n">node_1</span><span class="p">,</span> <span class="n">node_2</span><span class="p">,</span> <span class="n">node_3</span><span class="p">])</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node_1&quot;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Invoke the graph with the initial state</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="s2">&quot;set at start&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output of graph invocation: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">Entered node `node_1`:
+    Input: {'a': 'set at start'}.
+    Returned: {'private_data': 'set by node_1'}
+Entered node `node_2`:
+    Input: {'private_data': 'set by node_1'}.
+    Returned: {'a': 'set by node_2'}
+Entered node `node_3`:
+    Input: {'a': 'set by node_2'}.
+    Returned: {'a': 'set by node_3'}
+
+Output of graph invocation: {'a': 'set by node_3'}</code></pre></div>
+<h2 id="私有通道与流式输出">私有通道与流式输出<a class="h-anchor" href="#私有通道与流式输出" aria-label="本节链接">#</a></h2>
+<p>输入、输出和私有 schema 约束了每个节点读取的内容以及 <code>invoke</code> 返回的内容。它们<strong>不会</strong>对流式输出隐藏通道。</p>
+<p>值流式输出默认会发出<strong>所有</strong>状态通道，包括私有通道。这适用于<a href="event-streaming.html">事件流式输出</a>中的 values 投影（在 <code>version="v3"</code> 时，<code>stream_events</code> / <code>streamEvents</code> 上的 <code>stream.values</code>），也适用于使用 <code>stream_mode="values"</code> / <code>streamMode: "values"</code> 的 <code>graph.stream</code>。值流式输出使用的是完整状态，而不是输出 schema。一个私有通道可能不会出现在 <code>invoke</code> 输出中，但在流中可见。</p>
+<p>这个示例使用了不同的输入、输出、整体和私有 schema。<code>invoke</code> 只返回输出 schema：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">InputState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">user_input</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">OutputState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">graph_output</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">OverallState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">foo</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">user_input</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">graph_output</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PrivateState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">bar</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">InputState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OverallState</span><span class="p">:</span>
+    <span class="c1"># Write to OverallState</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;user_input&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; name&quot;</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_2</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PrivateState</span><span class="p">:</span>
+    <span class="c1"># Read from OverallState, write to PrivateState</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; is&quot;</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_3</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">PrivateState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OutputState</span><span class="p">:</span>
+    <span class="c1"># Read from PrivateState, write to OutputState</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;graph_output&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;bar&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; Lance&quot;</span><span class="p">}</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">OverallState</span><span class="p">,</span> <span class="n">input_schema</span><span class="o">=</span><span class="n">InputState</span><span class="p">,</span> <span class="n">output_schema</span><span class="o">=</span><span class="n">OutputState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node_1&quot;</span><span class="p">,</span> <span class="n">node_1</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node_2&quot;</span><span class="p">,</span> <span class="n">node_2</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node_3&quot;</span><span class="p">,</span> <span class="n">node_3</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node_1&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node_1&quot;</span><span class="p">,</span> <span class="s2">&quot;node_2&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node_2&quot;</span><span class="p">,</span> <span class="s2">&quot;node_3&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node_3&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;user_input&quot;</span><span class="p">:</span> <span class="s2">&quot;My&quot;</span><span class="p">})</span>
+<span class="c1"># {&#39;graph_output&#39;: &#39;My name is Lance&#39;}</span>
+</code></pre></div>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="https://smith.langchain.com/public/370fbbfd-be69-4403-8123-716a0c2c9be6/r" target="_blank" rel="noreferrer">查看示例 trace</a></div><div class="card-body"><p>打开该示例的公开 LangSmith 运行记录。</p></div></div></div>
+<p>使用 values 投影的流式输出仍然包含私有的 <code>bar</code> 通道：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span><span class="s2">&quot;user_input&quot;</span><span class="p">:</span> <span class="s2">&quot;My&quot;</span><span class="p">},</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">snapshot</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
+<span class="c1"># {&#39;user_input&#39;: &#39;My&#39;}</span>
+<span class="c1"># {&#39;foo&#39;: &#39;My name&#39;, &#39;user_input&#39;: &#39;My&#39;}</span>
+<span class="c1"># {&#39;foo&#39;: &#39;My name&#39;, &#39;user_input&#39;: &#39;My&#39;, &#39;bar&#39;: &#39;My name is&#39;}        # &lt;-- private channel</span>
+<span class="c1"># {&#39;foo&#39;: &#39;My name&#39;, &#39;user_input&#39;: &#39;My&#39;, &#39;graph_output&#39;: &#39;My name is Lance&#39;, &#39;bar&#39;: &#39;My name is&#39;}</span>
+</code></pre></div>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="https://smith.langchain.com/public/7d0325bb-3a2a-425f-a551-a636b297d0fb/r" target="_blank" rel="noreferrer">查看示例 trace</a></div><div class="card-body"><p>打开该示例的公开 LangSmith 运行记录。</p></div></div></div>
+<p>要将流式输出的值限制到特定通道（例如只保留输出 schema），请向 <code>graph.stream</code> 传入 <code>output_keys</code>：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">for</span> <span class="n">snapshot</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;user_input&quot;</span><span class="p">:</span> <span class="s2">&quot;My&quot;</span><span class="p">},</span>
+    <span class="n">stream_mode</span><span class="o">=</span><span class="s2">&quot;values&quot;</span><span class="p">,</span>
+<span class="code-line hl">    <span class="n">output_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;graph_output&quot;</span><span class="p">],</span></span>
+<span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
+<span class="c1"># {&#39;graph_output&#39;: &#39;My name is Lance&#39;}</span>
+</code></pre></div>
+<p>如果你只需要每个步骤中某个节点产生的通道（而不是完整累积的状态），请改用 <code>stream_mode="updates"</code>。请参阅<a href="streaming.html">流式输出</a>。</p>
+<h2 id="使用-pydantic-模型作为图状态">使用 Pydantic 模型作为图状态<a class="h-anchor" href="#使用-pydantic-模型作为图状态" aria-label="本节链接">#</a></h2>
+<p><a href="https://reference.langchain.com/python/langgraph/graph/state/StateGraph" target="_blank" rel="noreferrer">StateGraph</a> 接受一个 <a href="https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.AgentMiddleware.state_schema" target="_blank" rel="noreferrer"> 0 </a> 参数，用于指定节点可访问和更新的状态结构。</p>
+<p>本页大多数示例使用 Python 原生的 <code>TypedDict</code> 或 <a href="https://docs.python.org/3/library/dataclasses.html" target="_blank" rel="noreferrer"> 1 </a> 作为 <code>state_schema</code>。<a href="https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.AgentMiddleware.state_schema" target="_blank" rel="noreferrer"> 3 </a> 可以是任意<a href="https://docs.python.org/3/library/stdtypes.html#type-objects" target="_blank" rel="noreferrer">类型</a>。</p>
+<p>当需要对<strong>输入</strong>进行运行时校验时，可以使用 <a href="https://docs.pydantic.dev/latest/api/base_model/" target="_blank" rel="noreferrer">Pydantic BaseModel</a> 作为 <a href="https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.AgentMiddleware.state_schema" target="_blank" rel="noreferrer"> 0 </a>。</p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p><strong>已知限制</strong></p>
+<ul><li>图的输出<strong>不是</strong> Pydantic 模型的实例。</li><li>运行时校验只发生在图中第一个节点的输入上，不会作用于后续节点或输出。</li><li>Pydantic 的校验错误堆栈不会指出错误发生在哪个节点。</li><li>Pydantic 的递归校验可能较慢。对于性能敏感的应用，建议优先使用 <code>dataclass</code>。</li></ul></div></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+
+
+<span class="c1"># The overall state of the graph (this is the public state shared across nodes)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OverallState</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">a</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">OverallState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="s2">&quot;goodbye&quot;</span><span class="p">}</span>
+
+
+<span class="c1"># Build the state graph</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">OverallState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>  <span class="c1"># node_1 is the first node</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node&quot;</span><span class="p">)</span>  <span class="c1"># Start the graph with node_1</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>  <span class="c1"># End the graph after node_1</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Test the graph with a valid input</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="s2">&quot;hello&quot;</span><span class="p">})</span>
+</code></pre></div>
+<p>使用<strong>无效</strong>输入调用该图</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">try</span><span class="p">:</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">123</span><span class="p">})</span>  <span class="c1"># Should be a string</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;An exception was raised because `a` is an integer rather than a string.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">An exception was raised because `a` is an integer rather than a string.
+1 validation error for OverallState
+a
+  Input should be a valid string [type=string_type, input_value=123, input_type=int]
+    For further information visit https://errors.pydantic.dev/2.9/v/string_type</code></pre></div>
+<p>下面介绍 Pydantic 模型状态的更多特性：</p>
+<details class="accordion"><summary>序列化行为</summary><div class="accordion-body"><p>使用 Pydantic 模型作为状态模式时，序列化尤为重要，尤其是在以下场景：</p>
+<ul><li>将 Pydantic 对象作为输入传入</li><li>从图接收输出</li><li>处理嵌套的 Pydantic 模型</li></ul>
+<p>以下示例展示了这些行为：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">NestedModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ComplexState</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">nested</span><span class="p">:</span> <span class="n">NestedModel</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">process_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ComplexState</span><span class="p">):</span>
+    <span class="c1"># Node receives a validated Pydantic object</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input state type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nested type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">nested</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># Return a dictionary update</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">text</span> <span class="o">+</span> <span class="s2">&quot; processed&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">}</span>
+
+
+<span class="c1"># Build the graph</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">ComplexState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;process&quot;</span><span class="p">,</span> <span class="n">process_node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;process&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;process&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Create a Pydantic instance for input</span>
+<span class="n">input_state</span> <span class="o">=</span> <span class="n">ComplexState</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="n">NestedModel</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input object type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">input_state</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Invoke graph with a Pydantic instance</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">input_state</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output content: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Convert back to Pydantic model if needed</span>
+<span class="n">output_model</span> <span class="o">=</span> <span class="n">ComplexState</span><span class="p">(</span><span class="o">**</span><span class="n">result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converted back to Pydantic: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">output_model</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></div></details>
+<details class="accordion"><summary>运行时类型转换</summary><div class="accordion-body"><p>Pydantic 会对某些数据类型执行运行时类型转换。这可能有帮助，但如果不加以考虑，也可能产生意料之外的值。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CoercionExample</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="c1"># Pydantic will coerce string numbers to integers</span>
+    <span class="n">number</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="c1"># Pydantic will parse string booleans to bool</span>
+    <span class="n">flag</span><span class="p">:</span> <span class="nb">bool</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">inspect_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">CoercionExample</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;number: </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">number</span><span class="si">}</span><span class="s2"> (type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">number</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;flag: </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">flag</span><span class="si">}</span><span class="s2"> (type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">flag</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{}</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">CoercionExample</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;inspect&quot;</span><span class="p">,</span> <span class="n">inspect_node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;inspect&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;inspect&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Demonstrate coercion with string inputs that will be converted</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="s2">&quot;42&quot;</span><span class="p">,</span> <span class="s2">&quot;flag&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">})</span>
+
+<span class="c1"># This would fail with a validation error</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="s2">&quot;not-a-number&quot;</span><span class="p">,</span> <span class="s2">&quot;flag&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">})</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Expected validation error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></div></details>
+<details class="accordion"><summary>使用消息模型</summary><div class="accordion-body"><p>在状态模式中使用 LangChain 的消息类型时，序列化尤为重要。当消息对象在网络中传输时，请使用 <code>AnyMessage</code>（而不是 <code>BaseMessage</code>）以确保正确的序列化与反序列化。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">AIMessage</span><span class="p">,</span> <span class="n">AnyMessage</span><span class="p">,</span> <span class="n">HumanMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ChatState</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AnyMessage</span><span class="p">]</span>
+    <span class="n">context</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">add_message</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ChatState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">messages</span> <span class="o">+</span> <span class="p">[</span><span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello there!&quot;</span><span class="p">)]}</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">ChatState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;add_message&quot;</span><span class="p">,</span> <span class="n">add_message</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;add_message&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;add_message&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Create input with a message</span>
+<span class="n">initial_state</span> <span class="o">=</span> <span class="n">ChatState</span><span class="p">(</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hi&quot;</span><span class="p">)],</span> <span class="n">context</span><span class="o">=</span><span class="s2">&quot;Customer support chat&quot;</span>
+<span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">initial_state</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Convert back to Pydantic model to see message types</span>
+<span class="n">output_model</span> <span class="o">=</span> <span class="n">ChatState</span><span class="p">(</span><span class="o">**</span><span class="n">result</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">output_model</span><span class="o">.</span><span class="n">messages</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Message </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></div></details>
+<h2 id="另请参阅">另请参阅<a class="h-anchor" href="#另请参阅" aria-label="本节链接">#</a></h2>
+<ul><li><a href="graph-api.html#state">Graph API 概览</a></li><li><a href="graph-api.html#working-with-messages-in-graph-state">在图状态中使用消息</a></li><li><a href="event-streaming.html">事件流式输出</a></li><li><a href="streaming.html">流式输出</a></li><li><a href="use-graph-api.html">使用 Graph API</a></li></ul>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档接入</a>你的智能体，通过 MCP 获取实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/graph-api-state.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a> 或 <a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="graph-api.html"><span class="lbl">上一页</span><span class="ttl">Graph API</span></a><a class="next" href="graph-api-control-flow.html"><span class="lbl">下一页</span><span class="ttl">控制流</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#定义状态">定义状态</a></li><li class="lvl-2"><a href="#更新状态">更新状态</a></li><li class="lvl-2"><a href="#使用归并函数处理状态更新">使用归并函数处理状态更新</a></li><li class="lvl-3"><a href="#messagesstate">MessagesState</a></li><li class="lvl-2"><a href="#重置归并函数字段">重置归并函数字段</a></li><li class="lvl-2"><a href="#使用-overwrite-绕过归并函数">使用 `Overwrite` 绕过归并函数</a></li><li class="lvl-2"><a href="#定义输入和输出-schema">定义输入和输出 schema</a></li><li class="lvl-2"><a href="#在节点之间传递私有状态">在节点之间传递私有状态</a></li><li class="lvl-2"><a href="#私有通道与流式输出">私有通道与流式输出</a></li><li class="lvl-2"><a href="#使用-pydantic-模型作为图状态">使用 Pydantic 模型作为图状态</a></li><li class="lvl-2"><a href="#另请参阅">另请参阅</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

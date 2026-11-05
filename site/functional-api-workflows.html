@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>组合 Functional API 工作流 · LangGraph 中文文档</title>
+<meta name="description" content="构建入口点和任务，并行运行工作，并调用图或其他入口点。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link active" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/functional-api-workflows" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>使用 Functional API 构建</span><span class="sep">/</span><span>组合 Functional API 工作流</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">使用 Functional API 构建</span>
+          <h1>组合 Functional API 工作流</h1>
+          <p class="page-desc">构建入口点和任务，并行运行工作，并调用图或其他入口点。</p>
+        </div>
+        <div class="doc-body"><p>使用这些方法，从 <a href="https://reference.langchain.com/python/langgraph/func/entrypoint" target="_blank" rel="noreferrer">entrypoint</a> 和 <a href="https://reference.langchain.com/python/langgraph/func/task" target="_blank" rel="noreferrer">task</a> 构建块组合出 Functional API 工作流。</p>
+<p>概念部分请参阅 <a href="functional-api.html">Functional API 概览</a>。如需按顺序的构建路径，请参阅 <a href="use-functional-api.html">Functional API 构建清单</a>。</p>
+<p>示例中使用内存中的 <a href="persistence.html">checkpointer</a>，以便结果持久化到线程上。</p>
+<h2 id="创建一个简单的工作流">创建一个简单的工作流<a class="h-anchor" href="#创建一个简单的工作流" aria-label="本节链接">#</a></h2>
+<p>这是来自 <a href="choosing-apis.html">在 Graph API 与 Functional API 之间选择</a> 的奇偶流程。此版本添加了 checkpointer，因此运行拥有一个线程。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.utils.uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid7</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_even</span><span class="p">(</span><span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">number</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">format_message</span><span class="p">(</span><span class="n">is_even</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s2">&quot;The number is even.&quot;</span> <span class="k">if</span> <span class="n">is_even</span> <span class="k">else</span> <span class="s2">&quot;The number is odd.&quot;</span>
+
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">even</span> <span class="o">=</span> <span class="n">is_even</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;number&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">format_message</span><span class="p">(</span><span class="n">even</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid7</span><span class="p">())}}</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div>
+<p>入口点接受一个位置参数作为输入。如需传入多个字段，请使用字典：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+    <span class="n">another_value</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;another_value&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;sum&quot;</span><span class="p">:</span> <span class="n">value</span> <span class="o">+</span> <span class="n">another_value</span><span class="p">}</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+<span class="n">my_workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;another_value&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="n">config</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="并行运行任务">并行运行任务<a class="h-anchor" href="#并行运行任务" aria-label="本节链接">#</a></h2>
+<p>任务在你调用它时立即启动，并返回一个 future。先收集这些 future，然后用 <code>.result()</code> 等待，这样工作就能重叠进行。</p>
+<p>这种模式对 I/O 密集型工作很有帮助，例如 LLM API 调用。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_one</span><span class="p">(</span><span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">number</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">add_one</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numbers</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">futures</span><span class="p">]</span>
+</code></pre></div>
+<details class="accordion"><summary>扩展示例：并行的 LLM 调用</summary><div class="accordion-body"><p>每个任务生成一段关于不同主题的段落。结果会合并成一个字符串。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.utils.uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid7</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span><span class="s2">&quot;claude-sonnet-4-6&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_paragraph</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;You are a helpful assistant that writes educational paragraphs.&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Write a paragraph about </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">}</span>
+    <span class="p">])</span>
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">topics</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">generate_paragraph</span><span class="p">(</span><span class="n">topic</span><span class="p">)</span> <span class="k">for</span> <span class="n">topic</span> <span class="ow">in</span> <span class="n">topics</span><span class="p">]</span>
+    <span class="n">paragraphs</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">futures</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paragraphs</span><span class="p">)</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid7</span><span class="p">())}}</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="s2">&quot;quantum computing&quot;</span><span class="p">,</span> <span class="s2">&quot;climate change&quot;</span><span class="p">,</span> <span class="s2">&quot;history of aviation&quot;</span><span class="p">],</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div></div></details>
+<h2 id="调用图">调用图<a class="h-anchor" href="#调用图" aria-label="本节链接">#</a></h2>
+<p>Functional API 与 <a href="graph-api.html">Graph API</a> 共享同一个运行时。编译后的图也是可调用对象：你可以像调用任何其他函数一样，从入口点中调用它。</p>
+<p>除非你把 <code>config</code> 传给 <code>invoke</code>，否则嵌套图不会共享外层线程。请在入口点上请求注入的 <code>config</code>，并将其转发下去。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.runnables</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunnableConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.utils.uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid7</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">foo</span><span class="p">:</span> <span class="nb">int</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">double</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">}</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;double&quot;</span><span class="p">,</span> <span class="n">double</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">workflow</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">RunnableConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">},</span> <span class="n">config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]}</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid7</span><span class="p">())}}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">))</span>  <span class="c1"># {&#39;bar&#39;: 10}</span>
+</code></pre></div>
+<h2 id="调用其他入口点">调用其他入口点<a class="h-anchor" href="#调用其他入口点" aria-label="本节链接">#</a></h2>
+<p>你可以在入口点或任务内部调用其他入口点。</p>
+<p>当子入口点定义时没有 checkpointer，从拥有 checkpointer 的父入口点调用它时，会使用父级的 checkpointer。单独调用该子入口点则不会持久化，除非你传入 checkpointer。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">()</span>  <span class="c1"># Inherits the checkpointer when invoked from my_workflow</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">some_other_workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_workflow</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">some_other_workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">value</span>
+</code></pre></div>
+<details class="accordion"><summary>扩展示例：调用另一个入口点</summary><div class="accordion-body"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.utils.uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid7</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">multiply</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">multiply</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]})</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;product&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">}</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid7</span><span class="p">())}}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">main</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">))</span>  <span class="c1"># {&#39;product&#39;: 42}</span>
+</code></pre></div></div></details>
+<h2 id="另请参阅">另请参阅<a class="h-anchor" href="#另请参阅" aria-label="本节链接">#</a></h2>
+<ul><li><a href="functional-api.html">Functional API 概览</a></li><li><a href="use-functional-api.html">Functional API 构建清单</a></li><li><a href="workflows-agents.html">工作流与智能体</a></li><li><a href="https://docs.langchain.com/langsmith/deploy-other-frameworks" target="_blank" rel="noreferrer">使用 Functional API 将 LangGraph 的功能添加到其他框架</a></li></ul>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档连接</a> 到你所选的智能体，通过 MCP 获得实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/functional-api-workflows.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a> 或 <a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="functional-api.html"><span class="lbl">上一页</span><span class="ttl">Functional API</span></a><a class="next" href="functional-api-tasks.html"><span class="lbl">下一页</span><span class="ttl">任务</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#创建一个简单的工作流">创建一个简单的工作流</a></li><li class="lvl-2"><a href="#并行运行任务">并行运行任务</a></li><li class="lvl-2"><a href="#调用图">调用图</a></li><li class="lvl-2"><a href="#调用其他入口点">调用其他入口点</a></li><li class="lvl-2"><a href="#另请参阅">另请参阅</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

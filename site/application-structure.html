@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>应用结构 · LangGraph 中文文档</title>
+<meta name="description" content="应用结构">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link active" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/application-structure" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>部署</span><span class="sep">/</span><span>应用结构</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">部署</span>
+          <h1>应用结构</h1>
+          
+        </div>
+        <div class="doc-body"><p>一个 LangGraph 应用由一个或多个图、一个配置文件（<code>langgraph.json</code>）、一个声明依赖的文件，以及一个可选的、用于指定环境变量的 <code>.env</code> 文件组成。</p>
+<p>本指南展示应用的典型结构，并说明如何提供所需配置，以便通过 <a href="https://docs.langchain.com/langsmith/deployment" target="_blank" rel="noreferrer">LangSmith Deployment</a> 部署应用。</p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>LangSmith Deployment 是一个用于部署和扩缩容 LangGraph 智能体的托管平台。它负责处理基础设施、扩缩容与运维方面的事项，让你可以直接从代码仓库部署有状态的长时运行智能体。更多内容请参阅<a href="https://docs.langchain.com/langsmith/deployment" target="_blank" rel="noreferrer">部署文档</a>。</p></div></div>
+<h2 id="核心概念">核心概念<a class="h-anchor" href="#核心概念" aria-label="本节链接">#</a></h2>
+<p>使用 LangSmith 进行部署时，应提供以下信息：</p>
+<ol><li>一个 <a href="#configuration-file-concepts">LangGraph 配置文件</a>（<code>langgraph.json</code>），用于指定应用要使用的依赖、图和环境变量。</li><li>实现应用逻辑的<a href="#图">图</a>。</li><li>一个声明运行应用所需<a href="#依赖">依赖</a>的文件。</li><li>应用运行所需的<a href="#环境变量">环境变量</a>。</li></ol>
+<h2 id="文件结构">文件结构<a class="h-anchor" href="#文件结构" aria-label="本节链接">#</a></h2>
+<p>以下是应用目录结构的示例：</p>
+<div class="tabs" data-tabs data-group="tabs"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" aria-selected="true" data-target="tabs-0">Python（requirements.txt）</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-1">Python（pyproject.toml）</button></div><div class="tab-panels"><div class="tab-panel active" id="tabs-0" role="tabpanel"><span class="tab-anchor" id="pythonrequirements.txt"></span><div class="code-block" data-lang="plaintext"><div class="code-head"><span class="code-lang">plaintext</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-plaintext">my-app/
+├── my_agent # all project code lies within here
+│   ├── utils # utilities for your graph
+│   │   ├── __init__.py
+│   │   ├── tools.py # tools for your graph
+│   │   ├── nodes.py # node functions for your graph
+│   │   └── state.py # state definition of your graph
+│   ├── __init__.py
+│   └── agent.py # code for constructing your graph
+├── .env # environment variables
+├── requirements.txt # package dependencies
+└── langgraph.json # configuration file for LangGraph</code></pre></div></div><div class="tab-panel" id="tabs-1" role="tabpanel"><span class="tab-anchor" id="pythonpyproject.toml"></span><div class="code-block" data-lang="plaintext"><div class="code-head"><span class="code-lang">plaintext</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-plaintext">my-app/
+├── my_agent # all project code lies within here
+│   ├── utils # utilities for your graph
+│   │   ├── __init__.py
+│   │   ├── tools.py # tools for your graph
+│   │   ├── nodes.py # node functions for your graph
+│   │   └── state.py # state definition of your graph
+│   ├── __init__.py
+│   └── agent.py # code for constructing your graph
+├── .env # environment variables
+├── langgraph.json  # configuration file for LangGraph
+└── pyproject.toml # dependencies for your project</code></pre></div></div></div></div>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>LangGraph 应用的目录结构会因所用的编程语言和包管理器而有所不同。</p></div></div>
+<span class="anchor-alias" id="configuration-file-concepts"></span><h2 id="配置文件">配置文件<a class="h-anchor" href="#配置文件" aria-label="本节链接">#</a></h2>
+<p><code>langgraph.json</code> 文件是一个 JSON 文件，用于指定部署 LangGraph 应用所需的依赖、图、环境变量和其他设置。</p>
+<p>有关 JSON 文件中所有受支持的键的详细信息，请参阅 <a href="https://docs.langchain.com/langsmith/cli#configuration-file" target="_blank" rel="noreferrer">LangGraph 配置文件参考</a>。</p>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p><a href="https://docs.langchain.com/langsmith/cli" target="_blank" rel="noreferrer">LangGraph CLI</a> 默认使用当前目录下的配置文件 <code>langgraph.json</code>。</p></div></div>
+<h3 id="示例">示例<a class="h-anchor" href="#示例" aria-label="本节链接">#</a></h3>
+<ul><li>依赖中包含一个本地自定义包以及 <code>langchain_openai</code> 包。</li><li>将从文件 <code>./your_package/your_file.py</code> 中加载单个图，对应的变量为 <code>variable</code>。</li><li>环境变量从 <code>.env</code> 文件加载。</li></ul>
+<div class="code-block" data-lang="json"><div class="code-head"><span class="code-lang">json</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-json"><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;dependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;langchain_openai&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;./your_package&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;graphs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;my_agent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./your_package/your_file.py:agent&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./.env&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="依赖">依赖<a class="h-anchor" href="#依赖" aria-label="本节链接">#</a></h2>
+<p>一个 LangGraph 应用可能依赖其他 Python 包。</p>
+<p>要让依赖被正确安装，通常需要指定以下信息：</p>
+<ol><li>目录中一个声明依赖的文件（例如 <code>requirements.txt</code>、<code>pyproject.toml</code> 或 <code>package.json</code>）。</li><li><a href="#configuration-file-concepts">LangGraph 配置文件</a>中的 <code>dependencies</code> 键，用于指定运行该 LangGraph 应用所需的依赖。</li><li>任何额外的二进制文件或系统库，都可以通过 <a href="#configuration-file-concepts">LangGraph 配置文件</a>中的 <code>dockerfile_lines</code> 键来指定。</li></ol>
+<h2 id="图">图<a class="h-anchor" href="#图" aria-label="本节链接">#</a></h2>
+<p>使用 <a href="#configuration-file-concepts">LangGraph 配置文件</a>中的 <code>graphs</code> 键，指定部署后的 LangGraph 应用中可用的图。</p>
+<p>你可以在配置文件中指定一个或多个图。每个图都由一个名称（应当唯一）和一个路径来标识，该路径指向：（1）已编译的图，或（2）一个用于构建图的函数。</p>
+<h2 id="环境变量">环境变量<a class="h-anchor" href="#环境变量" aria-label="本节链接">#</a></h2>
+<p>如果你在本地处理已部署的 LangGraph 应用，可以在 <a href="#configuration-file-concepts">LangGraph 配置文件</a>的 <code>env</code> 键中配置环境变量。</p>
+<p>对于生产环境部署，通常需要在部署环境中配置环境变量。</p>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档</a>通过 MCP 连接到你所选的智能体，以获取实时回答。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/application-structure.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交问题</a>。</p></div>
+        <nav class="pager"><a class="prev" href="local-server.html"><span class="lbl">上一页</span><span class="ttl">本地服务器</span></a><a class="next" href="test.html"><span class="lbl">下一页</span><span class="ttl">测试</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#核心概念">核心概念</a></li><li class="lvl-2"><a href="#文件结构">文件结构</a></li><li class="lvl-2"><a href="#配置文件">配置文件</a></li><li class="lvl-3"><a href="#示例">示例</a></li><li class="lvl-2"><a href="#依赖">依赖</a></li><li class="lvl-2"><a href="#图">图</a></li><li class="lvl-2"><a href="#环境变量">环境变量</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

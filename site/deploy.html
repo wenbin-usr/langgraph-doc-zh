@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>部署 · LangGraph 中文文档</title>
+<meta name="description" content="使用 LangSmith Cloud 或 JavaScript 框架与托管平台，将 LangGraph 智能体部署到生产环境。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link active" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/deploy" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>部署</span><span class="sep">/</span><span>部署</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">部署</span>
+          <h1>部署</h1>
+          <p class="page-desc">使用 LangSmith Cloud 或 JavaScript 框架与托管平台，将 LangGraph 智能体部署到生产环境。</p>
+        </div>
+        <div class="doc-body"><p>当你准备好将 LangGraph 智能体部署到生产环境时，请选择适合你的技术栈的托管模型。<strong><a href="https://docs.langchain.com/langsmith/deploy-to-cloud" target="_blank" rel="noreferrer">LangSmith Cloud</a></strong> 为有状态、长时间运行的智能体提供全托管基础设施，支持持久化状态与后台执行。</p>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p>LangSmith 除 Cloud 之外还提供多种部署选项，包括<a href="https://docs.langchain.com/langsmith/hybrid" target="_blank" rel="noreferrer">混合部署</a>、<a href="https://docs.langchain.com/langsmith/deploy-standalone-server" target="_blank" rel="noreferrer">独立服务器</a>以及<a href="https://docs.langchain.com/langsmith/deploy-with-control-plane" target="_blank" rel="noreferrer">带控制面的自托管</a>。更多信息，请参阅 <a href="https://docs.langchain.com/langsmith/deployment" target="_blank" rel="noreferrer">LangSmith 部署概览</a>。</p></div></div>
+<h2 id="langsmith-cloud">LangSmith Cloud<a class="h-anchor" href="#langsmith-cloud" aria-label="本节链接">#</a></h2>
+<p>本节介绍如何从 GitHub 仓库将你的智能体部署到 LangSmith Cloud。LangSmith 负责基础设施、扩缩容以及运维相关事宜。</p>
+<h3 id="前提条件">前提条件<a class="h-anchor" href="#前提条件" aria-label="本节链接">#</a></h3>
+<p>开始之前，请确保你已具备以下条件：</p>
+<ul><li>一个 <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub 账号</a></li><li>一个 <a href="https://smith.langchain.com?utm_source=docs&amp;utm_medium=cta&amp;utm_campaign=langsmith-signup&amp;utm_content=oss-langgraph-deploy" target="_blank" rel="noreferrer">LangSmith 账号</a>（可免费注册）</li></ul>
+<h3 id="部署你的智能体">部署你的智能体<a class="h-anchor" href="#部署你的智能体" aria-label="本节链接">#</a></h3>
+<h4 id="1.-在-github-上创建仓库">1. 在 GitHub 上创建仓库</h4>
+<p>你的应用代码必须位于 GitHub 仓库中，才能部署到 LangSmith。公有仓库和私有仓库均受支持。对于本快速入门，请先按照<a href="studio.html#set-up-local-agent-server">本地服务器设置指南</a>确保你的应用兼容 LangGraph。然后，将你的代码推送到该仓库。</p>
+<h4 id="2.-部署到-langsmith">2. 部署到 LangSmith</h4>
+<p><strong>1. 前往 LangSmith 部署页面</strong></p>
+<p>登录 <a href="https://smith.langchain.com?utm_source=docs&amp;utm_medium=cta&amp;utm_campaign=langsmith-signup&amp;utm_content=oss-langgraph-deploy" target="_blank" rel="noreferrer">LangSmith</a>。在左侧边栏中，选择 <strong>Deployments</strong>。</p>
+<p><strong>2. 创建新部署</strong></p>
+<p>点击 <strong>+ New Deployment</strong> 按钮。将打开一个面板，你可以在其中填写必填字段。</p>
+<p><strong>3. 关联仓库</strong></p>
+<p>如果你是首次使用，或要添加一个此前未连接过的私有仓库，请点击 <strong>Add new account</strong> 按钮，并按照说明连接你的 GitHub 账号。</p>
+<p><strong>4. 部署仓库</strong></p>
+<p>选择你应用的仓库。点击 <strong>Submit</strong> 进行部署。这可能需要大约 15 分钟才能完成。你可以在 <strong>Deployment details</strong> 视图中查看状态。</p>
+<h4 id="3.-在-studio-中测试你的应用">3. 在 Studio 中测试你的应用</h4>
+<p>应用部署完成后：</p>
+<ol><li>选择你刚创建的部署以查看更多详细信息。</li><li>点击右上角的 <strong>Studio</strong> 按钮。Studio 将打开并显示你的图。</li></ol>
+<h4 id="4.-获取部署的-api-url">4. 获取部署的 API URL</h4>
+<ol><li>在 LangGraph 的 <strong>Deployment details</strong> 视图中，点击 <strong>API URL</strong> 将其复制到剪贴板。</li><li>点击 <code>URL</code> 将其复制到剪贴板。</li></ol>
+<h4 id="5.-测试-api">5. 测试 API</h4>
+<p>现在你可以测试该 API：</p>
+<div class="tabs" data-tabs data-group="tabs"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" aria-selected="true" data-target="tabs-0">Python</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-1">Rest API</button></div><div class="tab-panels"><div class="tab-panel active" id="tabs-0" role="tabpanel"><span class="tab-anchor" id="python"></span><ol><li>安装 LangGraph SDK：</li></ol>
+<div class="code-block" data-lang="shell"><div class="code-head"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-shell">pip<span class="w"> </span>install<span class="w"> </span>langgraph-sdk
+</code></pre></div>
+<ol start="2"><li>向智能体发送消息：</li></ol>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph_sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_sync_client</span> <span class="c1"># or get_client for async</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">get_sync_client</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;your-deployment-url&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;your-langsmith-api-key&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">runs</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span>
+    <span class="kc">None</span><span class="p">,</span>    <span class="c1"># Threadless run</span>
+    <span class="s2">&quot;agent&quot;</span><span class="p">,</span> <span class="c1"># Name of agent. Defined in langgraph.json.</span>
+    <span class="nb">input</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span>
+            <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;human&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;What is LangGraph?&quot;</span><span class="p">,</span>
+        <span class="p">}],</span>
+    <span class="p">},</span>
+    <span class="n">stream_mode</span><span class="o">=</span><span class="s2">&quot;updates&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Receiving new event of type: </span><span class="si">{</span><span class="n">chunk</span><span class="o">.</span><span class="n">event</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">chunk</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></div><div class="tab-panel" id="tabs-1" role="tabpanel"><span class="tab-anchor" id="rest-api"></span><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">curl<span class="w"> </span>-s<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--url<span class="w"> </span>&lt;DEPLOYMENT_URL&gt;/runs/stream<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;X-Api-Key: &lt;LANGSMITH API KEY&gt; \</span>
+<span class="s2">    --data &quot;</span><span class="o">{</span>
+<span class="w">        </span><span class="se">\&quot;</span>assistant_id<span class="se">\&quot;</span>:<span class="w"> </span><span class="se">\&quot;</span>agent<span class="se">\&quot;</span>,<span class="w"> </span><span class="sb">`</span><span class="c1"># Name of agent. Defined in langgraph.json.`</span>
+<span class="w">        </span><span class="se">\&quot;</span>input<span class="se">\&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="se">\&quot;</span>messages<span class="se">\&quot;</span>:<span class="w"> </span><span class="o">[</span>
+<span class="w">                </span><span class="o">{</span>
+<span class="w">                    </span><span class="se">\&quot;</span>role<span class="se">\&quot;</span>:<span class="w"> </span><span class="se">\&quot;</span>human<span class="se">\&quot;</span>,
+<span class="w">                    </span><span class="se">\&quot;</span>content<span class="se">\&quot;</span>:<span class="w"> </span><span class="se">\&quot;</span>What<span class="w"> </span>is<span class="w"> </span>LangGraph?<span class="se">\&quot;</span>
+<span class="w">                </span><span class="o">}</span>
+<span class="w">            </span><span class="o">]</span>
+<span class="w">        </span><span class="o">}</span>,
+<span class="w">        </span><span class="se">\&quot;</span>stream_mode<span class="se">\&quot;</span>:<span class="w"> </span><span class="se">\&quot;</span>updates<span class="se">\&quot;</span>
+<span class="w">    </span><span class="o">}</span><span class="s2">&quot;</span>
+</code></pre></div></div></div></div>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档通过 MCP 连接</a>到你选择的智能体，以获取实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/deploy.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交问题</a>。</p></div>
+        <nav class="pager"><a class="prev" href="ui.html"><span class="lbl">上一页</span><span class="ttl">Agent Chat UI</span></a><a class="next" href="observability.html"><span class="lbl">下一页</span><span class="ttl">可观测性</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#langsmith-cloud">LangSmith Cloud</a></li><li class="lvl-3"><a href="#前提条件">前提条件</a></li><li class="lvl-3"><a href="#部署你的智能体">部署你的智能体</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

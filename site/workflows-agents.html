@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>工作流与智能体 · LangGraph 中文文档</title>
+<meta name="description" content="工作流与智能体">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link active" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/workflows-agents" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>模式</span><span class="sep">/</span><span>工作流与智能体</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">模式</span>
+          <h1>工作流与智能体</h1>
+          
+        </div>
+        <div class="doc-body"><p>本指南介绍常见的工作流与智能体模式。</p>
+<ul><li>工作流具有预定义的代码路径，并按照特定顺序运行。</li><li>智能体是动态的，会自行定义流程和工具的使用方式。</li></ul>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/-_xGPoyjhyiDWTPJ/oss/images/agent_workflow.png?fit=max&amp;auto=format&amp;n=-_xGPoyjhyiDWTPJ&amp;q=85&amp;s=c217c9ef517ee556cae3fc928a21dc55" alt="智能体工作流" loading="lazy" class="md-img"></p>
+<p>LangGraph 在构建智能体和工作流时提供了多项优势，包括<a href="persistence.html">持久化</a>、<a href="streaming.html">流式输出</a>，以及对调试和<a href="deploy.html">部署</a>的支持。</p>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p>使用 <a href="https://smith.langchain.com?utm_source=docs&amp;utm_medium=cta&amp;utm_campaign=langsmith-signup&amp;utm_content=oss-langgraph-workflows-agents" target="_blank" rel="noreferrer">LangSmith</a> 跟踪并比较这些工作流模式。按照<a href="https://docs.langchain.com/langsmith/trace-with-langgraph" target="_blank" rel="noreferrer">跟踪快速入门</a>了解数据如何在每个步骤中流动。我们还建议你设置 <a href="https://docs.langchain.com/langsmith/engine" target="_blank" rel="noreferrer">LangSmith Engine</a>，它可以监控你的跟踪记录、检测问题并提出修复建议。</p></div></div>
+<h2 id="环境设置">环境设置<a class="h-anchor" href="#环境设置" aria-label="本节链接">#</a></h2>
+<p>要构建工作流或智能体，你可以使用<a href="https://docs.langchain.com/oss/python/integrations/chat" target="_blank" rel="noreferrer">任何支持结构化输出和工具调用的聊天模型</a>。以下示例使用 Anthropic：</p>
+<ol><li>安装依赖：</li></ol>
+<div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">pip<span class="w"> </span>install<span class="w"> </span>langchain_core<span class="w"> </span>langchain-anthropic<span class="w"> </span>langgraph
+</code></pre></div>
+<ol start="2"><li>初始化 LLM：</li></ol>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">getpass</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_anthropic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatAnthropic</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_env</span><span class="p">(</span><span class="n">var</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">var</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2">: &quot;</span><span class="p">)</span>
+
+
+<span class="n">_set_env</span><span class="p">(</span><span class="s2">&quot;ANTHROPIC_API_KEY&quot;</span><span class="p">)</span>
+
+<span class="n">llm</span> <span class="o">=</span> <span class="n">ChatAnthropic</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;claude-sonnet-4-6&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="llm-与增强">LLM 与增强<a class="h-anchor" href="#llm-与增强" aria-label="本节链接">#</a></h2>
+<p>工作流和智能体系统基于 LLM 以及你为其添加的各种增强功能。<a href="https://docs.langchain.com/oss/python/langchain/tools" target="_blank" rel="noreferrer">工具调用</a>、<a href="https://docs.langchain.com/oss/python/langchain/structured-output" target="_blank" rel="noreferrer">结构化输出</a>和<a href="https://docs.langchain.com/oss/python/langchain/short-term-memory" target="_blank" rel="noreferrer">短期记忆</a>是几种按需定制 LLM 的选项。</p>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/-_xGPoyjhyiDWTPJ/oss/images/augmented_llm.png?fit=max&amp;auto=format&amp;n=-_xGPoyjhyiDWTPJ&amp;q=85&amp;s=7ea9656f46649b3ebac19e8309ae9006" alt="LLM 增强" loading="lazy" class="md-img"></p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="c1"># Schema for structured output</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SearchQuery</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Query that is optimized web search.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">justification</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Why this query is relevant to the user&#39;s request.&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># Augment the LLM with schema for structured output</span>
+<span class="n">structured_llm</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">with_structured_output</span><span class="p">(</span><span class="n">SearchQuery</span><span class="p">)</span>
+
+<span class="c1"># Invoke the augmented LLM</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">structured_llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="s2">&quot;How does Calcium CT score relate to high cholesterol?&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>  <span class="c1"># The model returns an instance of SearchQuery.</span>
+
+<span class="c1"># Define a tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+
+<span class="c1"># Augment the LLM with tools</span>
+<span class="n">llm_with_tools</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">bind_tools</span><span class="p">([</span><span class="n">multiply</span><span class="p">])</span>
+
+<span class="c1"># Invoke the LLM with input that triggers the tool call</span>
+<span class="n">msg</span> <span class="o">=</span> <span class="n">llm_with_tools</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="s2">&quot;What is 2 times 3?&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">)</span>  <span class="c1"># The model returns a request to call the tool.</span>
+</code></pre></div>
+<h2 id="提示词链">提示词链<a class="h-anchor" href="#提示词链" aria-label="本节链接">#</a></h2>
+<p>提示词链是指每次 LLM 调用都会处理上一次调用的输出。它通常用于执行可拆分为更小、可验证步骤的明确定义的任务。一些示例包括：</p>
+<ul><li>将文档翻译成不同语言</li><li>验证生成内容的一致性</li></ul>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/dL5Sn6Cmy9pwtY0V/oss/images/prompt_chain.png?fit=max&amp;auto=format&amp;n=dL5Sn6Cmy9pwtY0V&amp;q=85&amp;s=762dec147c31b8dc6ebb0857e236fc1f" alt="提示词链" loading="lazy" class="md-img"></p>
+<div class="tabs code-tabs" data-tabs data-group="code"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-0">Graph</button><button class="tab-btn" role="tab" data-target="code-1">Functional</button></div><div class="tab-panels"><div class="tab-panel active" id="code-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">display</span>
+
+
+<span class="c1"># Graph state</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">joke</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">improved_joke</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">final_joke</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="c1"># Nodes</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_joke</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;First LLM call to generate initial joke&quot;&quot;&quot;</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write a short joke about </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;joke&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">check_punchline</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gate function to check if the joke has a punchline&quot;&quot;&quot;</span>
+
+    <span class="c1"># Simple check - does the joke contain &quot;?&quot; or &quot;!&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;?&quot;</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;joke&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;!&quot;</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;joke&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="s2">&quot;Pass&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;Fail&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">improve_joke</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Second LLM call to improve the joke&quot;&quot;&quot;</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Make this joke funnier by adding wordplay: </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;joke&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;improved_joke&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">polish_joke</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Third LLM call for final polish&quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Add a surprising twist to this joke: </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;improved_joke&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;final_joke&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span><span class="p">}</span>
+
+
+<span class="c1"># Build workflow</span>
+<span class="n">workflow</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+
+<span class="c1"># Add nodes</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;generate_joke&quot;</span><span class="p">,</span> <span class="n">generate_joke</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;improve_joke&quot;</span><span class="p">,</span> <span class="n">improve_joke</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;polish_joke&quot;</span><span class="p">,</span> <span class="n">polish_joke</span><span class="p">)</span>
+
+<span class="c1"># Add edges to connect nodes</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;generate_joke&quot;</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+    <span class="s2">&quot;generate_joke&quot;</span><span class="p">,</span> <span class="n">check_punchline</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;Fail&quot;</span><span class="p">:</span> <span class="s2">&quot;improve_joke&quot;</span><span class="p">,</span> <span class="s2">&quot;Pass&quot;</span><span class="p">:</span> <span class="n">END</span><span class="p">}</span>
+<span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;improve_joke&quot;</span><span class="p">,</span> <span class="s2">&quot;polish_joke&quot;</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;polish_joke&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="c1"># Compile</span>
+<span class="n">chain</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Show workflow</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">draw_mermaid_png</span><span class="p">()))</span>
+
+<span class="c1"># Invoke</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="s2">&quot;cats&quot;</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial joke:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;joke&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- --- ---</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="s2">&quot;improved_joke&quot;</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Improved joke:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;improved_joke&quot;</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- --- ---</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final joke:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;final_joke&quot;</span><span class="p">])</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final joke:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;joke&quot;</span><span class="p">])</span>
+</code></pre></div></div><div class="tab-panel" id="code-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.func</span><span class="w"> </span><span class="kn">import</span> <span class="n">entrypoint</span><span class="p">,</span> <span class="n">task</span>
+
+
+<span class="c1"># Tasks</span>
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_joke</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;First LLM call to generate initial joke&quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write a short joke about </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">check_punchline</span><span class="p">(</span><span class="n">joke</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gate function to check if the joke has a punchline&quot;&quot;&quot;</span>
+    <span class="c1"># Simple check - does the joke contain &quot;?&quot; or &quot;!&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;?&quot;</span> <span class="ow">in</span> <span class="n">joke</span> <span class="ow">or</span> <span class="s2">&quot;!&quot;</span> <span class="ow">in</span> <span class="n">joke</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Fail&quot;</span>
+
+    <span class="k">return</span> <span class="s2">&quot;Pass&quot;</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">improve_joke</span><span class="p">(</span><span class="n">joke</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Second LLM call to improve the joke&quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Make this joke funnier by adding wordplay: </span><span class="si">{</span><span class="n">joke</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">polish_joke</span><span class="p">(</span><span class="n">joke</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Third LLM call for final polish&quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Add a surprising twist to this joke: </span><span class="si">{</span><span class="n">joke</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">prompt_chaining_workflow</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">original_joke</span> <span class="o">=</span> <span class="n">generate_joke</span><span class="p">(</span><span class="n">topic</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">check_punchline</span><span class="p">(</span><span class="n">original_joke</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Pass&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">original_joke</span>
+
+    <span class="n">improved_joke</span> <span class="o">=</span> <span class="n">improve_joke</span><span class="p">(</span><span class="n">original_joke</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">polish_joke</span><span class="p">(</span><span class="n">improved_joke</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+<span class="c1"># Invoke</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">prompt_chaining_workflow</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="s2">&quot;cats&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">snapshot</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></div></div></div>
+<h2 id="并行化">并行化<a class="h-anchor" href="#并行化" aria-label="本节链接">#</a></h2>
+<p>借助并行化，LLM 可以同时处理同一个任务。这可以通过同时运行多个相互独立的子任务来实现，也可以通过多次运行同一任务以检查不同的输出来实现。并行化通常用于：</p>
+<ul><li>拆分子任务并并行运行，从而提升速度</li><li>多次运行任务以检查不同的输出，从而提升置信度</li></ul>
+<p>一些示例包括：</p>
+<ul><li>运行一个子任务处理文档中的关键词，再运行第二个子任务检查格式错误</li><li>多次运行同一个任务，依据不同标准为文档的准确性打分，例如引用数量、使用的来源数量以及来源质量</li></ul>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/dL5Sn6Cmy9pwtY0V/oss/images/parallelization.png?fit=max&amp;auto=format&amp;n=dL5Sn6Cmy9pwtY0V&amp;q=85&amp;s=8afe3c427d8cede6fed1e4b2a5107b71" alt="parallelization.png" loading="lazy" class="md-img"></p>
+<div class="tabs code-tabs" data-tabs data-group="code-2"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-2-0">Graph</button><button class="tab-btn" role="tab" data-target="code-2-1">Functional</button></div><div class="tab-panels"><div class="tab-panel active" id="code-2-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="c1"># Graph state</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">joke</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">story</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">poem</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">combined_output</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="c1"># Nodes</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_llm_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;First LLM call to generate initial joke&quot;&quot;&quot;</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write a joke about </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;joke&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">call_llm_2</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Second LLM call to generate story&quot;&quot;&quot;</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write a story about </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;story&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">call_llm_3</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Third LLM call to generate poem&quot;&quot;&quot;</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write a poem about </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;poem&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">aggregator</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine the joke, story and poem into a single output&quot;&quot;&quot;</span>
+
+    <span class="n">combined</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Here&#39;s a story, joke, and poem about </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">!</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+    <span class="n">combined</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;STORY:</span><span class="se">\n</span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;story&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+    <span class="n">combined</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;JOKE:</span><span class="se">\n</span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;joke&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+    <span class="n">combined</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;POEM:</span><span class="se">\n</span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;poem&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;combined_output&quot;</span><span class="p">:</span> <span class="n">combined</span><span class="p">}</span>
+
+
+<span class="c1"># Build workflow</span>
+<span class="n">parallel_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+
+<span class="c1"># Add nodes</span>
+<span class="n">parallel_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;call_llm_1&quot;</span><span class="p">,</span> <span class="n">call_llm_1</span><span class="p">)</span>
+<span class="n">parallel_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;call_llm_2&quot;</span><span class="p">,</span> <span class="n">call_llm_2</span><span class="p">)</span>
+<span class="n">parallel_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;call_llm_3&quot;</span><span class="p">,</span> <span class="n">call_llm_3</span><span class="p">)</span>
+<span class="n">parallel_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;aggregator&quot;</span><span class="p">,</span> <span class="n">aggregator</span><span class="p">)</span>
+
+<span class="c1"># Add edges to connect nodes</span>
+<span class="n">parallel_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;call_llm_1&quot;</span><span class="p">)</span>
+<span class="n">parallel_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;call_llm_2&quot;</span><span class="p">)</span>
+<span class="n">parallel_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;call_llm_3&quot;</span><span class="p">)</span>
+<span class="n">parallel_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;call_llm_1&quot;</span><span class="p">,</span> <span class="s2">&quot;aggregator&quot;</span><span class="p">)</span>
+<span class="n">parallel_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;call_llm_2&quot;</span><span class="p">,</span> <span class="s2">&quot;aggregator&quot;</span><span class="p">)</span>
+<span class="n">parallel_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;call_llm_3&quot;</span><span class="p">,</span> <span class="s2">&quot;aggregator&quot;</span><span class="p">)</span>
+<span class="n">parallel_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;aggregator&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">parallel_workflow</span> <span class="o">=</span> <span class="n">parallel_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Show workflow</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">parallel_workflow</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">draw_mermaid_png</span><span class="p">()))</span>
+
+<span class="c1"># Invoke</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">parallel_workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="s2">&quot;cats&quot;</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;combined_output&quot;</span><span class="p">])</span>
+</code></pre></div></div><div class="tab-panel" id="code-2-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_llm_1</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;First LLM call to generate initial joke&quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write a joke about </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_llm_2</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Second LLM call to generate story&quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write a story about </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_llm_3</span><span class="p">(</span><span class="n">topic</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Third LLM call to generate poem&quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write a poem about </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">aggregator</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">joke</span><span class="p">,</span> <span class="n">story</span><span class="p">,</span> <span class="n">poem</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine the joke and story into a single output&quot;&quot;&quot;</span>
+
+    <span class="n">combined</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Here&#39;s a story, joke, and poem about </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">!</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+    <span class="n">combined</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;STORY:</span><span class="se">\n</span><span class="si">{</span><span class="n">story</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+    <span class="n">combined</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;JOKE:</span><span class="se">\n</span><span class="si">{</span><span class="n">joke</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+    <span class="n">combined</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;POEM:</span><span class="se">\n</span><span class="si">{</span><span class="n">poem</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">combined</span>
+
+
+<span class="c1"># Build workflow</span>
+<span class="nd">@entrypoint</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parallel_workflow</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">joke_fut</span> <span class="o">=</span> <span class="n">call_llm_1</span><span class="p">(</span><span class="n">topic</span><span class="p">)</span>
+    <span class="n">story_fut</span> <span class="o">=</span> <span class="n">call_llm_2</span><span class="p">(</span><span class="n">topic</span><span class="p">)</span>
+    <span class="n">poem_fut</span> <span class="o">=</span> <span class="n">call_llm_3</span><span class="p">(</span><span class="n">topic</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">aggregator</span><span class="p">(</span>
+        <span class="n">topic</span><span class="p">,</span> <span class="n">joke_fut</span><span class="o">.</span><span class="n">result</span><span class="p">(),</span> <span class="n">story_fut</span><span class="o">.</span><span class="n">result</span><span class="p">(),</span> <span class="n">poem_fut</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+<span class="c1"># Invoke</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">parallel_workflow</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="s2">&quot;cats&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">snapshot</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></div></div></div>
+<h2 id="路由">路由<a class="h-anchor" href="#路由" aria-label="本节链接">#</a></h2>
+<p>路由工作流会先处理输入，然后将其导向特定上下文的任务。这让你可以为复杂任务定义专门化的流程。例如，一个用于回答产品相关问题的工作流可能会先处理问题类型，然后将请求路由到针对定价、退款、退货等的具体流程。</p>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/dL5Sn6Cmy9pwtY0V/oss/images/routing.png?fit=max&amp;auto=format&amp;n=dL5Sn6Cmy9pwtY0V&amp;q=85&amp;s=272e0e9b681b89cd7d35d5c812c50ee6" alt="routing.png" loading="lazy" class="md-img"></p>
+<div class="tabs code-tabs" data-tabs data-group="code-3"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-3-0">Graph</button><button class="tab-btn" role="tab" data-target="code-3-1">Functional</button></div><div class="tab-panels"><div class="tab-panel active" id="code-3-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">HumanMessage</span><span class="p">,</span> <span class="n">SystemMessage</span>
+
+
+<span class="c1"># Schema for structured output to use as routing logic</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Route</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">step</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;poem&quot;</span><span class="p">,</span> <span class="s2">&quot;story&quot;</span><span class="p">,</span> <span class="s2">&quot;joke&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The next step in the routing process&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># Augment the LLM with schema for structured output</span>
+<span class="n">router</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">with_structured_output</span><span class="p">(</span><span class="n">Route</span><span class="p">)</span>
+
+
+<span class="c1"># State</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="nb">input</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">decision</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">output</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="c1"># Nodes</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a story&quot;&quot;&quot;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">content</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call_2</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a joke&quot;&quot;&quot;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">content</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call_3</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a poem&quot;&quot;&quot;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">content</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call_router</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Route the input to the appropriate node&quot;&quot;&quot;</span>
+
+    <span class="c1"># Run the augmented LLM with structured output to serve as routing logic</span>
+    <span class="n">decision</span> <span class="o">=</span> <span class="n">router</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">SystemMessage</span><span class="p">(</span>
+                <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Route the input to story, joke, or poem based on the user&#39;s request.&quot;</span>
+            <span class="p">),</span>
+            <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;input&quot;</span><span class="p">]),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;decision&quot;</span><span class="p">:</span> <span class="n">decision</span><span class="o">.</span><span class="n">step</span><span class="p">}</span>
+
+
+<span class="c1"># Conditional edge function to route to the appropriate node</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">route_decision</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># Return the node name you want to visit next</span>
+    <span class="k">if</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;decision&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;story&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;llm_call_1&quot;</span>
+    <span class="k">elif</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;decision&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;joke&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;llm_call_2&quot;</span>
+    <span class="k">elif</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;decision&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;poem&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;llm_call_3&quot;</span>
+
+
+<span class="c1"># Build workflow</span>
+<span class="n">router_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+
+<span class="c1"># Add nodes</span>
+<span class="n">router_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;llm_call_1&quot;</span><span class="p">,</span> <span class="n">llm_call_1</span><span class="p">)</span>
+<span class="n">router_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;llm_call_2&quot;</span><span class="p">,</span> <span class="n">llm_call_2</span><span class="p">)</span>
+<span class="n">router_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;llm_call_3&quot;</span><span class="p">,</span> <span class="n">llm_call_3</span><span class="p">)</span>
+<span class="n">router_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;llm_call_router&quot;</span><span class="p">,</span> <span class="n">llm_call_router</span><span class="p">)</span>
+
+<span class="c1"># Add edges to connect nodes</span>
+<span class="n">router_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;llm_call_router&quot;</span><span class="p">)</span>
+<span class="n">router_builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+    <span class="s2">&quot;llm_call_router&quot;</span><span class="p">,</span>
+    <span class="n">route_decision</span><span class="p">,</span>
+    <span class="p">{</span>  <span class="c1"># Name returned by route_decision : Name of next node to visit</span>
+        <span class="s2">&quot;llm_call_1&quot;</span><span class="p">:</span> <span class="s2">&quot;llm_call_1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;llm_call_2&quot;</span><span class="p">:</span> <span class="s2">&quot;llm_call_2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;llm_call_3&quot;</span><span class="p">:</span> <span class="s2">&quot;llm_call_3&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+<span class="n">router_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;llm_call_1&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">router_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;llm_call_2&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">router_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;llm_call_3&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="c1"># Compile workflow</span>
+<span class="n">router_workflow</span> <span class="o">=</span> <span class="n">router_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Show the workflow</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">router_workflow</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">draw_mermaid_png</span><span class="p">()))</span>
+
+<span class="c1"># Invoke</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">router_workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;Write me a joke about cats&quot;</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">])</span>
+</code></pre></div></div><div class="tab-panel" id="code-3-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">HumanMessage</span><span class="p">,</span> <span class="n">SystemMessage</span>
+
+
+<span class="c1"># Schema for structured output to use as routing logic</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Route</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">step</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;poem&quot;</span><span class="p">,</span> <span class="s2">&quot;story&quot;</span><span class="p">,</span> <span class="s2">&quot;joke&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The next step in the routing process&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># Augment the LLM with schema for structured output</span>
+<span class="n">router</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">with_structured_output</span><span class="p">(</span><span class="n">Route</span><span class="p">)</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call_1</span><span class="p">(</span><span class="n">input_</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a story&quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">input_</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">content</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call_2</span><span class="p">(</span><span class="n">input_</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a joke&quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">input_</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">content</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call_3</span><span class="p">(</span><span class="n">input_</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a poem&quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">input_</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">content</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call_router</span><span class="p">(</span><span class="n">input_</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Route the input to the appropriate node&quot;&quot;&quot;</span>
+    <span class="c1"># Run the augmented LLM with structured output to serve as routing logic</span>
+    <span class="n">decision</span> <span class="o">=</span> <span class="n">router</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">SystemMessage</span><span class="p">(</span>
+                <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Route the input to story, joke, or poem based on the user&#39;s request.&quot;</span>
+            <span class="p">),</span>
+            <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">input_</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">decision</span><span class="o">.</span><span class="n">step</span>
+
+
+<span class="c1"># Create workflow</span>
+<span class="nd">@entrypoint</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">router_workflow</span><span class="p">(</span><span class="n">input_</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">next_step</span> <span class="o">=</span> <span class="n">llm_call_router</span><span class="p">(</span><span class="n">input_</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">next_step</span> <span class="o">==</span> <span class="s2">&quot;story&quot;</span><span class="p">:</span>
+        <span class="n">llm_call</span> <span class="o">=</span> <span class="n">llm_call_1</span>
+    <span class="k">elif</span> <span class="n">next_step</span> <span class="o">==</span> <span class="s2">&quot;joke&quot;</span><span class="p">:</span>
+        <span class="n">llm_call</span> <span class="o">=</span> <span class="n">llm_call_2</span>
+    <span class="k">elif</span> <span class="n">next_step</span> <span class="o">==</span> <span class="s2">&quot;poem&quot;</span><span class="p">:</span>
+        <span class="n">llm_call</span> <span class="o">=</span> <span class="n">llm_call_3</span>
+
+    <span class="k">return</span> <span class="n">llm_call</span><span class="p">(</span><span class="n">input_</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+<span class="c1"># Invoke</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">router_workflow</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="s2">&quot;Write me a joke about cats&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">snapshot</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></div></div></div>
+<h2 id="编排器-工作者">编排器-工作者<a class="h-anchor" href="#编排器-工作者" aria-label="本节链接">#</a></h2>
+<p>在编排器-工作者配置中，编排器会：</p>
+<ul><li>将任务拆解为子任务</li><li>将子任务委派给工作者</li><li>将工作者的输出综合为最终结果</li></ul>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/ybiAaBfoBvFquMDz/oss/images/worker.png?fit=max&amp;auto=format&amp;n=ybiAaBfoBvFquMDz&amp;q=85&amp;s=2e423c67cd4f12e049cea9c169ff0676" alt="worker.png" loading="lazy" class="md-img"></p>
+<p>编排器-工作者工作流提供了更高的灵活性，通常用于无法像<a href="#并行化">并行化</a>那样预先定义子任务的场景。这在编写代码或需要跨多个文件更新内容的工作流中很常见。例如，一个需要为多个 Python 库在数量未知的文档中更新安装说明的工作流，就可能采用这种模式。</p>
+<div class="tabs code-tabs" data-tabs data-group="code-4"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-4-0">Graph</button><button class="tab-btn" role="tab" data-target="code-4-1">Functional</button></div><div class="tab-panels"><div class="tab-panel active" id="code-4-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+
+
+<span class="c1"># Schema for structured output to use in planning</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Section</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name for this section of the report.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Brief overview of the main topics and concepts to be covered in this section.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Sections</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">sections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Section</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Sections of the report.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># Augment the LLM with schema for structured output</span>
+<span class="n">planner</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">with_structured_output</span><span class="p">(</span><span class="n">Sections</span><span class="p">)</span>
+</code></pre></div></div><div class="tab-panel" id="code-4-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+
+
+<span class="c1"># Schema for structured output to use in planning</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Section</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name for this section of the report.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Brief overview of the main topics and concepts to be covered in this section.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Sections</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">sections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Section</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Sections of the report.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># Augment the LLM with schema for structured output</span>
+<span class="n">planner</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">with_structured_output</span><span class="p">(</span><span class="n">Sections</span><span class="p">)</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">orchestrator</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Orchestrator that generates a plan for the report&quot;&quot;&quot;</span>
+    <span class="c1"># Generate queries</span>
+    <span class="n">report_sections</span> <span class="o">=</span> <span class="n">planner</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">SystemMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Generate a plan for the report.&quot;</span><span class="p">),</span>
+            <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Here is the report topic: </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">report_sections</span><span class="o">.</span><span class="n">sections</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call</span><span class="p">(</span><span class="n">section</span><span class="p">:</span> <span class="n">Section</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Worker writes a section of the report&quot;&quot;&quot;</span>
+
+    <span class="c1"># Generate section</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">SystemMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Write a report section.&quot;</span><span class="p">),</span>
+            <span class="n">HumanMessage</span><span class="p">(</span>
+                <span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Here is the section name: </span><span class="si">{</span><span class="n">section</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> and description: </span><span class="si">{</span><span class="n">section</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Write the updated section to completed sections</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">content</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">synthesizer</span><span class="p">(</span><span class="n">completed_sections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Synthesize full report from sections&quot;&quot;&quot;</span>
+    <span class="n">final_report</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">---</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">completed_sections</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">final_report</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">orchestrator_worker</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">sections</span> <span class="o">=</span> <span class="n">orchestrator</span><span class="p">(</span><span class="n">topic</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="n">section_futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">llm_call</span><span class="p">(</span><span class="n">section</span><span class="p">)</span> <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">]</span>
+    <span class="n">final_report</span> <span class="o">=</span> <span class="n">synthesizer</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">section_fut</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">section_fut</span> <span class="ow">in</span> <span class="n">section_futures</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">final_report</span>
+
+<span class="c1"># Invoke</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">orchestrator_worker</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="s2">&quot;Create a report on LLM scaling laws&quot;</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Markdown</span>
+<span class="n">Markdown</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+</code></pre></div></div></div></div>
+<h3 id="在-langgraph-中创建工作者">在 LangGraph 中创建工作者<a class="h-anchor" href="#在-langgraph-中创建工作者" aria-label="本节链接">#</a></h3>
+<p>编排器-工作者工作流非常常见，LangGraph 对其提供了内置支持。<code>Send</code> API 让你可以动态创建工作节点，并向它们发送特定输入。每个工作者拥有自己的状态，所有工作者的输出都会写入一个共享的状态键，编排器图可以访问该键。这使得编排器能够获取全部工作者输出，并将它们综合为最终输出。下面的示例遍历一个章节列表，并使用 <code>Send</code> API 将每个章节发送给对应的工作者。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Send</span>
+
+
+<span class="c1"># Graph state</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Report topic</span>
+    <span class="n">sections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Section</span><span class="p">]</span>  <span class="c1"># List of report sections</span>
+    <span class="n">completed_sections</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="nb">list</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span>
+    <span class="p">]</span>  <span class="c1"># All workers write to this key in parallel</span>
+    <span class="n">final_report</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Final report</span>
+
+
+<span class="c1"># Worker state</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">WorkerState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">section</span><span class="p">:</span> <span class="n">Section</span>
+    <span class="n">completed_sections</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">]</span>
+
+
+<span class="c1"># Nodes</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">orchestrator</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Orchestrator that generates a plan for the report&quot;&quot;&quot;</span>
+
+    <span class="c1"># Generate queries</span>
+    <span class="n">report_sections</span> <span class="o">=</span> <span class="n">planner</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">SystemMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Generate a plan for the report.&quot;</span><span class="p">),</span>
+            <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Here is the report topic: </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;sections&quot;</span><span class="p">:</span> <span class="n">report_sections</span><span class="o">.</span><span class="n">sections</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">WorkerState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Worker writes a section of the report&quot;&quot;&quot;</span>
+
+    <span class="c1"># Generate section</span>
+    <span class="n">section</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">SystemMessage</span><span class="p">(</span>
+                <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Write a report section following the provided name and description. Include no preamble for each section. Use markdown formatting.&quot;</span>
+            <span class="p">),</span>
+            <span class="n">HumanMessage</span><span class="p">(</span>
+                <span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Here is the section name: </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;section&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> and description: </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;section&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Write the updated section to completed sections</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;completed_sections&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">section</span><span class="o">.</span><span class="n">content</span><span class="p">]}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">synthesizer</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Synthesize full report from sections&quot;&quot;&quot;</span>
+
+    <span class="c1"># List of completed sections</span>
+    <span class="n">completed_sections</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;completed_sections&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Format completed section to str to use as context for final sections</span>
+    <span class="n">completed_report_sections</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">---</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">completed_sections</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;final_report&quot;</span><span class="p">:</span> <span class="n">completed_report_sections</span><span class="p">}</span>
+
+
+<span class="c1"># Conditional edge function to create llm_call workers that each write a section of the report</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">assign_workers</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Assign a worker to each section in the plan&quot;&quot;&quot;</span>
+
+    <span class="c1"># Kick off section writing in parallel via Send() API</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">Send</span><span class="p">(</span><span class="s2">&quot;llm_call&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;section&quot;</span><span class="p">:</span> <span class="n">s</span><span class="p">})</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;sections&quot;</span><span class="p">]]</span>
+
+
+<span class="c1"># Build workflow</span>
+<span class="n">orchestrator_worker_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+
+<span class="c1"># Add the nodes</span>
+<span class="n">orchestrator_worker_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;orchestrator&quot;</span><span class="p">,</span> <span class="n">orchestrator</span><span class="p">)</span>
+<span class="n">orchestrator_worker_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;llm_call&quot;</span><span class="p">,</span> <span class="n">llm_call</span><span class="p">)</span>
+<span class="n">orchestrator_worker_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;synthesizer&quot;</span><span class="p">,</span> <span class="n">synthesizer</span><span class="p">)</span>
+
+<span class="c1"># Add edges to connect nodes</span>
+<span class="n">orchestrator_worker_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;orchestrator&quot;</span><span class="p">)</span>
+<span class="n">orchestrator_worker_builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+    <span class="s2">&quot;orchestrator&quot;</span><span class="p">,</span> <span class="n">assign_workers</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;llm_call&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">orchestrator_worker_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;llm_call&quot;</span><span class="p">,</span> <span class="s2">&quot;synthesizer&quot;</span><span class="p">)</span>
+<span class="n">orchestrator_worker_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;synthesizer&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="c1"># Compile the workflow</span>
+<span class="n">orchestrator_worker</span> <span class="o">=</span> <span class="n">orchestrator_worker_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Show the workflow</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">orchestrator_worker</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">draw_mermaid_png</span><span class="p">()))</span>
+
+<span class="c1"># Invoke</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">orchestrator_worker</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="s2">&quot;Create a report on LLM scaling laws&quot;</span><span class="p">})</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Markdown</span>
+<span class="n">Markdown</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;final_report&quot;</span><span class="p">])</span>
+</code></pre></div>
+<h2 id="评估器-优化器">评估器-优化器<a class="h-anchor" href="#评估器-优化器" aria-label="本节链接">#</a></h2>
+<p>在评估器-优化器工作流中，一次 LLM 调用生成一个响应，另一次 LLM 调用对该响应进行评估。如果评估器或<a href="interrupts.html">人在回路</a>判定该响应需要改进，就会提供反馈并重新生成响应。该循环会持续进行，直到生成可接受的响应。</p>
+<p>当任务有特定的成功标准、但需要反复迭代才能满足该标准时，通常会使用评估器-优化器工作流。例如，在两种语言之间翻译文本时并不总是存在完美匹配。可能需要经过几次迭代，才能生成在两种语言之间含义一致的译文。</p>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/-_xGPoyjhyiDWTPJ/oss/images/evaluator_optimizer.png?fit=max&amp;auto=format&amp;n=-_xGPoyjhyiDWTPJ&amp;q=85&amp;s=9bd0474f42b6040b14ed6968a9ab4e3c" alt="evaluator\_optimizer.png" loading="lazy" class="md-img"></p>
+<div class="tabs code-tabs" data-tabs data-group="code-5"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-5-0">Graph</button><button class="tab-btn" role="tab" data-target="code-5-1">Functional</button></div><div class="tab-panels"><div class="tab-panel active" id="code-5-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="c1"># Graph state</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">joke</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">feedback</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">funny_or_not</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="c1"># Schema for structured output to use in evaluation</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Feedback</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">grade</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;funny&quot;</span><span class="p">,</span> <span class="s2">&quot;not funny&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Decide if the joke is funny or not.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">feedback</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If the joke is not funny, provide feedback on how to improve it.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># Augment the LLM with schema for structured output</span>
+<span class="n">evaluator</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">with_structured_output</span><span class="p">(</span><span class="n">Feedback</span><span class="p">)</span>
+
+
+<span class="c1"># Nodes</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call_generator</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LLM generates a joke&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;feedback&quot;</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Write a joke about </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> but take into account the feedback: </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;feedback&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write a joke about </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;joke&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call_evaluator</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LLM evaluates the joke&quot;&quot;&quot;</span>
+
+    <span class="n">grade</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Grade the joke </span><span class="si">{</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;joke&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;funny_or_not&quot;</span><span class="p">:</span> <span class="n">grade</span><span class="o">.</span><span class="n">grade</span><span class="p">,</span> <span class="s2">&quot;feedback&quot;</span><span class="p">:</span> <span class="n">grade</span><span class="o">.</span><span class="n">feedback</span><span class="p">}</span>
+
+
+<span class="c1"># Conditional edge function to route back to joke generator or end based upon feedback from the evaluator</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">route_joke</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Route back to joke generator or end based upon feedback from the evaluator&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;funny_or_not&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;funny&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Accepted&quot;</span>
+    <span class="k">elif</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;funny_or_not&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;not funny&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Rejected + Feedback&quot;</span>
+
+
+<span class="c1"># Build workflow</span>
+<span class="n">optimizer_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+
+<span class="c1"># Add the nodes</span>
+<span class="n">optimizer_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;llm_call_generator&quot;</span><span class="p">,</span> <span class="n">llm_call_generator</span><span class="p">)</span>
+<span class="n">optimizer_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;llm_call_evaluator&quot;</span><span class="p">,</span> <span class="n">llm_call_evaluator</span><span class="p">)</span>
+
+<span class="c1"># Add edges to connect nodes</span>
+<span class="n">optimizer_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;llm_call_generator&quot;</span><span class="p">)</span>
+<span class="n">optimizer_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;llm_call_generator&quot;</span><span class="p">,</span> <span class="s2">&quot;llm_call_evaluator&quot;</span><span class="p">)</span>
+<span class="n">optimizer_builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+    <span class="s2">&quot;llm_call_evaluator&quot;</span><span class="p">,</span>
+    <span class="n">route_joke</span><span class="p">,</span>
+    <span class="p">{</span>  <span class="c1"># Name returned by route_joke : Name of next node to visit</span>
+        <span class="s2">&quot;Accepted&quot;</span><span class="p">:</span> <span class="n">END</span><span class="p">,</span>
+        <span class="s2">&quot;Rejected + Feedback&quot;</span><span class="p">:</span> <span class="s2">&quot;llm_call_generator&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="c1"># Compile the workflow</span>
+<span class="n">optimizer_workflow</span> <span class="o">=</span> <span class="n">optimizer_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Show the workflow</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">optimizer_workflow</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">draw_mermaid_png</span><span class="p">()))</span>
+
+<span class="c1"># Invoke</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">optimizer_workflow</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="s2">&quot;Cats&quot;</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;joke&quot;</span><span class="p">])</span>
+</code></pre></div></div><div class="tab-panel" id="code-5-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="c1"># Schema for structured output to use in evaluation</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Feedback</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">grade</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;funny&quot;</span><span class="p">,</span> <span class="s2">&quot;not funny&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Decide if the joke is funny or not.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">feedback</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If the joke is not funny, provide feedback on how to improve it.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># Augment the LLM with schema for structured output</span>
+<span class="n">evaluator</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">with_structured_output</span><span class="p">(</span><span class="n">Feedback</span><span class="p">)</span>
+
+
+<span class="c1"># Nodes</span>
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call_generator</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">feedback</span><span class="p">:</span> <span class="n">Feedback</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LLM generates a joke&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">feedback</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Write a joke about </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2"> but take into account the feedback: </span><span class="si">{</span><span class="n">feedback</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write a joke about </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">content</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call_evaluator</span><span class="p">(</span><span class="n">joke</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LLM evaluates the joke&quot;&quot;&quot;</span>
+    <span class="n">feedback</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Grade the joke </span><span class="si">{</span><span class="n">joke</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">feedback</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">optimizer_workflow</span><span class="p">(</span><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">feedback</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">joke</span> <span class="o">=</span> <span class="n">llm_call_generator</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">feedback</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+        <span class="n">feedback</span> <span class="o">=</span> <span class="n">llm_call_evaluator</span><span class="p">(</span><span class="n">joke</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">feedback</span><span class="o">.</span><span class="n">grade</span> <span class="o">==</span> <span class="s2">&quot;funny&quot;</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">joke</span>
+
+<span class="c1"># Invoke</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">optimizer_workflow</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="s2">&quot;Cats&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">snapshot</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></div></div></div>
+<h2 id="智能体">智能体<a class="h-anchor" href="#智能体" aria-label="本节链接">#</a></h2>
+<p>智能体通常被实现为使用<a href="https://docs.langchain.com/oss/python/langchain/tools" target="_blank" rel="noreferrer">工具</a>执行动作的 LLM。它们在持续的反馈循环中运行，适用于问题与解决方案都不可预测的场景。相比工作流，智能体拥有更高的自主性，可以就使用哪些工具以及如何解决问题做出决策。你仍然可以定义可用的工具集，以及规范智能体行为的准则。</p>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/-_xGPoyjhyiDWTPJ/oss/images/agent.png?fit=max&amp;auto=format&amp;n=-_xGPoyjhyiDWTPJ&amp;q=85&amp;s=bd8da41dbf8b5e6fc9ea6bb10cb63e38" alt="agent.png" loading="lazy" class="md-img"></p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>若要开始使用智能体，请参阅<a href="https://docs.langchain.com/oss/python/langchain/quickstart" target="_blank" rel="noreferrer">快速入门</a>，或在 LangChain 中进一步了解<a href="https://docs.langchain.com/oss/python/langchain/agents" target="_blank" rel="noreferrer">它们的工作原理</a>。</p></div></div>
+<div class="tabs code-tabs" data-tabs data-group="code-6"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-6-0">Using</button><button class="tab-btn" role="tab" data-target="code-6-1">Graph</button><button class="tab-btn" role="tab" data-target="code-6-2">Functional</button></div><div class="tab-panels"><div class="tab-panel active" id="code-6-0" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+
+
+<span class="c1"># Define tools</span>
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiply `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">divide</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Divide `a` and `b`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: First int</span>
+<span class="sd">        b: Second int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">b</span>
+
+
+<span class="c1"># Augment the LLM with tools</span>
+<span class="n">tools</span> <span class="o">=</span> <span class="p">[</span><span class="n">add</span><span class="p">,</span> <span class="n">multiply</span><span class="p">,</span> <span class="n">divide</span><span class="p">]</span>
+<span class="n">tools_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">tool</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">tool</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">tools</span><span class="p">}</span>
+<span class="n">llm_with_tools</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">bind_tools</span><span class="p">(</span><span class="n">tools</span><span class="p">)</span>
+</code></pre></div></div><div class="tab-panel" id="code-6-1" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">MessagesState</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SystemMessage</span><span class="p">,</span> <span class="n">HumanMessage</span><span class="p">,</span> <span class="n">ToolMessage</span>
+
+
+<span class="c1"># Nodes</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">llm_call</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LLM decides whether to call a tool or not&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">llm_with_tools</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">SystemMessage</span><span class="p">(</span>
+                        <span class="n">content</span><span class="o">=</span><span class="s2">&quot;You are a helpful assistant tasked with performing arithmetic on a set of inputs.&quot;</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+                <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">tool_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Performs the tool call&quot;&quot;&quot;</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">tool_call</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+        <span class="n">tool</span> <span class="o">=</span> <span class="n">tools_by_name</span><span class="p">[</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span>
+        <span class="n">observation</span> <span class="o">=</span> <span class="n">tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">])</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ToolMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">observation</span><span class="p">,</span> <span class="n">tool_call_id</span><span class="o">=</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">}</span>
+
+
+<span class="c1"># Conditional edge function to route to the tool node or end based upon whether the LLM made a tool call</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">should_continue</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decide if we should continue the loop or stop based upon whether the LLM made a tool call&quot;&quot;&quot;</span>
+
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+    <span class="n">last_message</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># If the LLM makes a tool call, then perform an action</span>
+    <span class="k">if</span> <span class="n">last_message</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;tool_node&quot;</span>
+
+    <span class="c1"># Otherwise, we stop (reply to the user)</span>
+    <span class="k">return</span> <span class="n">END</span>
+
+
+<span class="c1"># Build workflow</span>
+<span class="n">agent_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">)</span>
+
+<span class="c1"># Add nodes</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;llm_call&quot;</span><span class="p">,</span> <span class="n">llm_call</span><span class="p">)</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="n">tool_node</span><span class="p">)</span>
+
+<span class="c1"># Add edges to connect nodes</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;llm_call&quot;</span><span class="p">)</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+    <span class="s2">&quot;llm_call&quot;</span><span class="p">,</span>
+    <span class="n">should_continue</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">agent_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;tool_node&quot;</span><span class="p">,</span> <span class="s2">&quot;llm_call&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compile the agent</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">agent_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Show the agent</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">get_graph</span><span class="p">(</span><span class="n">xray</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">draw_mermaid_png</span><span class="p">()))</span>
+
+<span class="c1"># Invoke</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Add 3 and 4.&quot;</span><span class="p">)]</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">messages</span><span class="p">})</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]:</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">()</span>
+</code></pre></div></div><div class="tab-panel" id="code-6-2" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_messages</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SystemMessage</span><span class="p">,</span>
+    <span class="n">HumanMessage</span><span class="p">,</span>
+    <span class="n">ToolCall</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMessage</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_llm</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LLM decides whether to call a tool or not&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">llm_with_tools</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">SystemMessage</span><span class="p">(</span>
+                <span class="n">content</span><span class="o">=</span><span class="s2">&quot;You are a helpful assistant tasked with performing arithmetic on a set of inputs.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+        <span class="o">+</span> <span class="n">messages</span>
+    <span class="p">)</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_tool</span><span class="p">(</span><span class="n">tool_call</span><span class="p">:</span> <span class="n">ToolCall</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Performs the tool call&quot;&quot;&quot;</span>
+    <span class="n">tool</span> <span class="o">=</span> <span class="n">tools_by_name</span><span class="p">[</span><span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">tool_call</span><span class="p">)</span>
+
+
+<span class="nd">@entrypoint</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">agent</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseMessage</span><span class="p">]):</span>
+    <span class="n">llm_response</span> <span class="o">=</span> <span class="n">call_llm</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">llm_response</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c1"># Execute tools</span>
+        <span class="n">tool_result_futures</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">call_tool</span><span class="p">(</span><span class="n">tool_call</span><span class="p">)</span> <span class="k">for</span> <span class="n">tool_call</span> <span class="ow">in</span> <span class="n">llm_response</span><span class="o">.</span><span class="n">tool_calls</span>
+        <span class="p">]</span>
+        <span class="n">tool_results</span> <span class="o">=</span> <span class="p">[</span><span class="n">fut</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">fut</span> <span class="ow">in</span> <span class="n">tool_result_futures</span><span class="p">]</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="p">[</span><span class="n">llm_response</span><span class="p">,</span> <span class="o">*</span><span class="n">tool_results</span><span class="p">])</span>
+        <span class="n">llm_response</span> <span class="o">=</span> <span class="n">call_llm</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">add_messages</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="n">llm_response</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">messages</span>
+
+<span class="c1"># Invoke</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Add 3 and 4.&quot;</span><span class="p">)]</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">snapshot</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></div></div></div>
+<h3 id="toolnode">ToolNode<a class="h-anchor" href="#toolnode" aria-label="本节链接">#</a></h3>
+<p><a href="https://reference.langchain.com/python/langgraph/agents/#langgraph.prebuilt.tool_node.ToolNode" target="_blank" rel="noreferrer"> 0 </a> 是一个预构建节点，用于在 LangGraph 工作流中执行工具。它会自动处理并行工具执行、错误处理以及状态注入。</p>
+<p>当你需要细粒度地控制图执行工具的方式时，请使用 <a href="https://reference.langchain.com/python/langgraph/agents/#langgraph.prebuilt.tool_node.ToolNode" target="_blank" rel="noreferrer"> 0 </a>。这一构建块为许多 LangGraph 智能体模式中的工具执行提供了支撑。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.prebuilt</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolNode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">MessagesState</span><span class="p">,</span> <span class="n">StateGraph</span>
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Search for information.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Results for: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculator</span><span class="p">(</span><span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate a math expression.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">expression</span><span class="p">))</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;tools&quot;</span><span class="p">,</span> <span class="n">ToolNode</span><span class="p">([</span><span class="n">search</span><span class="p">,</span> <span class="n">calculator</span><span class="p">]))</span>
+<span class="c1"># ... add other nodes and edges</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</code></pre></div>
+<h4 id="从工具访问图状态与上下文">从工具访问图状态与上下文</h4>
+<p>由 <code>ToolNode</code> 执行的工具会将模型生成的参数作为第一个参数接收。若要读取并非由模型生成的图侧数据，请使用以下选项之一：</p>
+<ul><li>在 Python 中，从注入的 <a href="https://reference.langchain.com/python/langchain/tools/#langchain.tools.ToolRuntime" target="_blank" rel="noreferrer"> 0 </a> 参数中读取状态与运行作用域上下文。</li><li>在 JavaScript 中，从工具的第二个参数中读取状态与运行作用域上下文，该参数的类型为 <a href="https://reference.langchain.com/python/langchain/tools/#langchain.tools.ToolRuntime" target="_blank" rel="noreferrer"> 0 </a>。</li></ul>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>工具只能访问传递给 <code>ToolNode</code> 的状态值。当 <code>ToolNode</code> 被直接添加为 <code>StateGraph</code> 节点时，该输入即为当前图状态。如果你从另一个节点手动调用 <code>ToolNode</code>，那么当工具需要自定义状态字段时，请传入完整状态。例如，<code>tool_node.invoke(state)</code> 或 <code>toolNode.invoke(state, config)</code> 会暴露完整状态，而只传入 <code>{"messages": state["messages"]}</code> 或 <code>{ messages: state.messages }</code> 则仅暴露 <code>messages</code>。</p></div></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">AIMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolRuntime</span><span class="p">,</span> <span class="n">tool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">MessagesState</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.prebuilt</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolNode</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">):</span>
+    <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Context</span><span class="p">:</span>
+    <span class="n">organization_id</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_user_info</span><span class="p">(</span><span class="n">runtime</span><span class="p">:</span> <span class="n">ToolRuntime</span><span class="p">[</span><span class="n">Context</span><span class="p">,</span> <span class="n">State</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Look up user information.&quot;&quot;&quot;</span>
+    <span class="c1"># Read the current graph state passed to the ToolNode.</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">runtime</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Read explicit per-run values that are not part of graph state.</span>
+    <span class="n">organization_id</span> <span class="o">=</span> <span class="n">runtime</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">organization_id</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;User </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2"> in organization </span><span class="si">{</span><span class="n">organization_id</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">,</span> <span class="n">context_schema</span><span class="o">=</span><span class="n">Context</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;tools&quot;</span><span class="p">,</span> <span class="n">ToolNode</span><span class="p">([</span><span class="n">get_user_info</span><span class="p">]))</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;tools&quot;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">AIMessage</span><span class="p">(</span>
+                <span class="n">content</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="n">tool_calls</span><span class="o">=</span><span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;get_user_info&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{},</span>
+                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;call_user_info&quot;</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">],</span>
+            <span class="p">)</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="s2">&quot;user_123&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">context</span><span class="o">=</span><span class="n">Context</span><span class="p">(</span><span class="n">organization_id</span><span class="o">=</span><span class="s2">&quot;org_456&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+</code></pre></div>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="https://smith.langchain.com/public/b6a9bdb0-7f6c-44ed-b11e-af804484b5e1/r" target="_blank" rel="noreferrer">查看示例追踪</a></div><div class="card-body"><p>打开此示例对应的公开 LangSmith 运行记录。</p></div></div></div>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档连接到</a>你选用的智能体，通过 MCP 获取实时答案。</p>
+<p>在 GitHub 上<a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/workflows-agents.mdx" target="_blank" rel="noreferrer">编辑此页面</a>，或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="use-subgraphs.html"><span class="lbl">上一页</span><span class="ttl">子图</span></a><a class="next" href="case-studies.html"><span class="lbl">下一页</span><span class="ttl">案例研究</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#环境设置">环境设置</a></li><li class="lvl-2"><a href="#llm-与增强">LLM 与增强</a></li><li class="lvl-2"><a href="#提示词链">提示词链</a></li><li class="lvl-2"><a href="#并行化">并行化</a></li><li class="lvl-2"><a href="#路由">路由</a></li><li class="lvl-2"><a href="#编排器-工作者">编排器-工作者</a></li><li class="lvl-3"><a href="#在-langgraph-中创建工作者">在 LangGraph 中创建工作者</a></li><li class="lvl-2"><a href="#评估器-优化器">评估器-优化器</a></li><li class="lvl-2"><a href="#智能体">智能体</a></li><li class="lvl-3"><a href="#toolnode">ToolNode</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

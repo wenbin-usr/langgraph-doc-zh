@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>检查点保存器 · LangGraph 中文文档</title>
+<meta name="description" content="LangGraph 检查点保存器会在每一步将图状态保存为检查点，从而支持持久化、人在回路和容错执行。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link active" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/checkpointers" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>核心能力</span><span class="sep">/</span><span>检查点保存器</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">核心能力</span>
+          <h1>检查点保存器</h1>
+          <p class="page-desc">LangGraph 检查点保存器会在每一步将图状态保存为检查点，从而支持持久化、人在回路和容错执行。</p>
+        </div>
+        <div class="doc-body"><p>检查点保存器会在每个超步保存图状态的快照，并按<strong>线程</strong>组织。使用检查点保存器编译图，即可支持人在回路工作流、时间旅行调试、容错执行和对话记忆。</p>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/-_xGPoyjhyiDWTPJ/oss/images/checkpoints.jpg?fit=max&amp;auto=format&amp;n=-_xGPoyjhyiDWTPJ&amp;q=85&amp;s=966566aaae853ed4d240c2d0d067467c" alt="Checkpoints" loading="lazy" class="md-img"></p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p><strong>Agent Server 会自动处理检查点</strong> 使用 <a href="https://docs.langchain.com/langsmith/agent-server" target="_blank" rel="noreferrer">Agent Server</a> 时，你无需手动实现或配置检查点保存器。服务器会在后台为你处理所有持久化基础设施。</p></div></div>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p>使用 <a href="https://smith.langchain.com?utm_source=docs&amp;utm_medium=cta&amp;utm_campaign=langsmith-signup&amp;utm_content=oss-langgraph-checkpointers" target="_blank" rel="noreferrer">LangSmith</a> 追踪已保存检查点的状态，并调试智能体如何跨会话恢复。按照<a href="https://docs.langchain.com/langsmith/trace-with-langgraph" target="_blank" rel="noreferrer">追踪快速入门</a>完成设置。</p></div></div>
+<h2 id="为什么使用检查点保存器">为什么使用检查点保存器<a class="h-anchor" href="#为什么使用检查点保存器" aria-label="本节链接">#</a></h2>
+<p>以下功能需要使用检查点保存器：</p>
+<ul><li><strong>人在回路</strong>：检查点保存器通过允许人类检查、中断和批准图的步骤来支持<a href="interrupts.html">人在回路工作流</a>。这些工作流需要检查点保存器，因为用户必须能够查看图在任意时间点的状态，并且图必须能够在用户对状态做出任何更新后恢复执行。示例见<a href="interrupts.html">中断</a>。</li><li><strong>记忆</strong>：检查点保存器允许交互之间存在<a href="https://docs.langchain.com/oss/python/concepts/memory" target="_blank" rel="noreferrer">"记忆"</a>。对于重复的人类交互（例如对话），任何后续消息都可以发送到该线程，线程会保留对先前消息的记忆。有关如何使用检查点保存器添加和管理对话记忆的信息，请参见<a href="add-memory.html">添加记忆</a>。</li><li><strong>时间旅行</strong>：检查点保存器允许<a href="use-time-travel.html">"时间旅行"</a>，使用户能够重放先前的图执行，以查看和/或调试特定的图步骤。此外，检查点保存器还能在任意检查点分叉图状态，以探索不同的轨迹。</li><li><strong>容错</strong>：检查点提供容错和错误恢复：如果一个或多个节点在给定超步失败，你可以从最后一个成功的步骤重新启动图。</li><li><strong>待处理写入</strong>：当某个图节点在给定<a href="#超步">超步</a>执行中途失败时，LangGraph 会存储该超步中其他已成功完成的节点的待处理检查点写入。当你从该超步恢复图执行时，不会重新运行这些成功的节点。</li></ul>
+<span class="anchor-alias" id="pending-writes"></span><h2 id="核心概念">核心概念<a class="h-anchor" href="#核心概念" aria-label="本节链接">#</a></h2>
+<h3 id="线程">线程<a class="h-anchor" href="#线程" aria-label="本节链接">#</a></h3>
+<p>线程是分配给检查点保存器所保存的每个检查点的唯一 ID 或线程标识符。它包含一系列<a href="https://docs.langchain.com/langsmith/runs" target="_blank" rel="noreferrer">运行</a>的累积状态。当执行一次运行时，助手底层图的<a href="graph-api.html#state">状态</a>将被持久化到该线程。</p>
+<p>使用检查点保存器调用图时，你<strong>必须</strong>在配置的 <code>configurable</code> 部分中指定 <code>thread_id</code>：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+</code></pre></div>
+<p>线程的当前状态和历史状态都可以被检索。要持久化状态，必须在执行运行之前创建线程。LangSmith API 提供了多个用于创建和管理线程及线程状态的端点。详情请参见 <a href="https://reference.langchain.com/python/langsmith/" target="_blank" rel="noreferrer">API 参考</a>。</p>
+<p>检查点保存器使用 <code>thread_id</code> 作为存储和检索检查点的主键。没有它，检查点保存器就无法保存状态，也无法在<a href="interrupts.html">中断</a>后恢复执行，因为检查点保存器要使用 <code>thread_id</code> 来加载已保存的状态。</p>
+<h4 id="选择如何继续线程">选择如何继续线程</h4>
+<p><code>thread_id</code> 标识已保存的状态。输入和 <code>checkpoint_id</code> 决定一次调用是开始新的工作、恢复未完成的工作，还是重放历史。仅重用线程 ID 并不意味着执行会恢复。</p>
+<p>在已有检查点保存器和已有线程的情况下，请根据你的目标选择调用方式：</p>
+<div class="table-wrap"><table><thead><tr><th>目标</th><th>调用方式</th><th>执行行为</th></tr></thead><tbody><tr><td>提交新输入</td><td><code>graph.invoke(input, config)</code></td><td>将输入应用到已保存状态，并从入口点开始执行。</td></tr><tr><td>在错误后继续</td><td><code>graph.invoke(None, config)</code></td><td>加载最新检查点并重试未完成的工作。省略 <code>checkpoint_id</code>。</td></tr><tr><td>回答 <code>interrupt()</code></td><td><code>graph.invoke(Command(resume=answer), config)</code></td><td>提供中断的返回值。被中断的节点会从其开头重新开始。</td></tr><tr><td>重放历史</td><td><code>graph.invoke(None, snapshot.config)</code></td><td>使用来自 <code>get_state_history()</code> 的快照，并重新执行该检查点之后的节点。</td></tr></tbody></table></div>
+<p>新输入不会清空线程。LangGraph 会使用状态的<a href="graph-api.html#reducers">归并函数</a>来应用它。要使用空状态开始，请使用新的 <code>thread_id</code>。</p>
+<p>当最新检查点没有未完成的工作时，恢复会返回已保存的结果而不运行节点。可运行的示例见<a href="functional-api-tasks.html#resume-after-an-error">Functional API 错误恢复</a>、<a href="interrupts.html#resuming-interrupts">恢复中断</a>和<a href="use-time-travel.html#replay">重放历史</a>。</p>
+<h3 id="检查点">检查点<a class="h-anchor" href="#检查点" aria-label="本节链接">#</a></h3>
+<p>线程在特定时间点的状态称为检查点。检查点是在每个<a href="#超步">超步</a>保存的图状态快照，由 <code>StateSnapshot</code> 对象表示（完整字段参考见 <a href="#statesnapshot-字段">StateSnapshot 字段</a>）。</p>
+<h4 id="超步">超步</h4>
+<p>LangGraph 会在每个<strong>超步</strong>边界创建一个检查点。超步是图的一次单独“tick”，在该步中被调度的所有节点都会执行（可能并行执行）。对于像 <code>START -&gt; A -&gt; B -&gt; END</code> 这样的顺序图，输入、节点 A 和节点 B 分别有各自的超步——每完成一个就会产生一个检查点。理解超步边界对<a href="use-time-travel.html">时间旅行</a>很重要，因为你只能从检查点（即超步边界）恢复执行。</p>
+<p>除了超步检查点之外，LangGraph 还会在<strong>节点（任务）级别</strong>持久化写入。当一个超步内的每个节点完成时，其输出会作为任务条目写入检查点保存器的 <code>checkpoint_writes</code> 表，并链接到进行中的检查点。正是这些按任务划分的写入实现了<a href="#pending-writes">待处理写入</a>恢复：如果同一超步中的另一个节点失败，成功节点的写入已经持久化，恢复时无需重新运行。随后，当超步完成时会提交完整的状态快照。</p>
+<p>LangGraph 还会持久化超步内各个节点执行的写入。这些写入作为任务存储，并用于容错：如果同一超步中的另一个节点失败，恢复时无需重新计算成功节点的写入。这些任务写入不是完整的 <code>StateSnapshot</code> 检查点，因此时间旅行会从超步边界的完整检查点恢复。</p>
+<p>检查点会被持久化，并可用于在之后恢复线程的状态。</p>
+<p>让我们看看如下调用一个简单图时会保存哪些检查点：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.runnables</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunnableConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">add</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">foo</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">bar</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">add</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_a</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_b</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">]}</span>
+
+
+<span class="n">workflow</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node_a</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node_b</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node_a&quot;</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node_a&quot;</span><span class="p">,</span> <span class="s2">&quot;node_b&quot;</span><span class="p">)</span>
+<span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node_b&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+
+<span class="n">config</span><span class="p">:</span> <span class="n">RunnableConfig</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">:[]},</span> <span class="n">config</span><span class="p">)</span>
+</code></pre></div>
+<p>运行该图后，将恰好有 4 个检查点：</p>
+<ul><li>空检查点，下一个要执行的节点为 <a href="https://reference.langchain.com/python/langgraph/constants/START" target="_blank" rel="noreferrer"> 0 </a></li><li>包含用户输入 <code>{'foo': '', 'bar': []}</code> 的检查点，下一个要执行的节点为 <code>node_a</code></li><li>包含 <code>node_a</code> 输出 <code>{'foo': 'a', 'bar': ['a']}</code> 的检查点，下一个要执行的节点为 <code>node_b</code></li><li>包含 <code>node_b</code> 输出 <code>{'foo': 'b', 'bar': ['a', 'b']}</code> 的检查点，没有下一个要执行的节点</li></ul>
+<p>请注意，<code>bar</code> 通道的值包含两个节点的输出，因为本例为 <code>bar</code> 通道配置了归并函数。</p>
+<h4 id="检查点命名空间">检查点命名空间</h4>
+<p>每个检查点都有一个 <code>checkpoint_ns</code>（检查点命名空间）字段，用于标识它属于哪个图或子图：</p>
+<ul><li><strong><code>""</code></strong>（空字符串）：该检查点属于父（根）图。</li><li><strong><code>"node_name:uuid"</code></strong>：该检查点属于作为给定节点调用的子图。对于嵌套子图，命名空间用 <code>|</code> 分隔符连接（例如 <code>"outer_node:uuid|inner_node:uuid"</code>）。</li></ul>
+<p>你可以通过 config 从节点内部访问检查点命名空间：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.runnables</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunnableConfig</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">RunnableConfig</span><span class="p">):</span>
+    <span class="n">checkpoint_ns</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">][</span><span class="s2">&quot;checkpoint_ns&quot;</span><span class="p">]</span>
+    <span class="c1"># &quot;&quot; for the parent graph, &quot;node_name:uuid&quot; for a subgraph</span>
+</code></pre></div>
+<p>有关使用子图状态和检查点的更多细节，请参见<a href="use-subgraphs.html">子图</a>。</p>
+<h2 id="获取与更新状态">获取与更新状态<a class="h-anchor" href="#获取与更新状态" aria-label="本节链接">#</a></h2>
+<h3 id="获取状态">获取状态<a class="h-anchor" href="#获取状态" aria-label="本节链接">#</a></h3>
+<p>与已保存的图状态交互时，你<strong>必须</strong>指定<a href="#线程">线程标识符</a>。你可以通过调用 <code>graph.get_state(config)</code> 查看图的*最新*状态。该调用会返回一个 <code>StateSnapshot</code> 对象，它对应配置中提供的线程 ID 所关联的最新检查点；如果提供了检查点 ID，则对应线程中该检查点 ID 所关联的检查点。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="c1"># get the latest state snapshot</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+<span class="c1"># get a state snapshot for a specific checkpoint_id</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;checkpoint_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1ef663ba-28fe-6528-8002-5a559208592c&quot;</span><span class="p">}}</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</code></pre></div>
+<p>在此示例中，<code>get_state</code> 的输出如下所示：</p>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">StateSnapshot(
+    values={'foo': 'b', 'bar': ['a', 'b']},
+    next=(),
+    config={'configurable': {'thread_id': '1', 'checkpoint_ns': '', 'checkpoint_id': '1ef663ba-28fe-6528-8002-5a559208592c'}},
+    metadata={'source': 'loop', 'writes': {'node_b': {'foo': 'b', 'bar': ['b']}}, 'step': 2},
+    created_at='2024-08-29T19:19:38.821749+00:00',
+    parent_config={'configurable': {'thread_id': '1', 'checkpoint_ns': '', 'checkpoint_id': '1ef663ba-28f9-6ec4-8001-31981c2c39f8'}},
+    tasks=()
+)</code></pre></div>
+<h4 id="statesnapshot-字段">StateSnapshot 字段</h4>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>类型</th><th>描述</th></tr></thead><tbody><tr><td><code>values</code></td><td><code>dict</code></td><td>该检查点处的状态通道值。</td></tr><tr><td><code>next</code></td><td><code>tuple[str, ...]</code></td><td>接下来要执行的节点名称。空 <code>()</code> 表示图已执行完毕。</td></tr><tr><td><code>config</code></td><td><code>dict</code></td><td>包含 <code>thread_id</code>、<code>checkpoint_ns</code> 和 <code>checkpoint_id</code>。</td></tr><tr><td><code>metadata</code></td><td><code>dict</code></td><td>执行元数据。包含 <code>source</code>（<code>"input"</code>、<code>"loop"</code> 或 <code>"update"</code>）、<code>writes</code>（节点输出）以及 <code>step</code>（超步计数器）。</td></tr><tr><td><code>created_at</code></td><td><code>str</code></td><td>该检查点创建时间的 ISO 8601 时间戳。</td></tr><tr><td><code>parent_config</code></td><td><code>dict | None</code></td><td>上一个检查点的配置。首个检查点为 <code>None</code>。</td></tr><tr><td><code>tasks</code></td><td><code>tuple[PregelTask, ...]</code></td><td>该步骤要执行的任务。每个任务包含 <code>id</code>、<code>name</code>、<code>error</code>、<code>interrupts</code>，以及可选的 <code>state</code>（子图快照，在使用 <code>subgraphs=True</code> 时提供）。</td></tr></tbody></table></div>
+<h3 id="获取状态历史">获取状态历史<a class="h-anchor" href="#获取状态历史" aria-label="本节链接">#</a></h3>
+<p>你可以通过调用 <a href="https://reference.langchain.com/python/langgraph/graphs/#langgraph.graph.state.CompiledStateGraph.get_state_history" target="_blank" rel="noreferrer"> 0 </a> 获取给定线程的完整图执行历史。该调用会返回一个 <code>StateSnapshot</code> 对象列表，对应配置中提供的线程 ID。重要的是，检查点按时间先后排序，最新的检查点 / <code>StateSnapshot</code> 位于列表首位。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+<span class="nb">list</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">get_state_history</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
+</code></pre></div>
+<p>在此示例中，<a href="https://reference.langchain.com/python/langgraph/graphs/#langgraph.graph.state.CompiledStateGraph.get_state_history" target="_blank" rel="noreferrer"> 0 </a> 的输出如下所示：</p>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">[
+    StateSnapshot(
+        values={'foo': 'b', 'bar': ['a', 'b']},
+        next=(),
+        config={'configurable': {'thread_id': '1', 'checkpoint_ns': '', 'checkpoint_id': '1ef663ba-28fe-6528-8002-5a559208592c'}},
+        metadata={'source': 'loop', 'writes': {'node_b': {'foo': 'b', 'bar': ['b']}}, 'step': 2},
+        created_at='2024-08-29T19:19:38.821749+00:00',
+        parent_config={'configurable': {'thread_id': '1', 'checkpoint_ns': '', 'checkpoint_id': '1ef663ba-28f9-6ec4-8001-31981c2c39f8'}},
+        tasks=(),
+    ),
+    StateSnapshot(
+        values={'foo': 'a', 'bar': ['a']},
+        next=('node_b',),
+        config={'configurable': {'thread_id': '1', 'checkpoint_ns': '', 'checkpoint_id': '1ef663ba-28f9-6ec4-8001-31981c2c39f8'}},
+        metadata={'source': 'loop', 'writes': {'node_a': {'foo': 'a', 'bar': ['a']}}, 'step': 1},
+        created_at='2024-08-29T19:19:38.819946+00:00',
+        parent_config={'configurable': {'thread_id': '1', 'checkpoint_ns': '', 'checkpoint_id': '1ef663ba-28f4-6b4a-8000-ca575a13d36a'}},
+        tasks=(PregelTask(id='6fb7314f-f114-5413-a1f3-d37dfe98ff44', name='node_b', error=None, interrupts=()),),
+    ),
+    StateSnapshot(
+        values={'foo': '', 'bar': []},
+        next=('node_a',),
+        config={'configurable': {'thread_id': '1', 'checkpoint_ns': '', 'checkpoint_id': '1ef663ba-28f4-6b4a-8000-ca575a13d36a'}},
+        metadata={'source': 'loop', 'writes': None, 'step': 0},
+        created_at='2024-08-29T19:19:38.817813+00:00',
+        parent_config={'configurable': {'thread_id': '1', 'checkpoint_ns': '', 'checkpoint_id': '1ef663ba-28f0-6c66-bfff-6723431e8481'}},
+        tasks=(PregelTask(id='f1b14528-5ee5-579c-949b-23ef9bfbed58', name='node_a', error=None, interrupts=()),),
+    ),
+    StateSnapshot(
+        values={'bar': []},
+        next=('__start__',),
+        config={'configurable': {'thread_id': '1', 'checkpoint_ns': '', 'checkpoint_id': '1ef663ba-28f0-6c66-bfff-6723431e8481'}},
+        metadata={'source': 'input', 'writes': {'foo': ''}, 'step': -1},
+        created_at='2024-08-29T19:19:38.816205+00:00',
+        parent_config=None,
+        tasks=(PregelTask(id='6d27aa2e-d72b-5504-a36f-8620e54a76dd', name='__start__', error=None, interrupts=()),),
+    )
+]</code></pre></div>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/-_xGPoyjhyiDWTPJ/oss/images/get_state.jpg?fit=max&amp;auto=format&amp;n=-_xGPoyjhyiDWTPJ&amp;q=85&amp;s=38ffff52be4d8806b287836295a3c058" alt="State" loading="lazy" class="md-img"></p>
+<h4 id="查找特定检查点">查找特定检查点</h4>
+<p>你可以过滤状态历史，以查找符合特定条件的检查点：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">history</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">get_state_history</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
+
+<span class="c1"># Find the checkpoint before a specific node executed</span>
+<span class="n">before_node_b</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">history</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">next</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;node_b&quot;</span><span class="p">,))</span>
+
+<span class="c1"># Find a checkpoint by step number</span>
+<span class="n">step_2</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">history</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Find checkpoints created by update_state</span>
+<span class="n">forks</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">history</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;update&quot;</span><span class="p">]</span>
+
+<span class="c1"># Find the checkpoint where an interrupt occurred</span>
+<span class="n">interrupted</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+    <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">history</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">tasks</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">interrupts</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">tasks</span><span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div>
+<h4 id="列出所有线程">列出所有线程</h4>
+<p>若要查看检查点保存器为哪些线程保存了状态（例如构建管理视图或调试视图），在列出检查点时省略 <code>thread_id</code>：</p>
+<p><code>graph.get_state_history(config)</code> 要求 <code>config</code> 中提供 <code>thread_id</code>，且只返回单个线程的历史。可在传给 <code>compile</code> 的同一个检查点保存器上调用 <code>.list</code>，并传入 <code>config=None</code>：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="c1"># config=None returns checkpoints across every thread</span>
+<span class="k">for</span> <span class="n">checkpoint_tuple</span> <span class="ow">in</span> <span class="n">checkpointer</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">checkpoint_tuple</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">][</span><span class="s2">&quot;thread_id&quot;</span><span class="p">])</span>
+</code></pre></div>
+<p>传入 <code>None</code>，而不是 <code>{}</code>。<a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.sqlite.SqliteSaver" target="_blank" rel="noreferrer"> 2 </a> 会将任何非 <code>None</code> 的配置视为线程过滤器，并在缺少 <code>thread_id</code> 时抛出错误。对于异步图，请改用 <code>.alist(None)</code>。此用法适用于 <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.memory.InMemorySaver" target="_blank" rel="noreferrer"> 6 </a>、<a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.sqlite.SqliteSaver" target="_blank" rel="noreferrer"> 7 </a> 和 <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.postgres.PostgresSaver" target="_blank" rel="noreferrer"> 8 </a>。<code>.list</code> 仍然按每个检查点返回一行，而不是按线程返回，因此你需要自行按 <code>thread_id</code> 分组来构建线程列表。</p>
+<h3 id="重放">重放<a class="h-anchor" href="#重放" aria-label="本节链接">#</a></h3>
+<p>重放会从先前的检查点重新执行步骤。用先前的 <code>checkpoint_id</code> 调用图，即可重新运行该检查点之后的节点。该检查点之前的节点会被跳过（其结果已保存）。该检查点之后的节点会重新执行，包括任何 LLM 调用、API 请求或<a href="interrupts.html">中断</a>——中断在重放期间总是会被重新触发。</p>
+<p>有关重放历史执行的完整细节和代码示例，请参阅<a href="use-time-travel.html">时间旅行</a>。</p>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/dL5Sn6Cmy9pwtY0V/oss/images/re_play.png?fit=max&amp;auto=format&amp;n=dL5Sn6Cmy9pwtY0V&amp;q=85&amp;s=d7b34b85c106e55d181ae1f4afb50251" alt="Replay" loading="lazy" class="md-img"></p>
+<h3 id="更新状态">更新状态<a class="h-anchor" href="#更新状态" aria-label="本节链接">#</a></h3>
+<p>你可以使用 <a href="https://reference.langchain.com/python/langgraph/graphs/#langgraph.graph.state.CompiledStateGraph.update_state" target="_blank" rel="noreferrer"> 0 </a> 编辑图状态。这会用更新后的值创建一个新的检查点——它不会修改原始检查点。该更新与节点更新的处理方式相同：当定义了<a href="graph-api.html#reducers">归并函数</a>时，值会通过归并函数传递，因此带归并函数的通道会*累积*值，而不是覆盖值。</p>
+<p>你可以选择指定 <code>as_node</code>，以控制该更新被视为来自哪个节点，这会影响接下来执行哪个节点。详情请参阅<a href="use-time-travel.html#from-a-specific-node">时间旅行： 1 </a>。</p>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/-_xGPoyjhyiDWTPJ/oss/images/checkpoints_full_story.jpg?fit=max&amp;auto=format&amp;n=-_xGPoyjhyiDWTPJ&amp;q=85&amp;s=a52016b2c44b57bd395d6e1eac47aa36" alt="Update" loading="lazy" class="md-img"></p>
+<h2 id="持久化模式">持久化模式<a class="h-anchor" href="#持久化模式" aria-label="本节链接">#</a></h2>
+<p>LangGraph 支持三种持久化模式，让你可以在性能与数据一致性之间取得平衡。你可以在调用任意图执行方法时指定持久化模式：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">graph</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">},</span>
+    <span class="n">durability</span><span class="o">=</span><span class="s2">&quot;sync&quot;</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>持久化模式按持久性从低到高排列如下：</p>
+<ul><li><code>"exit"</code>：LangGraph 仅在图执行退出时持久化变更——无论是成功、出错，还是由于人在回路中断而退出。这为长时间运行的图提供了最佳性能，但意味着中间状态不会被保存，因此你无法在执行中途从系统故障（例如进程崩溃）中恢复。</li><li><code>"async"</code>：LangGraph 在下一步执行期间异步持久化变更。这提供了良好的性能与持久性，但如果进程在执行期间崩溃，LangGraph 存在未写入检查点的小风险。</li><li><code>"sync"</code>：LangGraph 在下一步开始前同步持久化变更。这确保 LangGraph 在继续执行前写入每一个检查点，以一定的性能开销为代价提供高持久性。</li></ul>
+<h3 id="新线程上的首个持久化检查点">新线程上的首个持久化检查点<a class="h-anchor" href="#新线程上的首个持久化检查点" aria-label="本节链接">#</a></h3>
+<p>对于新线程，持久化模式还决定了在第一个用户节点执行之前提交哪些检查点。内部的 <code>__start__</code> 超步会先运行；步骤 <code>0</code> 是在该超步之后写入的循环检查点。</p>
+<ul><li><code>"exit"</code>：在运行结束之前不存在任何检查点。运行期间崩溃不会留下该线程的任何记录。</li><li><code>"async"</code>：LangGraph 会在第一个用户节点执行之前开始写入输入检查点，但不等待写入完成。第一个用户节点可能在任何一个检查点提交之前就已运行。</li><li><code>"sync"</code>：LangGraph 会在第一个用户节点执行之前提交输入检查点（步骤 <code>-1</code>）和步骤 <code>0</code> 检查点。</li></ul>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-icon">⚠</span><span>警告</span></div><div class="callout-body"><p>在每种模式下，如果在第一个检查点变为持久化之前发生崩溃，该线程将与从未被调用过的线程无法区分：两种情况下的 <code>get_tuple()</code> 都返回 <code>None</code>，而 <code>invoke(None, config)</code> 会抛出 <code>EmptyInputError</code>。如果你需要区分“从未被接受”与“已接受但丢失”，请在检查点保存器之外记录受理信息，例如在调用 <code>invoke</code> 之前向自己的存储提交一条发件箱记录。</p></div></div>
+<h2 id="优化检查点存储">优化检查点存储<a class="h-anchor" href="#优化检查点存储" aria-label="本节链接">#</a></h2>
+<p>默认情况下，LangGraph 检查点会在每个超步写入每个状态通道的完整值。对于累积量很大的长时间运行线程——例如多轮对话——这可能会随着时间推移导致存储量显著增长。</p>
+<p><a href="https://reference.langchain.com/python/langgraph/channels/delta/DeltaChannel" target="_blank" rel="noreferrer"> 0 </a> 只存储增量差值，而不是完整的累积值，从而大幅减小追加密集型通道的检查点大小。用法以及存储与延迟之间的权衡请参见 <a href="pregel.html#deltachannel">DeltaChannel</a>。</p>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-icon">⚠</span><span>警告</span></div><div class="callout-body"><p><code>DeltaChannel</code> 需要 <code>langgraph&gt;=1.2</code>，目前处于 beta 阶段。该 API 在未来的版本中可能发生变化。</p></div></div>
+<h2 id="检查点库">检查点库<a class="h-anchor" href="#检查点库" aria-label="本节链接">#</a></h2>
+<p>在底层，检查点由符合 <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.base.BaseCheckpointSaver" target="_blank" rel="noreferrer"> 0 </a> 接口的检查点对象驱动。LangGraph 提供了多种检查点实现，它们全部通过独立、可安装的库实现。</p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>有关可用的提供方，请参阅<a href="https://docs.langchain.com/oss/python/integrations/checkpointers/index" target="_blank" rel="noreferrer">检查点集成</a>。</p></div></div>
+<ul><li><code>langgraph-checkpoint</code>：检查点保存器的基接口（<a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.base.BaseCheckpointSaver" target="_blank" rel="noreferrer"> 1 </a>）以及序列化/反序列化接口（<a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.serde.base.SerializerProtocol" target="_blank" rel="noreferrer"> 2 </a>）。包含用于实验的内存检查点实现（<a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.memory.InMemorySaver" target="_blank" rel="noreferrer"> 3 </a>）。LangGraph 自带 <code>langgraph-checkpoint</code>。</li><li><code>langgraph-checkpoint-sqlite</code>：一种使用 SQLite 数据库的 LangGraph 检查点实现（<a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.sqlite.SqliteSaver" target="_blank" rel="noreferrer"> 1 </a> / <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.sqlite.aio.AsyncSqliteSaver" target="_blank" rel="noreferrer"> 2 </a>）。非常适合实验和本地工作流。需要单独安装。</li><li><code>langgraph-checkpoint-postgres</code>：一种使用 Postgres 数据库的高级检查点（<a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.postgres.PostgresSaver" target="_blank" rel="noreferrer"> 1 </a> / <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.postgres.aio.AsyncPostgresSaver" target="_blank" rel="noreferrer"> 2 </a>），在 LangSmith 中使用。非常适合在生产环境中使用。需要单独安装。</li><li><code>langgraph-checkpoint-mongodb</code>：一种使用 MongoDB 的高级检查点（<code>MongoDBSaver</code> / <code>AsyncMongoDBSaver</code>）。非常适合在生产环境中使用。需要单独安装。</li><li><code>langchain-azure-cosmosdb</code>：一种使用 Azure Cosmos DB for NoSQL 的 LangGraph 检查点实现（<a href="https://reference.langchain.com/python/langchain-azure-cosmosdb/" target="_blank" rel="noreferrer"> 1 </a> / <a href="https://reference.langchain.com/python/langchain-azure-cosmosdb/" target="_blank" rel="noreferrer"> 2 </a>）。非常适合在 Azure 上用于生产环境。支持同步和异步操作，并支持 Microsoft Entra ID 身份验证。需要单独安装。</li></ul>
+<h3 id="检查点接口">检查点接口<a class="h-anchor" href="#检查点接口" aria-label="本节链接">#</a></h3>
+<p>每个检查点都符合 <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.base.BaseCheckpointSaver" target="_blank" rel="noreferrer"> 0 </a> 接口，并实现以下方法：</p>
+<ul><li><code>.put</code> - 存储检查点及其配置和元数据。</li><li><code>.put_writes</code> - 存储与检查点关联的中间写入（即<a href="#pending-writes">待处理写入</a>）。</li><li><code>.get_tuple</code> - 根据给定配置（<code>thread_id</code> 和 <code>checkpoint_id</code>）获取检查点元组。用于在 <code>graph.get_state()</code> 中填充 <code>StateSnapshot</code>。</li><li><code>.list</code> - 列出符合给定配置和筛选条件的检查点。用于在 <code>graph.get_state_history()</code> 中填充状态历史。传入 <code>config=None</code> 可列出所有线程中的检查点。请参阅<a href="#列出所有线程">列出每个线程</a>。</li></ul>
+<p>如果检查点与异步图执行一起使用（即通过 <code>.ainvoke</code>、<code>.astream</code>、<code>.abatch</code> 执行图），则将使用上述方法的异步版本（<code>.aput</code>、<code>.aput_writes</code>、<code>.aget_tuple</code>、<code>.alist</code>）。</p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>如需异步运行图，可以使用 <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.memory.InMemorySaver" target="_blank" rel="noreferrer"> 0 </a>，或 Sqlite/Postgres 检查点的异步版本 —— <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.sqlite.aio.AsyncSqliteSaver" target="_blank" rel="noreferrer"> 1 </a> / <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.postgres.aio.AsyncPostgresSaver" target="_blank" rel="noreferrer"> 2 </a> 检查点。</p></div></div>
+<h3 id="序列化器">序列化器<a class="h-anchor" href="#序列化器" aria-label="本节链接">#</a></h3>
+<p>当检查点保存图状态时，它们需要序列化状态中的通道值。这通过序列化器对象完成。</p>
+<p><code>langgraph_checkpoint</code> 定义了用于实现序列化器的<a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.serde.base.SerializerProtocol" target="_blank" rel="noreferrer">协议</a>，并提供了默认实现（<a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.serde.jsonplus.JsonPlusSerializer" target="_blank" rel="noreferrer"> 1 </a>），可处理多种类型，包括 LangChain 和 LangGraph 基础类型、日期时间、枚举等。</p>
+<h4 id="使用-pickle-进行序列化">使用 <code>pickle</code> 进行序列化</h4>
+<p>默认序列化器 <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.serde.jsonplus.JsonPlusSerializer" target="_blank" rel="noreferrer"> 0 </a> 在底层使用 ormsgpack 和 JSON，这并不适用于所有类型的对象。</p>
+<p>如果你希望为 msgpack 编码器目前不支持的对象的（例如 Pandas 数据帧）回退到 pickle， 可以使用 <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.serde.jsonplus.JsonPlusSerializer" target="_blank" rel="noreferrer"> 0 </a> 的 <code>pickle_fallback</code> 参数：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.serde.jsonplus</span><span class="w"> </span><span class="kn">import</span> <span class="n">JsonPlusSerializer</span>
+
+<span class="c1"># ... Define the graph ...</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="n">checkpointer</span><span class="o">=</span><span class="n">InMemorySaver</span><span class="p">(</span><span class="n">serde</span><span class="o">=</span><span class="n">JsonPlusSerializer</span><span class="p">(</span><span class="n">pickle_fallback</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="p">)</span>
+</code></pre></div>
+<h4 id="加密">加密</h4>
+<p>检查点可以选择加密所有持久化状态。要启用此功能，请将 <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.serde.encrypted.EncryptedSerializer" target="_blank" rel="noreferrer"> 0 </a> 的实例传给任意 <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.base.BaseCheckpointSaver" target="_blank" rel="noreferrer"> 1 </a> 实现的 <code>serde</code> 参数。创建加密序列化器最简单的方式是使用 <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.serde.encrypted.EncryptedSerializer.from_pycryptodome_aes" target="_blank" rel="noreferrer"> 3 </a>，它从 <code>LANGGRAPH_AES_KEY</code> 环境变量读取 AES 密钥（或接受 <code>key</code> 参数）：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.serde.encrypted</span><span class="w"> </span><span class="kn">import</span> <span class="n">EncryptedSerializer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.sqlite</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqliteSaver</span>
+
+<span class="n">serde</span> <span class="o">=</span> <span class="n">EncryptedSerializer</span><span class="o">.</span><span class="n">from_pycryptodome_aes</span><span class="p">()</span>  <span class="c1"># reads LANGGRAPH_AES_KEY</span>
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">SqliteSaver</span><span class="p">(</span><span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;checkpoint.db&quot;</span><span class="p">),</span> <span class="n">serde</span><span class="o">=</span><span class="n">serde</span><span class="p">)</span>
+</code></pre></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.serde.encrypted</span><span class="w"> </span><span class="kn">import</span> <span class="n">EncryptedSerializer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.postgres</span><span class="w"> </span><span class="kn">import</span> <span class="n">PostgresSaver</span>
+
+<span class="n">serde</span> <span class="o">=</span> <span class="n">EncryptedSerializer</span><span class="o">.</span><span class="n">from_pycryptodome_aes</span><span class="p">()</span>
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">PostgresSaver</span><span class="o">.</span><span class="n">from_conn_string</span><span class="p">(</span><span class="s2">&quot;postgresql://...&quot;</span><span class="p">,</span> <span class="n">serde</span><span class="o">=</span><span class="n">serde</span><span class="p">)</span>
+<span class="n">checkpointer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+</code></pre></div>
+<p>在 LangSmith 上运行时，只要存在 <code>LANGGRAPH_AES_KEY</code>，就会自动启用加密，因此你只需提供该环境变量。也可以实现 <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.serde.base.CipherProtocol" target="_blank" rel="noreferrer"> 1 </a> 并将其提供给 <a href="https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.serde.encrypted.EncryptedSerializer" target="_blank" rel="noreferrer"> 2 </a>，以使用其他加密方案。</p>
+<h2 id="构建自定义检查点">构建自定义检查点<a class="h-anchor" href="#构建自定义检查点" aria-label="本节链接">#</a></h2>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p>在构建过程中，使用<a href="#使用一致性测试套件进行测试">一致性测试套件</a>验证你的实现。它覆盖全部五个基础方法以及包括增量通道在内的扩展能力。在发布前于 CI 中运行它。</p></div></div>
+<p>本节介绍如何从零开始为自定义存储后端实现 <code>BaseCheckpointSaver</code>。如果你已有可用的检查点，只需要添加增量通道支持，请跳转到<a href="#delta-通道支持">增量通道支持</a>。</p>
+<h3 id="概述">概述<a class="h-anchor" href="#概述" aria-label="本节链接">#</a></h3>
+<p>LangGraph 的持久化层构建在两个存储抽象之上：</p>
+<ul><li><strong>检查点表</strong> —— 每个超步一行；存储序列化的图状态（<code>channel_values</code>、<code>channel_versions</code>、<code>versions_seen</code>），并链接到其父检查点。</li><li><strong>写入表</strong> —— 每个超步内每个节点输出一行；存储链接到检查点的 <code>(task_id, channel, value)</code> 元组。</li></ul>
+<p>你的检查点管理器同时管理这两张表。<code>put</code> 写入一行检查点；<code>put_writes</code> 写入节点输出行；<code>get_tuple</code> 将二者读取回 <code>CheckpointTuple</code>。</p>
+<h3 id="基础契约">基础契约<a class="h-anchor" href="#基础契约" aria-label="本节链接">#</a></h3>
+<p>继承 <code>BaseCheckpointSaver</code> 并实现这五个方法。它们全部是必需的——缺少基类方法会在运行时抛出 <code>NotImplementedError</code>。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncIterator</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.runnables</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunnableConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.base</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BaseCheckpointSaver</span><span class="p">,</span>
+    <span class="n">ChannelVersions</span><span class="p">,</span>
+    <span class="n">Checkpoint</span><span class="p">,</span>
+    <span class="n">CheckpointMetadata</span><span class="p">,</span>
+    <span class="n">CheckpointTuple</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCheckpointer</span><span class="p">(</span><span class="n">BaseCheckpointSaver</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aput</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">RunnableConfig</span><span class="p">,</span>
+        <span class="n">checkpoint</span><span class="p">:</span> <span class="n">Checkpoint</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">:</span> <span class="n">CheckpointMetadata</span><span class="p">,</span>
+        <span class="n">new_versions</span><span class="p">:</span> <span class="n">ChannelVersions</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RunnableConfig</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aput_writes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">RunnableConfig</span><span class="p">,</span>
+        <span class="n">writes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+        <span class="n">task_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">task_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aget_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">RunnableConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CheckpointTuple</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">alist</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">RunnableConfig</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="nb">filter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">before</span><span class="p">:</span> <span class="n">RunnableConfig</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">CheckpointTuple</span><span class="p">]:</span>
+        <span class="o">...</span>
+        <span class="k">yield</span>  <span class="c1"># make this an async generator</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">adelete_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+</code></pre></div>
+<h4 id="put-aput">put / aput</h4>
+<p>存储一行检查点记录。返回带有已存储的 <code>checkpoint_id</code> 的更新后配置。</p>
+<p>关键要求：</p>
+<ul><li>使用 <code>self.serde.dumps_typed(checkpoint)</code> 序列化检查点——它会处理所有 LangGraph 原生类型，包括 delta 通道使用的 <code>_DeltaSnapshot</code> 数据块。</li><li>完整存储 <code>metadata</code>——不要剥离未知的键。LangGraph 会在次要版本中新增元数据字段（例如 delta 通道的 <code>counters_since_delta_snapshot</code>），静默丢弃它们会破坏功能。</li><li>将 <code>config["configurable"].get("checkpoint_id")</code> 存储为父检查点 ID，以便 <code>get_tuple</code> 能够填充 <code>parent_config</code>。</li></ul>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">checkpoint</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">new_versions</span><span class="p">):</span>
+    <span class="n">thread_id</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">][</span><span class="s2">&quot;thread_id&quot;</span><span class="p">]</span>
+    <span class="n">checkpoint_ns</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">][</span><span class="s2">&quot;checkpoint_ns&quot;</span><span class="p">]</span>
+    <span class="n">checkpoint_id</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="n">parent_id</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint_id&quot;</span><span class="p">)</span>
+
+    <span class="n">type_</span><span class="p">,</span> <span class="n">blob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serde</span><span class="o">.</span><span class="n">dumps_typed</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">)</span>
+    <span class="n">serialized_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serde</span><span class="o">.</span><span class="n">dumps_typed</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="s2">&quot;INSERT INTO checkpoints (...) VALUES (...)&quot;</span><span class="p">,</span>
+        <span class="n">thread_id</span><span class="p">,</span> <span class="n">checkpoint_ns</span><span class="p">,</span> <span class="n">checkpoint_id</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">,</span>
+        <span class="n">type_</span><span class="p">,</span> <span class="n">blob</span><span class="p">,</span> <span class="o">*</span><span class="n">serialized_metadata</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="n">thread_id</span><span class="p">,</span>
+            <span class="s2">&quot;checkpoint_ns&quot;</span><span class="p">:</span> <span class="n">checkpoint_ns</span><span class="p">,</span>
+            <span class="s2">&quot;checkpoint_id&quot;</span><span class="p">:</span> <span class="n">checkpoint_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div>
+<h4 id="putwrites-aputwrites">put\_writes / aput\_writes</h4>
+<p>存储当前超步内单个任务的节点输出记录。这些记录通过 <code>(thread_id, checkpoint_ns, checkpoint_id)</code> 与检查点关联。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aput_writes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">writes</span><span class="p">,</span> <span class="n">task_id</span><span class="p">,</span> <span class="n">task_path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="n">thread_id</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">][</span><span class="s2">&quot;thread_id&quot;</span><span class="p">]</span>
+    <span class="n">checkpoint_ns</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">][</span><span class="s2">&quot;checkpoint_ns&quot;</span><span class="p">]</span>
+    <span class="n">checkpoint_id</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">][</span><span class="s2">&quot;checkpoint_id&quot;</span><span class="p">]</span>
+
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">writes</span><span class="p">):</span>
+        <span class="n">type_</span><span class="p">,</span> <span class="n">blob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serde</span><span class="o">.</span><span class="n">dumps_typed</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">final_idx</span> <span class="o">=</span> <span class="n">WRITES_IDX_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">checkpoint_ns</span><span class="p">,</span> <span class="n">checkpoint_id</span><span class="p">,</span>
+                      <span class="n">task_id</span><span class="p">,</span> <span class="n">task_path</span><span class="p">,</span> <span class="n">final_idx</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">blob</span><span class="p">))</span>
+
+    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">executemany</span><span class="p">(</span><span class="s2">&quot;INSERT INTO writes (...) VALUES (...)&quot;</span><span class="p">,</span> <span class="n">rows</span><span class="p">)</span>
+</code></pre></div>
+<p>从 <code>langgraph.checkpoint.base</code> 导入 <code>WRITES_IDX_MAP</code>。它把特殊通道（<code>__error__</code>、<code>__interrupt__</code> 等）映射到保留的负索引，以免它们与常规写入索引冲突。</p>
+<h4 id="gettuple-agettuple">get\_tuple / aget\_tuple</h4>
+<p>检索一个检查点。配置中可能包含：</p>
+<ul><li><strong>没有 <code>checkpoint_id</code></strong>——返回该线程 + 命名空间的最新检查点。</li><li><strong>指定 <code>checkpoint_id</code></strong>——返回那个确切的检查点。</li></ul>
+<p><strong>两条路径都必须正确工作。</strong> 指定 ID 的路径用于时间旅行，并且——至关重要地——用于每次图调用时的 delta 通道状态重建（参见 <a href="#delta-通道支持">Delta 通道支持</a>）。指定 ID 查找一旦失效，就会静默破坏 delta 通道状态。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aget_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="n">thread_id</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">][</span><span class="s2">&quot;thread_id&quot;</span><span class="p">]</span>
+    <span class="n">checkpoint_ns</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint_ns&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">checkpoint_id</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint_id&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">checkpoint_id</span><span class="p">:</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">fetchone</span><span class="p">(</span>
+            <span class="s2">&quot;SELECT * FROM checkpoints &quot;</span>
+            <span class="s2">&quot;WHERE thread_id=? AND checkpoint_ns=? AND checkpoint_id=?&quot;</span><span class="p">,</span>
+            <span class="n">thread_id</span><span class="p">,</span> <span class="n">checkpoint_ns</span><span class="p">,</span> <span class="n">checkpoint_id</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">fetchone</span><span class="p">(</span>
+            <span class="s2">&quot;SELECT * FROM checkpoints &quot;</span>
+            <span class="s2">&quot;WHERE thread_id=? AND checkpoint_ns=? &quot;</span>
+            <span class="s2">&quot;ORDER BY checkpoint_id DESC LIMIT 1&quot;</span><span class="p">,</span>
+            <span class="n">thread_id</span><span class="p">,</span> <span class="n">checkpoint_ns</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">row</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">writes</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">fetchall</span><span class="p">(</span>
+        <span class="s2">&quot;SELECT task_id, channel, type, value FROM writes &quot;</span>
+        <span class="s2">&quot;WHERE thread_id=? AND checkpoint_ns=? AND checkpoint_id=? &quot;</span>
+        <span class="s2">&quot;ORDER BY task_id, idx&quot;</span><span class="p">,</span>
+        <span class="n">thread_id</span><span class="p">,</span> <span class="n">checkpoint_ns</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;checkpoint_id&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">pending_writes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">],</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;channel&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">serde</span><span class="o">.</span><span class="n">loads_typed</span><span class="p">((</span><span class="n">w</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">w</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">])))</span>
+        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">writes</span>
+    <span class="p">]</span>
+
+    <span class="n">checkpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serde</span><span class="o">.</span><span class="n">loads_typed</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;blob&quot;</span><span class="p">]))</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serde</span><span class="o">.</span><span class="n">loads_typed</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;metadata_type&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]))</span>
+
+    <span class="n">parent_config</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;parent_checkpoint_id&quot;</span><span class="p">]:</span>
+        <span class="n">parent_config</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="n">thread_id</span><span class="p">,</span>
+                <span class="s2">&quot;checkpoint_ns&quot;</span><span class="p">:</span> <span class="n">checkpoint_ns</span><span class="p">,</span>
+                <span class="s2">&quot;checkpoint_id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;parent_checkpoint_id&quot;</span><span class="p">],</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">CheckpointTuple</span><span class="p">(</span>
+        <span class="n">config</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="n">thread_id</span><span class="p">,</span>
+                <span class="s2">&quot;checkpoint_ns&quot;</span><span class="p">:</span> <span class="n">checkpoint_ns</span><span class="p">,</span>
+                <span class="s2">&quot;checkpoint_id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;checkpoint_id&quot;</span><span class="p">],</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="n">checkpoint</span><span class="o">=</span><span class="n">checkpoint</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
+        <span class="n">parent_config</span><span class="o">=</span><span class="n">parent_config</span><span class="p">,</span>
+        <span class="n">pending_writes</span><span class="o">=</span><span class="n">pending_writes</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-icon">⚠</span><span>警告</span></div><div class="callout-body"><p><strong>行键 / 索引设计对指定 ID 查找至关重要。</strong> 如果你的存储使用按时间排序的键（例如反转的时间戳），而该键中没有嵌入 <code>checkpoint_id</code>，你就无法按 ID 直接读取行。你必须要么在行键中编码 <code>checkpoint_id</code>，要么构建二级索引。每次查找都做带值过滤的扫描虽然可行，但无法扩展。</p></div></div>
+<h4 id="list-alist">list / alist</h4>
+<p>返回某个线程的检查点，最新的在前。遵守 <code>before</code>（只返回比该配置的 <code>checkpoint_id</code> 更早的检查点）和 <code>limit</code>。</p>
+<h4 id="deletethread-adeletethread">delete\_thread / adelete\_thread</h4>
+<p>删除某个线程的所有检查点和写入。检查点记录行和写入记录行都必须删除。</p>
+<h3 id="行键-索引设计">行键 / 索引设计<a class="h-anchor" href="#行键-索引设计" aria-label="本节链接">#</a></h3>
+<p>你存储和索引检查点的方式会直接影响正确性与性能。</p>
+<p><strong>推荐模式（SQL）：</strong></p>
+<div class="code-block" data-lang="sql"><div class="code-head"><span class="code-lang">sql</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-sql"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">checkpoints</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">thread_id</span><span class="w">          </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">checkpoint_ns</span><span class="w">      </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">checkpoint_id</span><span class="w">      </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">   </span><span class="c1">-- ULID, lexicographically sortable newest-last</span>
+<span class="w">    </span><span class="n">parent_checkpoint_id</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+<span class="w">    </span><span class="k">type</span><span class="w">               </span><span class="nb">TEXT</span><span class="p">,</span>
+<span class="w">    </span><span class="k">checkpoint</span><span class="w">         </span><span class="n">BYTEA</span><span class="p">,</span>
+<span class="w">    </span><span class="n">metadata</span><span class="w">           </span><span class="n">JSONB</span><span class="p">,</span>
+<span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span><span class="w"> </span><span class="n">checkpoint_ns</span><span class="p">,</span><span class="w"> </span><span class="n">checkpoint_id</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">writes</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">thread_id</span><span class="w">     </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">checkpoint_ns</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">checkpoint_id</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">task_id</span><span class="w">       </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">task_path</span><span class="w">     </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">idx</span><span class="w">           </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">channel</span><span class="w">       </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="k">type</span><span class="w">          </span><span class="nb">TEXT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">value</span><span class="w">         </span><span class="n">BYTEA</span><span class="p">,</span>
+<span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span><span class="w"> </span><span class="n">checkpoint_ns</span><span class="p">,</span><span class="w"> </span><span class="n">checkpoint_id</span><span class="p">,</span><span class="w"> </span><span class="n">task_id</span><span class="p">,</span><span class="w"> </span><span class="n">task_path</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span>
+<span class="p">);</span>
+</code></pre></div>
+<p>由于 <code>checkpoint_id</code> 是 ULID，它按字典序排序——值越大越新。"获取最新"就是 <code>ORDER BY checkpoint_id DESC LIMIT 1</code>；"按 ID 获取"就是在主键上做等值查找。</p>
+<p><strong>对于非 SQL 存储：</strong> 同样的原则适用。无论你采用哪种键方案，按 <code>(thread_id, checkpoint_ns, checkpoint_id)</code> 直接查找都必须是 O(1) 或接近 O(1)。避免那种按 ID 查找检查点的唯一方式是扫描某个线程所有行的设计。</p>
+<h3 id="序列化">序列化<a class="h-anchor" href="#序列化" aria-label="本节链接">#</a></h3>
+<p>检查点、写入和元数据始终使用 <code>self.serde</code>（继承自 <code>BaseCheckpointSaver</code>，默认是 <code>JsonPlusSerializer</code>）。不要直接对元数据使用 <code>pickle</code>——它能工作，但 <code>JsonPlusSerializer</code> 产生人类可读的输出，并且版本处理更好。</p>
+<p><code>JsonPlusSerializer</code> 会自动处理所有 LangGraph 原生类型：</p>
+<ul><li><code>_DeltaSnapshot</code>——delta 通道使用的哨兵数据块（msgpack 扩展码 7）</li><li>Pydantic v2 模型、dataclasses、numpy 数组、datetimes、枚举等</li></ul>
+<p>如果你编写自定义序列化器，请确保它能对 <code>langgraph.checkpoint.serde.types</code> 中的 <code>_DeltaSnapshot</code> 做往返转换。</p>
+<h3 id="扩展能力">扩展能力<a class="h-anchor" href="#扩展能力" aria-label="本节链接">#</a></h3>
+<p>这些方法是可选的，但能解锁额外的 Agent Server 功能。如果你的存储后端能够高效支持它们，就实现它们。</p>
+<div class="table-wrap"><table><thead><tr><th>方法</th><th>它启用的能力</th></tr></thead><tbody><tr><td><code>adelete_for_runs</code></td><td>回滚多任务策略</td></tr><tr><td><code>acopy_thread</code></td><td>高效的线程分叉</td></tr><tr><td><code>aprune</code></td><td>线程历史修剪</td></tr><tr><td><code>aget_delta_channel_history</code></td><td>高效的 delta 通道状态重建（见下文）</td></tr></tbody></table></div>
+<p>Agent Server 会在启动时自动检测你的检查点器实现了哪些能力，并激活相应的功能。</p>
+<h3 id="delta-通道支持">Delta 通道支持<a class="h-anchor" href="#delta-通道支持" aria-label="本节链接">#</a></h3>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p><strong>DeltaChannel 处于 beta 阶段。</strong> 在设计稳定之前，API 与磁盘上的表示形式都可能发生变化。</p></div></div>
+<p><code>DeltaChannel</code> 是一种归并函数通道，它在检查点 blob 中只存储一个哨兵值（<code>MISSING</code>），而不是完整的通道值。状态通过归并函数重放祖先写入来重建。这使得对于像 <code>messages</code> 这类随时间不断累积的通道，每一步的检查点 blob 为 O(1)，而不是 O(N)。</p>
+<h4 id="运行时需要什么">运行时需要什么</h4>
+<p>当加载一个其 delta 通道不在 <code>channel_values</code> 中的检查点时，LangGraph 会调用 <code>saver.get_delta_channel_history(config=config, channels=[...])</code>。该调用会为每个通道返回：</p>
+<ul><li><strong><code>writes</code></strong> —— 祖先链中对该通道的所有写入，按从旧到新的顺序排列，直到最近的快照为止。</li><li><strong><code>seed</code></strong>（可选）—— 在最近的、拥有该值的祖先处存储的 <code>_DeltaSnapshot</code> blob；如果向上遍历到达根节点仍未找到快照，则该字段不存在。</li></ul>
+<p>然后运行时调用 <code>channel.from_checkpoint(seed)</code> 和 <code>channel.replay_writes(writes)</code> 来重建实时值。</p>
+<h4 id="默认实现">默认实现</h4>
+<p><code>BaseCheckpointSaver</code> 提供了一个默认的 <code>get_delta_channel_history</code>，它可与任何正确的 <code>get_tuple</code> 实现配合工作：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="c1"># Simplified from BaseCheckpointSaver</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_delta_channel_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">channels</span><span class="p">):</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tuple</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>          <span class="c1"># load the head checkpoint</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">parent_config</span>            <span class="c1"># walk from its parent</span>
+    <span class="n">collected</span> <span class="o">=</span> <span class="p">{</span><span class="n">ch</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">}</span>
+    <span class="n">seed</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">cursor</span> <span class="ow">and</span> <span class="n">remaining</span><span class="p">:</span>
+        <span class="n">tup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tuple</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>         <span class="c1"># ← requires correct by-id lookup</span>
+        <span class="k">if</span> <span class="n">tup</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">for</span> <span class="n">write</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">tup</span><span class="o">.</span><span class="n">pending_writes</span> <span class="ow">or</span> <span class="p">[]):</span>
+            <span class="k">if</span> <span class="n">write</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">remaining</span><span class="p">:</span>
+                <span class="n">collected</span><span class="p">[</span><span class="n">write</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">write</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">remaining</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">tup</span><span class="o">.</span><span class="n">checkpoint</span><span class="p">[</span><span class="s2">&quot;channel_values&quot;</span><span class="p">]:</span>
+                <span class="n">seed</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">tup</span><span class="o">.</span><span class="n">checkpoint</span><span class="p">[</span><span class="s2">&quot;channel_values&quot;</span><span class="p">][</span><span class="n">ch</span><span class="p">]</span>
+                <span class="n">remaining</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">tup</span><span class="o">.</span><span class="n">parent_config</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">ch</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;writes&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">collected</span><span class="p">[</span><span class="n">ch</span><span class="p">])),</span> <span class="o">**</span><span class="p">({</span><span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">seed</span><span class="p">[</span><span class="n">ch</span><span class="p">]}</span> <span class="k">if</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">seed</span> <span class="k">else</span> <span class="p">{})}</span>
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">channels</span>
+    <span class="p">}</span>
+</code></pre></div>
+<p><strong>关键依赖：</strong> <code>get_tuple(cursor)</code> 始终以特定的 <code>checkpoint_id</code>（父节点的 id）调用。如果该查询返回 <code>None</code>，遍历会立即停止，每个 delta 通道都会重建为空值——而且是在静默中发生，不会报错。这就是 <code>get_tuple</code> 中特定 id 路径必须正确的原因。</p>
+<h4 id="性能覆写">性能覆写</h4>
+<p>默认遍历会为每个祖先检查点发起一次 <code>get_tuple</code> 调用。对于查询支持良好的后端，可覆写 <code>get_delta_channel_history</code>（及其异步版本），用两次查询取回祖先链和写入：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">aget_delta_channel_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">channels</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">channels</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="n">thread_id</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">][</span><span class="s2">&quot;thread_id&quot;</span><span class="p">]</span>
+    <span class="n">checkpoint_ns</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint_ns&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">checkpoint_id</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">][</span><span class="s2">&quot;checkpoint_id&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Stage 1: stream ancestors newest-first until every channel has a seed</span>
+    <span class="n">ancestors</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">fetchall</span><span class="p">(</span>
+        <span class="s2">&quot;SELECT checkpoint_id, parent_checkpoint_id, type, checkpoint &quot;</span>
+        <span class="s2">&quot;FROM checkpoints &quot;</span>
+        <span class="s2">&quot;WHERE thread_id=? AND checkpoint_ns=? AND checkpoint_id &lt; ? &quot;</span>
+        <span class="s2">&quot;ORDER BY checkpoint_id DESC&quot;</span><span class="p">,</span>
+        <span class="n">thread_id</span><span class="p">,</span> <span class="n">checkpoint_ns</span><span class="p">,</span> <span class="n">checkpoint_id</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">chain_by_ch</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="n">ch</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">}</span>
+    <span class="n">seed_by_ch</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span>
+    <span class="n">cur_id</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;configurable&quot;</span><span class="p">][</span><span class="s2">&quot;checkpoint_id&quot;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">ancestors</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">remaining</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">parent_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;parent_checkpoint_id&quot;</span><span class="p">]</span>
+        <span class="n">ckpt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serde</span><span class="o">.</span><span class="n">loads_typed</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;checkpoint&quot;</span><span class="p">]))</span>
+        <span class="n">cv</span> <span class="o">=</span> <span class="n">ckpt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;channel_values&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">remaining</span><span class="p">):</span>
+            <span class="n">chain_by_ch</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;checkpoint_id&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cv</span><span class="p">:</span>
+                <span class="n">seed_by_ch</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">cv</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span>
+                <span class="n">remaining</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+        <span class="n">cur_id</span> <span class="o">=</span> <span class="n">parent_id</span>
+
+    <span class="c1"># Stage 2: fetch writes for each channel&#39;s ancestor chain in one query</span>
+    <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DeltaChannelHistory</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
+        <span class="n">chain</span> <span class="o">=</span> <span class="n">chain_by_ch</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">chain</span><span class="p">:</span>
+            <span class="n">entry</span><span class="p">:</span> <span class="n">DeltaChannelHistory</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;writes&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+            <span class="k">if</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">seed_by_ch</span><span class="p">:</span>
+                <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">seed_by_ch</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span>
+            <span class="k">continue</span>
+
+        <span class="n">write_rows</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">fetchall</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;SELECT checkpoint_id, task_id, idx, type, value FROM writes &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;WHERE thread_id=? AND checkpoint_ns=? AND channel=? &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;AND checkpoint_id IN (</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">chain</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;ORDER BY checkpoint_id, task_id, idx&quot;</span><span class="p">,</span>
+            <span class="n">thread_id</span><span class="p">,</span> <span class="n">checkpoint_ns</span><span class="p">,</span> <span class="n">ch</span><span class="p">,</span> <span class="o">*</span><span class="n">chain</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">writes_by_cid</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">PendingWrite</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">write_rows</span><span class="p">:</span>
+            <span class="n">cid</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;checkpoint_id&quot;</span><span class="p">]</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serde</span><span class="o">.</span><span class="n">loads_typed</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]))</span>
+            <span class="n">writes_by_cid</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">cid</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">],</span> <span class="n">ch</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+        <span class="c1"># chain is newest-first; iterate oldest-first to get correct replay order</span>
+        <span class="n">collected</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PendingWrite</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">cid</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">chain</span><span class="p">):</span>
+            <span class="n">collected</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">writes_by_cid</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cid</span><span class="p">,</span> <span class="p">[]))</span>
+
+        <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;writes&quot;</span><span class="p">:</span> <span class="n">collected</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">seed_by_ch</span><span class="p">:</span>
+            <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">seed_by_ch</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</code></pre></div>
+<h4 id="使用-delta-通道时进行剪枝">使用 delta 通道时进行剪枝</h4>
+<p><code>DeltaChannel</code> 的状态并非自包含于单个检查点之中——它依赖于回溯到最近 <code>_DeltaSnapshot</code> 的祖先写入链。如果你实现 <code>prune</code> 或 <code>delete_for_runs</code>，则不能删除保留下来的检查点的 delta 通道所依赖的写入行。</p>
+<p>安全选项：</p>
+<ol><li><strong>剪枝前先遍历</strong> —— 对每个打算保留的检查点，遍历其祖先链，并把直到最近 <code>_DeltaSnapshot</code> 的所有写入行标记为不可删除。</li><li><strong>剪枝前强制快照</strong> —— 在你保留的检查点上改写 <code>channel_values[ch] = _DeltaSnapshot(reconstructed_value)</code>，然后即可自由删除祖先。</li><li><strong>对含 delta 通道的线程跳过剪枝</strong> —— 如果你暂时不需要剪枝，这是最安全的短期选项。</li></ol>
+<h4 id="使用-delta-通道复制线程">使用 delta 通道复制线程</h4>
+<p>实现 <code>copy_thread</code> 时，要复制完整的祖先链——而不只是头检查点。目标线程必须拥有至少回溯到一个 <code>_DeltaSnapshot</code> 的写入行（对每个 delta 通道而言），否则这些通道在复制之后会重建为空值。</p>
+<h3 id="使用一致性测试套件进行测试">使用一致性测试套件进行测试<a class="h-anchor" href="#使用一致性测试套件进行测试" aria-label="本节链接">#</a></h3>
+<p><code>langgraph-checkpoint-conformance</code> 会依据完整契约验证你的实现，包括 delta 通道历史：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">pip</span> <span class="n">install</span> <span class="n">langgraph</span><span class="o">-</span><span class="n">checkpoint</span><span class="o">-</span><span class="n">conformance</span>
+</code></pre></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.conformance</span><span class="w"> </span><span class="kn">import</span> <span class="n">checkpointer_test</span><span class="p">,</span> <span class="n">validate</span>
+
+<span class="nd">@checkpointer_test</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyCheckpointer&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_checkpointer</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">MyCheckpointer</span><span class="o">.</span><span class="n">create</span><span class="p">()</span> <span class="k">as</span> <span class="n">saver</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">saver</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="k">await</span> <span class="n">validate</span><span class="p">(</span><span class="n">my_checkpointer</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">print_report</span><span class="p">()</span>
+    <span class="c1"># Fails the process if any base capability is missing or broken</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">passed_all_base</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Checkpointer failed conformance suite&quot;</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+<p>该套件会自动检测你的检查点器实现了哪些扩展能力（包括 <code>aget_delta_channel_history</code>），并针对每项能力运行相应的测试。在发布之前，请把它纳入你的 CI 流程。</p>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将本文档连接到你的智能体</a>，通过 MCP 获取实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/checkpointers.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a> 或 <a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="persistence.html"><span class="lbl">上一页</span><span class="ttl">持久化</span></a><a class="next" href="stores.html"><span class="lbl">下一页</span><span class="ttl">存储</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#为什么使用检查点保存器">为什么使用检查点保存器</a></li><li class="lvl-2"><a href="#核心概念">核心概念</a></li><li class="lvl-3"><a href="#线程">线程</a></li><li class="lvl-3"><a href="#检查点">检查点</a></li><li class="lvl-2"><a href="#获取与更新状态">获取与更新状态</a></li><li class="lvl-3"><a href="#获取状态">获取状态</a></li><li class="lvl-3"><a href="#获取状态历史">获取状态历史</a></li><li class="lvl-3"><a href="#重放">重放</a></li><li class="lvl-3"><a href="#更新状态">更新状态</a></li><li class="lvl-2"><a href="#持久化模式">持久化模式</a></li><li class="lvl-3"><a href="#新线程上的首个持久化检查点">新线程上的首个持久化检查点</a></li><li class="lvl-2"><a href="#优化检查点存储">优化检查点存储</a></li><li class="lvl-2"><a href="#检查点库">检查点库</a></li><li class="lvl-3"><a href="#检查点接口">检查点接口</a></li><li class="lvl-3"><a href="#序列化器">序列化器</a></li><li class="lvl-2"><a href="#构建自定义检查点">构建自定义检查点</a></li><li class="lvl-3"><a href="#概述">概述</a></li><li class="lvl-3"><a href="#基础契约">基础契约</a></li><li class="lvl-3"><a href="#行键-索引设计">行键 / 索引设计</a></li><li class="lvl-3"><a href="#序列化">序列化</a></li><li class="lvl-3"><a href="#扩展能力">扩展能力</a></li><li class="lvl-3"><a href="#delta-通道支持">Delta 通道支持</a></li><li class="lvl-3"><a href="#使用一致性测试套件进行测试">使用一致性测试套件进行测试</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

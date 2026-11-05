@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>配置节点 · LangGraph 中文文档</title>
+<meta name="description" content="为 LangGraph 节点添加运行时配置、重试策略、超时、错误处理、默认值和缓存。">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link active" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/graph-api-nodes" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>使用 Graph API 构建</span><span class="sep">/</span><span>配置节点</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">使用 Graph API 构建</span>
+          <h1>配置节点</h1>
+          <p class="page-desc">为 LangGraph 节点添加运行时配置、重试策略、超时、错误处理、默认值和缓存。</p>
+        </div>
+        <div class="doc-body"><p><a href="graph-api.html#nodes">节点</a> 是 Graph API 图中的步骤。本页面介绍在添加节点时如何附加运行时配置、重试、超时、错误处理器、默认值和缓存。关于如何把节点连成序列、分支和循环，请参阅<a href="graph-api-control-flow.html">控制流</a>。关于完整的重试、超时和错误生命周期，请参阅<a href="fault-tolerance.html">容错</a>。</p>
+<h2 id="添加运行时配置">添加运行时配置<a class="h-anchor" href="#添加运行时配置" aria-label="本节链接">#</a></h2>
+<p>把值传入一次运行（例如使用哪个 LLM 或系统提示词），而无需把这些值放进图状态。</p>
+<p>添加运行时配置的步骤：</p>
+<ol><li>为配置指定 schema</li><li>把配置添加到节点或条件边的函数签名中</li><li>把配置传入图</li></ol>
+<p>下面是一个简单的示例：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">Runtime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="c1"># 1. Specify config schema</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ContextSchema</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">my_runtime_value</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="c1"># 2. Define a graph that accesses the config in a node</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">my_state_value</span><span class="p">:</span> <span class="nb">int</span>
+
+<span class="code-line hl"><span class="k">def</span><span class="w"> </span><span class="nf">node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">runtime</span><span class="p">:</span> <span class="n">Runtime</span><span class="p">[</span><span class="n">ContextSchema</span><span class="p">]):</span></span>
+<span class="code-line hl">    <span class="k">if</span> <span class="n">runtime</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">&quot;my_runtime_value&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;a&quot;</span><span class="p">:</span></span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;my_state_value&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="code-line hl">    <span class="k">elif</span> <span class="n">runtime</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">&quot;my_runtime_value&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span></span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;my_state_value&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown values.&quot;</span><span class="p">)</span>
+
+<span class="code-line hl"><span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">,</span> <span class="n">context_schema</span><span class="o">=</span><span class="n">ContextSchema</span><span class="p">)</span></span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># 3. Pass in configuration at runtime:</span>
+<span class="code-line hl"><span class="nb">print</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({},</span> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;my_runtime_value&quot;</span><span class="p">:</span> <span class="s2">&quot;a&quot;</span><span class="p">}))</span></span>
+<span class="code-line hl"><span class="nb">print</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({},</span> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;my_runtime_value&quot;</span><span class="p">:</span> <span class="s2">&quot;b&quot;</span><span class="p">}))</span></span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">{'my_state_value': 1}
+{'my_state_value': 2}</code></pre></div>
+<details class="accordion"><summary>扩展示例：在运行时指定 LLM</summary><div class="accordion-body"><p>在调用时选择 OpenAI 或 Anthropic。这些示例会调用真实的提供商，需要 API 密钥。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">MessagesState</span><span class="p">,</span> <span class="n">END</span><span class="p">,</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">Runtime</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ContextSchema</span><span class="p">:</span>
+    <span class="n">model_provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;anthropic&quot;</span>
+
+<span class="n">MODELS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;anthropic&quot;</span><span class="p">:</span> <span class="n">init_chat_model</span><span class="p">(</span><span class="s2">&quot;claude-haiku-4-5-20251001&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;openai&quot;</span><span class="p">:</span> <span class="n">init_chat_model</span><span class="p">(</span><span class="s2">&quot;gpt-5.4-mini&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">call_model</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">,</span> <span class="n">runtime</span><span class="p">:</span> <span class="n">Runtime</span><span class="p">[</span><span class="n">ContextSchema</span><span class="p">]):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">MODELS</span><span class="p">[</span><span class="n">runtime</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">model_provider</span><span class="p">]</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">response</span><span class="p">]}</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">,</span> <span class="n">context_schema</span><span class="o">=</span><span class="n">ContextSchema</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">call_model</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Usage</span>
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;hi&quot;</span><span class="p">}</span>
+<span class="c1"># With no configuration, uses default (Anthropic)</span>
+<span class="n">response_1</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">input_message</span><span class="p">]},</span> <span class="n">context</span><span class="o">=</span><span class="n">ContextSchema</span><span class="p">())[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="c1"># Or, can set OpenAI</span>
+<span class="n">response_2</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">input_message</span><span class="p">]},</span> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;model_provider&quot;</span><span class="p">:</span> <span class="s2">&quot;openai&quot;</span><span class="p">})[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">response_1</span><span class="o">.</span><span class="n">response_metadata</span><span class="p">[</span><span class="s2">&quot;model_name&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response_2</span><span class="o">.</span><span class="n">response_metadata</span><span class="p">[</span><span class="s2">&quot;model_name&quot;</span><span class="p">])</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">claude-haiku-4-5-20251001
+gpt-5.4-mini</code></pre></div></div></details>
+<details class="accordion"><summary>扩展示例：在运行时指定模型和系统消息</summary><div class="accordion-body"><p>在调用时同时配置模型提供商和系统消息。这些示例会调用真实的提供商，需要 API 密钥。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SystemMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">MessagesState</span><span class="p">,</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">Runtime</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ContextSchema</span><span class="p">:</span>
+    <span class="n">model_provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;anthropic&quot;</span>
+    <span class="n">system_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">MODELS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;anthropic&quot;</span><span class="p">:</span> <span class="n">init_chat_model</span><span class="p">(</span><span class="s2">&quot;claude-haiku-4-5-20251001&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;openai&quot;</span><span class="p">:</span> <span class="n">init_chat_model</span><span class="p">(</span><span class="s2">&quot;gpt-5.4-mini&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">call_model</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">,</span> <span class="n">runtime</span><span class="p">:</span> <span class="n">Runtime</span><span class="p">[</span><span class="n">ContextSchema</span><span class="p">]):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">MODELS</span><span class="p">[</span><span class="n">runtime</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">model_provider</span><span class="p">]</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">system_message</span> <span class="o">:=</span> <span class="n">runtime</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">system_message</span><span class="p">):</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span><span class="n">SystemMessage</span><span class="p">(</span><span class="n">system_message</span><span class="p">)]</span> <span class="o">+</span> <span class="n">messages</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">response</span><span class="p">]}</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">,</span> <span class="n">context_schema</span><span class="o">=</span><span class="n">ContextSchema</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">call_model</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Usage</span>
+<span class="n">input_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;hi&quot;</span><span class="p">}</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">input_message</span><span class="p">]},</span> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;model_provider&quot;</span><span class="p">:</span> <span class="s2">&quot;openai&quot;</span><span class="p">,</span> <span class="s2">&quot;system_message&quot;</span><span class="p">:</span> <span class="s2">&quot;Respond in Italian.&quot;</span><span class="p">})</span>
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]:</span>
+    <span class="n">message</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">()</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">================================ Human Message ================================
+
+hi
+================================== Ai Message ==================================
+
+Ciao! Come posso aiutarti oggi?</code></pre></div></div></details>
+<h2 id="添加重试策略">添加重试策略<a class="h-anchor" href="#添加重试策略" aria-label="本节链接">#</a></h2>
+<p>当节点调用可能发生瞬时失败的 API、数据库或 LLM 时，请附加重试策略。</p>
+<p>把 <code>retry_policy</code> 传给 <a href="https://reference.langchain.com/python/langgraph/graph/state/StateGraph/add_node" target="_blank" rel="noreferrer"> 1 </a>。该值是一个 <code>RetryPolicy</code> 命名元组。下面的示例使用默认值：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryPolicy</span>
+
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+    <span class="s2">&quot;node_name&quot;</span><span class="p">,</span>
+    <span class="n">node_function</span><span class="p">,</span>
+    <span class="n">retry_policy</span><span class="o">=</span><span class="n">RetryPolicy</span><span class="p">(),</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>默认情况下，<code>retry_on</code> 使用 <code>default_retry_on</code>，它会重试除以下异常之外的任何异常：</p>
+<ul><li><code>ValueError</code></li><li><code>TypeError</code></li><li><code>ArithmeticError</code></li><li><code>ImportError</code></li><li><code>LookupError</code></li><li><code>NameError</code></li><li><code>SyntaxError</code></li><li><code>RuntimeError</code></li><li><code>ReferenceError</code></li><li><code>StopIteration</code></li><li><code>StopAsyncIteration</code></li><li><code>OSError</code></li></ul>
+<p>对于来自 <code>requests</code> 和 <code>httpx</code> 等流行 HTTP 库的异常，它只对 5xx 状态码进行重试。完整的默认列表和参数请参阅<a href="fault-tolerance.html#retries">容错</a>。</p>
+<details class="accordion"><summary>扩展示例：自定义重试策略</summary><div class="accordion-body"><p>这些代码片段展示如何附加不同的重试策略。它们不会创建数据库表，也不会调用图。</p>
+<p>为模型节点和 SQL 节点传入不同的重试策略：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">MessagesState</span><span class="p">,</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryPolicy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">AIMessage</span>
+
+<span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;:memory:&quot;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span><span class="s2">&quot;claude-haiku-4-5-20251001&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">query_database</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">):</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM Artist LIMIT 10;&quot;</span><span class="p">)</span>
+    <span class="n">query_result</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">())</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">query_result</span><span class="p">)]}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">call_model</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">response</span><span class="p">]}</span>
+
+<span class="c1"># Define a new graph</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+    <span class="s2">&quot;query_database&quot;</span><span class="p">,</span>
+    <span class="n">query_database</span><span class="p">,</span>
+    <span class="n">retry_policy</span><span class="o">=</span><span class="n">RetryPolicy</span><span class="p">(</span><span class="n">retry_on</span><span class="o">=</span><span class="n">sqlite3</span><span class="o">.</span><span class="n">OperationalError</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">call_model</span><span class="p">,</span> <span class="n">retry_policy</span><span class="o">=</span><span class="n">RetryPolicy</span><span class="p">(</span><span class="n">max_attempts</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;query_database&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;query_database&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</code></pre></div></div></details>
+<h2 id="设置节点超时">设置节点超时<a class="h-anchor" href="#设置节点超时" aria-label="本节链接">#</a></h2>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>需要 <code>langgraph&gt;=1.2</code>。</p></div></div>
+<p>把 <code>timeout</code> 传给 <a href="https://reference.langchain.com/python/langgraph/graph/state/StateGraph/add_node" target="_blank" rel="noreferrer"> 1 </a>，以限制单次异步节点尝试可以运行多长时间。可以使用数字（秒）、<code>datetime.timedelta</code>，或用于分别设置运行限制和空闲限制的 <a href="https://reference.langchain.com/python/langgraph/types/TimeoutPolicy" target="_blank" rel="noreferrer"> 3 </a>：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NodeTimeoutError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">call_model</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;done&quot;</span><span class="p">}</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">call_model</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="c1"># Or: timeout=TimeoutPolicy(run_timeout=120, idle_timeout=30)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">graph</span><span class="o">.</span><span class="n">ainvoke</span><span class="p">({</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;start&quot;</span><span class="p">})</span>
+    <span class="k">except</span> <span class="n">NodeTimeoutError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Node timed out&quot;</span><span class="p">)</span>
+
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+<p>节点超时仅适用于 <strong>async</strong> 节点。在同步节点上设置 <code>timeout</code> 会在编译时失败，因为同步 Python 执行无法在进程内被安全取消。若要分别设置运行限制和空闲限制，请传入 <a href="https://reference.langchain.com/python/langgraph/types/TimeoutPolicy" target="_blank" rel="noreferrer"> 1 </a>。</p>
+<p>当节点超过其超时时，LangGraph 会抛出 <a href="https://reference.langchain.com/python/langgraph/errors/NodeTimeoutError" target="_blank" rel="noreferrer"> 0 </a>。它<strong>不</strong>是内置 <code>TimeoutError</code>（<code>OSError</code> 的子类）的子类，因此在设置了 <code>retry_policy</code> 时，默认重试策略会将其视为可重试。超时对每次尝试独立生效，因此每次重试都会重置计时器。超时的尝试不会提交已缓冲的写入。</p>
+<p>完整的超时生命周期、空闲超时的刷新来源以及 <code>runtime.heartbeat()</code>，请参阅<a href="fault-tolerance.html#timeouts">容错</a>。</p>
+<h2 id="处理节点错误">处理节点错误<a class="h-anchor" href="#处理节点错误" aria-label="本节链接">#</a></h2>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>需要 <code>langgraph&gt;=1.2</code>。</p></div></div>
+<p>把 <code>error_handler</code> 传给 <a href="https://reference.langchain.com/python/langgraph/graph/state/StateGraph/add_node" target="_blank" rel="noreferrer"> 1 </a>，即可在节点失败且所有重试均告耗尽后运行一个函数。处理函数会接收当前状态和一个带类型的 <a href="https://reference.langchain.com/python/langgraph/errors/NodeError" target="_blank" rel="noreferrer"> 2 </a>，并可以通过 <a href="https://reference.langchain.com/python/langgraph/types/Command" target="_blank" rel="noreferrer"> 3 </a> 路由到恢复分支：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NodeError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">RetryPolicy</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">payment_error_handler</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="n">NodeError</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Command</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">Command</span><span class="p">(</span>
+        <span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;compensated: </span><span class="si">{</span><span class="n">error</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">},</span>
+        <span class="n">goto</span><span class="o">=</span><span class="s2">&quot;finalize&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+    <span class="s2">&quot;charge_payment&quot;</span><span class="p">,</span>
+    <span class="n">charge_payment</span><span class="p">,</span>
+    <span class="n">retry_policy</span><span class="o">=</span><span class="n">RetryPolicy</span><span class="p">(</span><span class="n">max_attempts</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_on</span><span class="o">=</span><span class="ne">ConnectionError</span><span class="p">),</span>
+    <span class="n">error_handler</span><span class="o">=</span><span class="n">payment_error_handler</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>完整的可运行示例、补偿模式以及 <code>Command</code> 路由，请参阅<a href="fault-tolerance.html#error-handling">容错</a>。</p>
+<h2 id="设置图级别的节点默认值">设置图级别的节点默认值<a class="h-anchor" href="#设置图级别的节点默认值" aria-label="本节链接">#</a></h2>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>需要 <code>langgraph&gt;=1.2</code>。</p></div></div>
+<p>使用 <a href="https://reference.langchain.com/python/langgraph/graph/state/StateGraph/set_node_defaults" target="_blank" rel="noreferrer"> 0 </a> 可以为图中的每个节点一次性设置 <code>retry_policy</code>、<code>timeout</code>、<code>cache_policy</code> 或 <code>error_handler</code>，而不必在每次调用 <a href="https://reference.langchain.com/python/langgraph/graph/state/StateGraph/add_node" target="_blank" rel="noreferrer"> 5 </a> 时重复设置。节点级的值始终优先，默认值在 <a href="https://reference.langchain.com/python/langgraph/graph/state/StateGraph/compile" target="_blank" rel="noreferrer"> 6 </a> 时应用：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryPolicy</span><span class="p">,</span> <span class="n">TimeoutPolicy</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">set_node_defaults</span><span class="p">(</span>
+        <span class="n">retry_policy</span><span class="o">=</span><span class="n">RetryPolicy</span><span class="p">(</span><span class="n">max_attempts</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="n">TimeoutPolicy</span><span class="p">(</span><span class="n">run_timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+        <span class="n">error_handler</span><span class="o">=</span><span class="n">fallback_handler</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">node_a</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">node_b</span><span class="p">,</span> <span class="n">retry_policy</span><span class="o">=</span><span class="n">RetryPolicy</span><span class="p">(</span><span class="n">max_attempts</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>  <span class="c1"># overrides default</span>
+    <span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+<span class="p">)</span>
+</code></pre></div>
+<p><code>retry_policy</code> 和 <code>timeout</code> 默认值适用于每个节点，包括错误处理节点。<code>cache_policy</code> 和 <code>error_handler</code> 默认值仅适用于常规节点——处理函数永远不会捕获自身，并且缓存处理函数的结果是不安全的。子图不会继承默认值。</p>
+<p>完整的优先级规则和适用性表格，请参阅<a href="fault-tolerance.html#graph-defaults">容错</a>。</p>
+<h2 id="在节点内访问执行信息">在节点内访问执行信息<a class="h-anchor" href="#在节点内访问执行信息" aria-label="本节链接">#</a></h2>
+<p>通过 <code>runtime.execution_info</code> 访问执行身份和重试信息。它会呈现线程、运行和检查点标识符以及重试状态，无需直接从 <code>config</code> 读取。</p>
+<div class="table-wrap"><table><thead><tr><th>属性</th><th>类型</th><th>描述</th></tr></thead><tbody><tr><td><code>thread_id</code></td><td><code>str | None</code></td><td>当前执行的线程 ID。没有检查点时，为 <code>None</code>。</td></tr><tr><td><code>run_id</code></td><td><code>str | None</code></td><td>当前运行的运行 ID。未在 config 中提供时，为 <code>None</code>。</td></tr><tr><td><code>checkpoint_id</code></td><td><code>str</code></td><td>当前执行的检查点 ID。</td></tr><tr><td><code>checkpoint_ns</code></td><td><code>str</code></td><td>当前执行的检查点命名空间。</td></tr><tr><td><code>task_id</code></td><td><code>str</code></td><td>当前执行的任务 ID。</td></tr><tr><td><code>node_attempt</code></td><td><code>int</code></td><td>当前执行的尝试次数（从 1 开始计数）。首次尝试为 <code>1</code>，第一次重试为 <code>2</code>，依此类推。</td></tr><tr><td><code>node_first_attempt_time</code></td><td><code>float | None</code></td><td>首次尝试开始时的 Unix 时间戳（秒）。在重试过程中保持不变。</td></tr></tbody></table></div>
+<h4 id="访问线程-id-和运行-id">访问线程 ID 和运行 ID</h4>
+<p>使用 <code>execution_info</code> 可以在节点内访问线程 ID、运行 ID 以及其他身份字段：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">Runtime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">result</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">runtime</span><span class="p">:</span> <span class="n">Runtime</span><span class="p">):</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">runtime</span><span class="o">.</span><span class="n">execution_info</span>
+    <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;done&quot;</span><span class="p">}</span>
+<span class="code-line hl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Thread: </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">thread_id</span><span class="si">}</span><span class="s2">, Run: </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">run_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;done&quot;</span><span class="p">}</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;my_node&quot;</span><span class="p">,</span> <span class="n">my_node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;my_node&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;my_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</code></pre></div>
+<h4 id="根据重试状态调整行为">根据重试状态调整行为</h4>
+<p>当节点设置了重试策略时，可以使用 <code>execution_info</code> 检查当前尝试次数，并在首次尝试失败后切换到备用方案：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">Runtime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryPolicy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">result</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">runtime</span><span class="p">:</span> <span class="n">Runtime</span><span class="p">):</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">runtime</span><span class="o">.</span><span class="n">execution_info</span>
+<span class="code-line hl">    <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">info</span><span class="o">.</span><span class="n">node_attempt</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span></span>
+        <span class="c1"># use a fallback on retries</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">call_fallback_api</span><span class="p">()}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">call_primary_api</span><span class="p">()}</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;my_node&quot;</span><span class="p">,</span> <span class="n">my_node</span><span class="p">,</span> <span class="n">retry_policy</span><span class="o">=</span><span class="n">RetryPolicy</span><span class="p">(</span><span class="n">max_attempts</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;my_node&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;my_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</code></pre></div>
+<p>节点任务准备就绪后，<code>execution_info</code> 就会被设置。即使没有重试策略，<code>node_attempt</code> 也默认为 <code>1</code>，而 <code>node_first_attempt_time</code> 会在节点开始执行时设置。</p>
+<h2 id="在节点内访问服务器信息">在节点内访问服务器信息<a class="h-anchor" href="#在节点内访问服务器信息" aria-label="本节链接">#</a></h2>
+<p>当你的图运行在 LangGraph Server 上时，可以通过 <code>runtime.server_info</code> 访问服务器特有的元数据。它会呈现 assistant ID、graph ID 和已认证用户，无需直接读取 config 元数据或可配置键。</p>
+<div class="table-wrap"><table><thead><tr><th>属性</th><th>类型</th><th>描述</th></tr></thead><tbody><tr><td><code>assistant_id</code></td><td><code>str</code></td><td>当前部署的 assistant ID。</td></tr><tr><td><code>graph_id</code></td><td><code>str</code></td><td>当前部署的 graph ID。</td></tr><tr><td><code>user</code></td><td><code>BaseUser | None</code></td><td>已认证的用户（如果配置了<a href="https://docs.langchain.com/langsmith/custom-auth" target="_blank" rel="noreferrer">自定义认证</a>）。</td></tr></tbody></table></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">Runtime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">result</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">runtime</span><span class="p">:</span> <span class="n">Runtime</span><span class="p">):</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">runtime</span><span class="o">.</span><span class="n">server_info</span>
+    <span class="k">if</span> <span class="n">server</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="code-line hl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Assistant: </span><span class="si">{</span><span class="n">server</span><span class="o">.</span><span class="n">assistant_id</span><span class="si">}</span><span class="s2">, Graph: </span><span class="si">{</span><span class="n">server</span><span class="o">.</span><span class="n">graph_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></span>
+        <span class="k">if</span> <span class="n">server</span><span class="o">.</span><span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User: </span><span class="si">{</span><span class="n">server</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">identity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="s2">&quot;done&quot;</span><span class="p">}</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;my_node&quot;</span><span class="p">,</span> <span class="n">my_node</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;my_node&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;my_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</code></pre></div>
+<p>当图未运行在 LangGraph Server 上时（例如在本地开发或测试期间），<code>server_info</code> 为 <code>None</code>。</p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>需要 <code>langgraph&gt;=1.1.5</code>。</p></div></div>
+<h2 id="在节点内访问排空状态">在节点内访问排空状态<a class="h-anchor" href="#在节点内访问排空状态" aria-label="本节链接">#</a></h2>
+<p>当请求了<a href="fault-tolerance.html#graceful-shutdown">优雅关闭</a>时，<code>runtime.drain_requested</code> 为 <code>True</code>。在节点内读取该值，可以在下一个超步边界之前跳过开销较大的工作：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">Runtime</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">runtime</span><span class="p">:</span> <span class="n">Runtime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
+<span class="code-line hl">    <span class="k">if</span> <span class="n">runtime</span><span class="o">.</span><span class="n">drain_requested</span><span class="p">:</span></span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;skipped&quot;</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">runtime</span><span class="o">.</span><span class="n">drain_reason</span><span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">do_work</span><span class="p">()}</span>
+</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>属性</th><th>类型</th><th>描述</th></tr></thead><tbody><tr><td><code>drain_requested</code></td><td><code>bool</code></td><td>如果已针对本次运行调用 <code>RunControl.request_drain()</code>，则为 <code>True</code>。</td></tr><tr><td><code>drain_reason</code></td><td><code>str | None</code></td><td>传给 <code>request_drain()</code> 的原因字符串；如果未请求排空，则为 <code>None</code>。</td></tr></tbody></table></div>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>需要 <code>langgraph&gt;=1.2</code>。完整的 <code>RunControl</code> API 请参阅<a href="fault-tolerance.html#graceful-shutdown">优雅关闭</a>。</p></div></div>
+<h2 id="添加节点缓存">添加节点缓存<a class="h-anchor" href="#添加节点缓存" aria-label="本节链接">#</a></h2>
+<p>当某个步骤开销较大，且你希望针对相同输入复用结果时，可以使用节点缓存。</p>
+<p>启用缓存：</p>
+<ol><li>在编译图时传入一个缓存（例如 <code>InMemoryCache</code>）。Python 中还提供 <code>SqliteCache</code>。</li><li>在节点上附加 <a href="https://reference.langchain.com/python/langgraph/types/CachePolicy" target="_blank" rel="noreferrer"> 0 </a>。</li></ol>
+<p><a href="https://reference.langchain.com/python/langgraph/types/CachePolicy" target="_blank" rel="noreferrer"> 0 </a> 选项：</p>
+<ul><li><strong><code>key_func</code></strong>：根据节点输入构建缓存键的函数。默认使用输入（通过 pickle）的哈希值。</li><li><strong><code>ttl</code></strong>：生存时间，单位为秒。省略时，缓存条目不会过期。</li></ul>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.cache.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemoryCache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">CachePolicy</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">result</span><span class="p">:</span> <span class="nb">int</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">expensive_node</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="c1"># Expensive computation</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">}</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;expensive_node&quot;</span><span class="p">,</span> <span class="n">expensive_node</span><span class="p">,</span> <span class="n">cache_policy</span><span class="o">=</span><span class="n">CachePolicy</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;expensive_node&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;expensive_node&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="n">InMemoryCache</span><span class="p">())</span>
+
+<span class="code-line hl"><span class="nb">print</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">stream_mode</span><span class="o">=</span><span class="s2">&quot;updates&quot;</span><span class="p">))</span></span>
+<span class="c1"># [{&#39;expensive_node&#39;: {&#39;result&#39;: 10}}]</span>
+<span class="code-line hl"><span class="nb">print</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">stream_mode</span><span class="o">=</span><span class="s2">&quot;updates&quot;</span><span class="p">))</span></span>
+<span class="c1"># [{&#39;expensive_node&#39;: {&#39;result&#39;: 10}, &#39;__metadata__&#39;: {&#39;cached&#39;: True}}]</span>
+</code></pre></div>
+<p>由于模拟的工作负载，第一次运行大约需要两秒。第二次运行会从缓存返回。</p>
+<p>你也可以使用 <a href="https://reference.langchain.com/python/langgraph/graph/state/StateGraph/set_node_defaults" target="_blank" rel="noreferrer"> 0 </a> 为图一次性设置 <code>cache_policy</code>（以及其他节点选项）。请参阅<a href="#设置图级别的节点默认值">设置图级别的节点默认值</a>。</p>
+<h2 id="另请参阅">另请参阅<a class="h-anchor" href="#另请参阅" aria-label="本节链接">#</a></h2>
+<ul><li><a href="graph-api.html#nodes">Graph API</a></li><li><a href="graph-api-control-flow.html">控制流</a></li><li><a href="fault-tolerance.html">容错</a></li><li><a href="graph-api-state.html">定义和更新状态</a></li></ul>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档连接</a>到你所选的智能体，通过 MCP 获取实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/graph-api-nodes.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a> 或 <a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="graph-api-send-command.html"><span class="lbl">上一页</span><span class="ttl">Send 与 Command</span></a><a class="next" href="graph-api-visualize.html"><span class="lbl">下一页</span><span class="ttl">可视化图</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#添加运行时配置">添加运行时配置</a></li><li class="lvl-2"><a href="#添加重试策略">添加重试策略</a></li><li class="lvl-2"><a href="#设置节点超时">设置节点超时</a></li><li class="lvl-2"><a href="#处理节点错误">处理节点错误</a></li><li class="lvl-2"><a href="#设置图级别的节点默认值">设置图级别的节点默认值</a></li><li class="lvl-2"><a href="#在节点内访问执行信息">在节点内访问执行信息</a></li><li class="lvl-2"><a href="#在节点内访问服务器信息">在节点内访问服务器信息</a></li><li class="lvl-2"><a href="#在节点内访问排空状态">在节点内访问排空状态</a></li><li class="lvl-2"><a href="#添加节点缓存">添加节点缓存</a></li><li class="lvl-2"><a href="#另请参阅">另请参阅</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

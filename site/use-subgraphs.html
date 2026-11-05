@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>子图 · LangGraph 中文文档</title>
+<meta name="description" content="子图">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link active" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/use-subgraphs" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>核心能力</span><span class="sep">/</span><span>子图</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">核心能力</span>
+          <h1>子图</h1>
+          
+        </div>
+        <div class="doc-body"><p>本指南介绍使用子图的机制。子图是作为另一个图中的<a href="graph-api.html#nodes">节点</a>来使用的<a href="graph-api.html#graphs">图</a>。</p>
+<p>子图适用于以下场景：</p>
+<ul><li>构建<a href="https://docs.langchain.com/oss/python/langchain/multi-agent" target="_blank" rel="noreferrer">多智能体系统</a></li><li>在多个图中复用一组节点</li><li>分布式开发：当你希望不同团队独立开发图的不同部分时，可以将每个部分定义为一个子图；只要遵守子图的接口（即输入和输出模式），父图就可以在不了解子图任何细节的情况下完成构建</li></ul>
+<h2 id="环境准备">环境准备<a class="h-anchor" href="#环境准备" aria-label="本节链接">#</a></h2>
+<div class="tabs code-tabs" data-tabs data-group="code"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-0">pip</button><button class="tab-btn" role="tab" data-target="code-1">uv</button></div><div class="tab-panels"><div class="tab-panel active" id="code-0" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>langgraph
+</code></pre></div></div><div class="tab-panel" id="code-1" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">uv<span class="w"> </span>add<span class="w"> </span>langgraph
+</code></pre></div></div></div></div>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p><strong>为 LangGraph 开发配置 LangSmith</strong> 注册 <a href="https://smith.langchain.com?utm_source=docs&amp;utm_medium=cta&amp;utm_campaign=langsmith-signup&amp;utm_content=oss-langgraph-use-subgraphs" target="_blank" rel="noreferrer">LangSmith</a>，以快速发现问题并提升你的 LangGraph 项目性能。LangSmith 让你能够使用追踪数据来调试、测试和监控用 LangGraph 构建的 LLM 应用——阅读<a href="https://docs.langchain.com/langsmith/observability" target="_blank" rel="noreferrer">如何开始使用 LangSmith</a>了解更多信息。</p></div></div>
+<h2 id="定义子图通信">定义子图通信<a class="h-anchor" href="#定义子图通信" aria-label="本节链接">#</a></h2>
+<p>添加子图时，需要定义父图与子图之间的通信方式：</p>
+<div class="table-wrap"><table><thead><tr><th>模式</th><th>使用场景</th><th>状态 schema</th></tr></thead><tbody><tr><td><a href="#在节点内调用子图">在节点内调用子图</a></td><td>父图与子图具有<strong>不同的状态 schema</strong>（没有共享键），或者你需要在两者之间转换状态</td><td>你需要编写一个包装函数，把父图状态映射为子图输入，并把子图输出映射回父图状态</td></tr><tr><td><a href="#将子图添加为节点">将子图添加为节点</a></td><td>父图与子图<strong>共享状态键</strong>——子图读写与父图相同的通道</td><td>你直接把编译好的子图传给 <code>add_node</code>——无需包装函数</td></tr></tbody></table></div>
+<h3 id="在节点内调用子图">在节点内调用子图<a class="h-anchor" href="#在节点内调用子图" aria-label="本节链接">#</a></h3>
+<p>当父图与子图具有<strong>不同的状态 schema</strong>（没有共享键）时，在节点函数内部调用子图。当你想在<a href="https://docs.langchain.com/oss/python/langchain/multi-agent" target="_blank" rel="noreferrer">多智能体</a>系统中为每个智能体保留私有的消息历史时，这种做法很常见。</p>
+<p>节点函数会在调用子图之前把父图状态转换为子图状态，并在返回之前把结果转换回父图状态。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph.state</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SubgraphState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">bar</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="c1"># Subgraph</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">subgraph_node_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">SubgraphState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="s2">&quot;hi! &quot;</span> <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;bar&quot;</span><span class="p">]}</span>
+
+<span class="n">subgraph_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">SubgraphState</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">subgraph_node_1</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;subgraph_node_1&quot;</span><span class="p">)</span>
+<span class="n">subgraph</span> <span class="o">=</span> <span class="n">subgraph_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Parent graph</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">foo</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">call_subgraph</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="c1"># Transform the state to the subgraph state</span>
+<span class="code-line hl">    <span class="n">subgraph_output</span> <span class="o">=</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]})</span></span>
+    <span class="c1"># Transform response back to the parent state</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="n">subgraph_output</span><span class="p">[</span><span class="s2">&quot;bar&quot;</span><span class="p">]}</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node_1&quot;</span><span class="p">,</span> <span class="n">call_subgraph</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node_1&quot;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</code></pre></div>
+<details class="accordion"><summary>完整示例：不同的状态 schema</summary><div class="accordion-body"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph.state</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">UpdatesTransformer</span>
+
+<span class="c1"># Define subgraph</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SubgraphState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="c1"># note that none of these keys are shared with the parent graph state</span>
+    <span class="n">bar</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">baz</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">subgraph_node_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">SubgraphState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;baz&quot;</span><span class="p">:</span> <span class="s2">&quot;baz&quot;</span><span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">subgraph_node_2</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">SubgraphState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;bar&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;baz&quot;</span><span class="p">]}</span>
+
+<span class="n">subgraph_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">SubgraphState</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">subgraph_node_1</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">subgraph_node_2</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;subgraph_node_1&quot;</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;subgraph_node_1&quot;</span><span class="p">,</span> <span class="s2">&quot;subgraph_node_2&quot;</span><span class="p">)</span>
+<span class="n">subgraph</span> <span class="o">=</span> <span class="n">subgraph_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Define parent graph</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParentState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">foo</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ParentState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;hi! &quot;</span> <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_2</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ParentState</span><span class="p">):</span>
+    <span class="c1"># Transform the state to the subgraph state</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]})</span>
+    <span class="c1"># Transform response back to the parent state</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;bar&quot;</span><span class="p">]}</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">ParentState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node_1&quot;</span><span class="p">,</span> <span class="n">node_1</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node_2&quot;</span><span class="p">,</span> <span class="n">node_2</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node_1&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node_1&quot;</span><span class="p">,</span> <span class="s2">&quot;node_2&quot;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">},</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span> <span class="n">transformers</span><span class="o">=</span><span class="p">[</span><span class="n">UpdatesTransformer</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;updates&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;namespace&quot;</span><span class="p">],</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">[] {'node_1': {'foo': 'hi! foo'}}
+['node_2:577b710b-64ae-31fb-9455-6a4d4cc2b0b9'] {'subgraph_node_1': {'baz': 'baz'}}
+['node_2:577b710b-64ae-31fb-9455-6a4d4cc2b0b9'] {'subgraph_node_2': {'bar': 'hi! foobaz'}}
+[] {'node_2': {'foo': 'hi! foobaz'}}</code></pre></div></div></details>
+<details class="accordion"><summary>完整示例：不同的状态 schema（两层子图）</summary><div class="accordion-body"><p>这是一个包含两层子图的示例：父图 -&gt; 子图 -&gt; 孙图。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="c1"># Grandchild graph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph.state</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">UpdatesTransformer</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">GrandChildState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">my_grandchild_key</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">grandchild_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">GrandChildState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GrandChildState</span><span class="p">:</span>
+    <span class="c1"># NOTE: child or parent keys will not be accessible here</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;my_grandchild_key&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;my_grandchild_key&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;, how are you&quot;</span><span class="p">}</span>
+
+
+<span class="n">grandchild</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">GrandChildState</span><span class="p">)</span>
+<span class="n">grandchild</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;grandchild_1&quot;</span><span class="p">,</span> <span class="n">grandchild_1</span><span class="p">)</span>
+
+<span class="n">grandchild</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;grandchild_1&quot;</span><span class="p">)</span>
+<span class="n">grandchild</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;grandchild_1&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="n">grandchild_graph</span> <span class="o">=</span> <span class="n">grandchild</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Child graph</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ChildState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">my_child_key</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">call_grandchild_graph</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ChildState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ChildState</span><span class="p">:</span>
+    <span class="c1"># NOTE: parent or grandchild keys won&#39;t be accessible here</span>
+    <span class="n">grandchild_graph_input</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;my_grandchild_key&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;my_child_key&quot;</span><span class="p">]}</span>
+    <span class="n">grandchild_graph_output</span> <span class="o">=</span> <span class="n">grandchild_graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">grandchild_graph_input</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;my_child_key&quot;</span><span class="p">:</span> <span class="n">grandchild_graph_output</span><span class="p">[</span><span class="s2">&quot;my_grandchild_key&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; today?&quot;</span><span class="p">}</span>
+
+<span class="n">child</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">ChildState</span><span class="p">)</span>
+<span class="c1"># We&#39;re passing a function here instead of just compiled graph (`grandchild_graph`)</span>
+<span class="n">child</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;child_1&quot;</span><span class="p">,</span> <span class="n">call_grandchild_graph</span><span class="p">)</span>
+<span class="n">child</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;child_1&quot;</span><span class="p">)</span>
+<span class="n">child</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;child_1&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+<span class="n">child_graph</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Parent graph</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParentState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">my_key</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parent_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ParentState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParentState</span><span class="p">:</span>
+    <span class="c1"># NOTE: child or grandchild keys won&#39;t be accessible here</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;my_key&quot;</span><span class="p">:</span> <span class="s2">&quot;hi &quot;</span> <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;my_key&quot;</span><span class="p">]}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parent_2</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ParentState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParentState</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;my_key&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;my_key&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; bye!&quot;</span><span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">call_child_graph</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ParentState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParentState</span><span class="p">:</span>
+    <span class="n">child_graph_input</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;my_child_key&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;my_key&quot;</span><span class="p">]}</span>
+    <span class="n">child_graph_output</span> <span class="o">=</span> <span class="n">child_graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">child_graph_input</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;my_key&quot;</span><span class="p">:</span> <span class="n">child_graph_output</span><span class="p">[</span><span class="s2">&quot;my_child_key&quot;</span><span class="p">]}</span>
+
+<span class="n">parent</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">ParentState</span><span class="p">)</span>
+<span class="n">parent</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;parent_1&quot;</span><span class="p">,</span> <span class="n">parent_1</span><span class="p">)</span>
+<span class="c1"># We&#39;re passing a function here instead of just a compiled graph (`child_graph`)</span>
+<span class="n">parent</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;child&quot;</span><span class="p">,</span> <span class="n">call_child_graph</span><span class="p">)</span>
+<span class="n">parent</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;parent_2&quot;</span><span class="p">,</span> <span class="n">parent_2</span><span class="p">)</span>
+
+<span class="n">parent</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;parent_1&quot;</span><span class="p">)</span>
+<span class="n">parent</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;parent_1&quot;</span><span class="p">,</span> <span class="s2">&quot;child&quot;</span><span class="p">)</span>
+<span class="n">parent</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;child&quot;</span><span class="p">,</span> <span class="s2">&quot;parent_2&quot;</span><span class="p">)</span>
+<span class="n">parent</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;parent_2&quot;</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="n">parent_graph</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">parent_graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span><span class="s2">&quot;my_key&quot;</span><span class="p">:</span> <span class="s2">&quot;Bob&quot;</span><span class="p">},</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span> <span class="n">transformers</span><span class="o">=</span><span class="p">[</span><span class="n">UpdatesTransformer</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;updates&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;namespace&quot;</span><span class="p">],</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">[] {'parent_1': {'my_key': 'hi Bob'}}
+['child:2e26e9ce-602f-862c-aa66-1ea5a4655e3b', 'child_1:781bb3b1-3971-84ce-810b-acf819a03f9c'] {'grandchild_1': {'my_grandchild_key': 'hi Bob, how are you'}}
+['child:2e26e9ce-602f-862c-aa66-1ea5a4655e3b'] {'child_1': {'my_child_key': 'hi Bob, how are you today?'}}
+[] {'child': {'my_key': 'hi Bob, how are you today?'}}
+[] {'parent_2': {'my_key': 'hi Bob, how are you today? bye!'}}</code></pre></div></div></details>
+<h3 id="将子图添加为节点">将子图添加为节点<a class="h-anchor" href="#将子图添加为节点" aria-label="本节链接">#</a></h3>
+<p>当父图与子图<strong>共享状态键</strong>时，你可以把编译好的子图直接传给 <code>add_node</code>。无需包装函数——子图会自动读写父图的状态通道。例如，在<a href="https://docs.langchain.com/oss/python/langchain/multi-agent" target="_blank" rel="noreferrer">多智能体</a>系统中，智能体通常通过共享的 <a href="graph-api.html#why-use-messages">messages</a> 键通信。</p>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/ybiAaBfoBvFquMDz/oss/images/subgraph.png?fit=max&amp;auto=format&amp;n=ybiAaBfoBvFquMDz&amp;q=85&amp;s=c280df5c968cd4237b0b5d03823d8946" alt="SQL agent graph" loading="lazy" class="md-img"></p>
+<p>如果你的子图与父图共享状态键，可以按照以下步骤把它添加到图中：</p>
+<ol><li>定义子图工作流（下例中的 <code>subgraph_builder</code>）并编译它</li><li>在定义父图工作流时，把编译好的子图传给 <a href="https://reference.langchain.com/python/langgraph/graph/state/StateGraph/add_node" target="_blank" rel="noreferrer"> 0 </a> 方法</li></ol>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph.state</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">foo</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="c1"># Subgraph</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">subgraph_node_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;hi! &quot;</span> <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]}</span>
+
+<span class="n">subgraph_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">subgraph_node_1</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;subgraph_node_1&quot;</span><span class="p">)</span>
+<span class="n">subgraph</span> <span class="o">=</span> <span class="n">subgraph_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Parent graph</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="code-line hl"><span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node_1&quot;</span><span class="p">,</span> <span class="n">subgraph</span><span class="p">)</span></span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node_1&quot;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</code></pre></div>
+<details class="accordion"><summary>完整示例：共享状态 schema</summary><div class="accordion-body"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph.state</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">UpdatesTransformer</span>
+
+<span class="c1"># Define subgraph</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SubgraphState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">foo</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># shared with parent graph state</span>
+    <span class="n">bar</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># private to SubgraphState</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">subgraph_node_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">SubgraphState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="s2">&quot;bar&quot;</span><span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">subgraph_node_2</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">SubgraphState</span><span class="p">):</span>
+    <span class="c1"># note that this node is using a state key (&#39;bar&#39;) that is only available in the subgraph</span>
+    <span class="c1"># and is sending update on the shared state key (&#39;foo&#39;)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;bar&quot;</span><span class="p">]}</span>
+
+<span class="n">subgraph_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">SubgraphState</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">subgraph_node_1</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">subgraph_node_2</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;subgraph_node_1&quot;</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;subgraph_node_1&quot;</span><span class="p">,</span> <span class="s2">&quot;subgraph_node_2&quot;</span><span class="p">)</span>
+<span class="n">subgraph</span> <span class="o">=</span> <span class="n">subgraph_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Define parent graph</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParentState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">foo</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ParentState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;hi! &quot;</span> <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]}</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">ParentState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node_1&quot;</span><span class="p">,</span> <span class="n">node_1</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node_2&quot;</span><span class="p">,</span> <span class="n">subgraph</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node_1&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node_1&quot;</span><span class="p">,</span> <span class="s2">&quot;node_2&quot;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">},</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span> <span class="n">transformers</span><span class="o">=</span><span class="p">[</span><span class="n">UpdatesTransformer</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;updates&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;namespace&quot;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">{'node_1': {'foo': 'hi! foo'}}
+{'node_2': {'foo': 'hi! foobar'}}</code></pre></div></div></details>
+<h2 id="子图持久化">子图持久化<a class="h-anchor" href="#子图持久化" aria-label="本节链接">#</a></h2>
+<p>当你使用子图时，需要决定其内部数据在调用之间如何处理。设想一个将任务委派给专家子智能体的客服机器人：「账单专家」子智能体应该记住客户先前的问题，还是在每次被调用时都从空白开始？</p>
+<p><code>.compile()</code> 上的 <code>checkpointer</code> 参数控制子图持久化：</p>
+<div class="table-wrap"><table><thead><tr><th>模式</th><th><code>checkpointer=</code></th><th>行为</th></tr></thead><tbody><tr><td><a href="#每次调用默认">每次调用</a></td><td><code>None</code>（默认）</td><td>每次调用都从空白开始，并继承父级的检查点，以支持单次调用内的<a href="interrupts.html">中断</a>和<a href="persistence.html">持久执行</a>。</td></tr><tr><td><a href="#每个线程">每线程</a></td><td><code>True</code></td><td>状态在同一线程的多次调用之间累积。每次调用都从上次中断处继续。</td></tr><tr><td><a href="#无状态">无状态</a></td><td><code>False</code></td><td>完全不进行检查点——像普通函数调用一样运行。没有中断或持久执行。</td></tr></tbody></table></div>
+<p>对大多数应用而言，每次调用是正确选择，包括由子智能体处理独立请求的<a href="https://docs.langchain.com/oss/python/langchain/multi-agent" target="_blank" rel="noreferrer">多智能体</a>系统。当子智能体需要多轮对话记忆时（例如，在多次交互中逐步构建上下文的研究助手），应使用每线程。</p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>父图必须使用检查点编译，子图持久化特性（中断、状态检查、每线程记忆）才能生效。参见<a href="persistence.html">持久化</a>。</p></div></div>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>下面的示例使用 LangChain 的 <a href="https://reference.langchain.com/python/langchain/agents/factory/create_agent" target="_blank" rel="noreferrer"> 0 </a>，这是构建智能体的常见方式。<code>create_agent</code> 底层会生成一个 <a href="graph-api.html">LangGraph 图</a>，因此所有子图持久化的概念都直接适用。如果你使用原生 LangGraph <code>StateGraph</code> 构建，相同的模式和配置选项同样适用——详见<a href="graph-api.html">Graph API</a>。</p></div></div>
+<h3 id="有状态">有状态<a class="h-anchor" href="#有状态" aria-label="本节链接">#</a></h3>
+<p>有状态子图会继承父图的检查点保存器，从而支持<a href="interrupts.html">中断</a>、<a href="persistence.html">持久化</a>以及状态检查。两种有状态模式的区别在于状态保留的时长。</p>
+<h4 id="每次调用默认">每次调用（默认）</h4>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p>对于大多数应用而言，这是推荐模式，包括将子智能体作为工具调用的<a href="https://docs.langchain.com/oss/python/langchain/multi-agent" target="_blank" rel="noreferrer">多智能体</a>系统。它支持<a href="interrupts.html">中断</a>、<a href="persistence.html">持久化</a>和并行调用，同时保持每次调用相互隔离。</p></div></div>
+<p>当对子图的每次调用彼此独立、且子智能体无需记住之前调用中的任何内容时，使用按调用持久化。这是最常见的模式，尤其适用于<a href="https://docs.langchain.com/oss/python/langchain/multi-agent" target="_blank" rel="noreferrer">多智能体</a>系统，其中子智能体处理诸如「查询该客户的订单」或「总结这份文档」之类的一次性请求。</p>
+<p>省略 <code>checkpointer</code> 或将其设为 <code>None</code>。每次调用都从全新状态开始，但在单次调用内部，子图会继承父图的检查点保存器，并可使用 <code>interrupt()</code> 暂停与恢复。</p>
+<p>以下示例使用两个子智能体（水果专家、蔬菜专家），它们被包装成外层智能体的工具：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_agent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">interrupt</span>
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fruit_info</span><span class="p">(</span><span class="n">fruit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Look up fruit info.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Info about </span><span class="si">{</span><span class="n">fruit_name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">veggie_info</span><span class="p">(</span><span class="n">veggie_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Look up veggie info.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Info about </span><span class="si">{</span><span class="n">veggie_name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># Subagents - no checkpointer setting (inherits parent)</span>
+<span class="n">fruit_agent</span> <span class="o">=</span> <span class="n">create_agent</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-5.4-mini&quot;</span><span class="p">,</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">fruit_info</span><span class="p">],</span>
+    <span class="n">prompt</span><span class="o">=</span><span class="s2">&quot;You are a fruit expert. Use the fruit_info tool. Respond in one sentence.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">veggie_agent</span> <span class="o">=</span> <span class="n">create_agent</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-5.4-mini&quot;</span><span class="p">,</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">veggie_info</span><span class="p">],</span>
+    <span class="n">prompt</span><span class="o">=</span><span class="s2">&quot;You are a veggie expert. Use the veggie_info tool. Respond in one sentence.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Wrap subagents as tools for the outer agent</span>
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ask_fruit_expert</span><span class="p">(</span><span class="n">question</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ask the fruit expert. Use for ALL fruit questions.&quot;&quot;&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">fruit_agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+        <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">question</span><span class="p">}]},</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content</span>
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ask_veggie_expert</span><span class="p">(</span><span class="n">question</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ask the veggie expert. Use for ALL veggie questions.&quot;&quot;&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">veggie_agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+        <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">question</span><span class="p">}]},</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content</span>
+
+<span class="c1"># Outer agent with checkpointer</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">create_agent</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-5.4-mini&quot;</span><span class="p">,</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">ask_fruit_expert</span><span class="p">,</span> <span class="n">ask_veggie_expert</span><span class="p">],</span>
+    <span class="n">prompt</span><span class="o">=</span><span class="p">(</span>
+        <span class="s2">&quot;You have two experts: ask_fruit_expert and ask_veggie_expert. &quot;</span>
+        <span class="s2">&quot;ALWAYS delegate questions to the appropriate expert.&quot;</span>
+    <span class="p">),</span>
+    <span class="n">checkpointer</span><span class="o">=</span><span class="n">MemorySaver</span><span class="p">(),</span>
+<span class="p">)</span>
+</code></pre></div>
+<div class="tabs" data-tabs data-group="tabs"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" aria-selected="true" data-target="tabs-0">中断</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-1">多轮对话</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-2">多次子图调用</button></div><div class="tab-panels"><div class="tab-panel active" id="tabs-0" role="tabpanel"><span class="tab-anchor" id="中断"></span><p>每次调用都可以使用 <code>interrupt()</code> 暂停与恢复。在工具函数中添加 <code>interrupt()</code>，以要求用户批准后再继续：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fruit_info</span><span class="p">(</span><span class="n">fruit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Look up fruit info.&quot;&quot;&quot;</span>
+<span class="code-line hl">    <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;continue?&quot;</span><span class="p">)</span></span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Info about </span><span class="si">{</span><span class="n">fruit_name</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+
+<span class="c1"># Stream events - the subagent&#39;s tool calls interrupt()</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Tell me about apples&quot;</span><span class="p">}]},</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">output</span>  <span class="c1"># drive the stream to completion</span>
+<span class="c1"># stream.interrupts contains pending interrupts (and stream.interrupted is True)</span>
+
+<span class="c1"># Resume - approve the interrupt</span>
+<span class="n">resumed</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="n">final</span> <span class="o">=</span> <span class="n">resumed</span><span class="o">.</span><span class="n">output</span>
+</code></pre></div>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="https://smith.langchain.com/public/17bf6cab-dbeb-4977-8c29-bb855291903e/r" target="_blank" rel="noreferrer">查看示例追踪</a></div><div class="card-body"><p>打开此示例的公开 LangSmith 运行记录。</p></div></div></div></div><div class="tab-panel" id="tabs-1" role="tabpanel"><span class="tab-anchor" id="多轮对话"></span><p>每次调用都从全新的子智能体状态开始。子智能体不会记住之前的调用：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+
+<span class="c1"># First call</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Tell me about apples&quot;</span><span class="p">}]},</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Subagent message count: 4</span>
+
+<span class="c1"># Second call - subagent starts fresh, no memory of apples</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Now tell me about bananas&quot;</span><span class="p">}]},</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Subagent message count: 4 (still fresh!)</span>
+</code></pre></div></div><div class="tab-panel" id="tabs-2" role="tabpanel"><span class="tab-anchor" id="多次子图调用"></span><p>对同一子图的多次调用不会产生冲突，因为每次调用都会获得自己的检查点命名空间：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+
+<span class="c1"># LLM calls ask_fruit_expert for both apples and bananas</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Tell me about apples and bananas&quot;</span><span class="p">}]},</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Subagent message count: 4 (apples - fresh)</span>
+<span class="c1"># Subagent message count: 4 (bananas - fresh)</span>
+</code></pre></div></div></div></div>
+<h4 id="每个线程">每个线程</h4>
+<p>当子智能体需要记住之前的交互时，使用按线程持久化。例如，一个在多轮交流中逐步积累上下文的研究助手，或一个跟踪自己已编辑过哪些文件的编码助手。子智能体的对话历史与数据会在同一线程上的多次调用之间累积。每次调用都从上次结束的地方继续。</p>
+<p>使用 <code>checkpointer=True</code> 编译即可启用该行为。</p>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-icon">⚠</span><span>警告</span></div><div class="callout-body"><p>按线程的子图不支持并行工具调用。当 LLM 可以将按线程的子智能体作为工具访问时，它可能会尝试并行多次调用该工具（例如，同时向水果专家询问苹果和香蕉）。这会导致检查点冲突，因为两次调用都写入同一个命名空间。</p>
+<p>下面的示例使用 LangChain 的 <code>ToolCallLimitMiddleware</code> 来防止这种情况。如果你使用纯 LangGraph <code>StateGraph</code> 构建，则需要自行防止并行工具调用——例如，配置模型禁用并行工具调用，或添加逻辑确保同一个子图不会被并行调用多次。</p></div></div>
+<p>以下示例使用以 <code>checkpointer=True</code> 编译的水果专家子智能体：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_agent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.agents.middleware</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolCallLimitMiddleware</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">interrupt</span>
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fruit_info</span><span class="p">(</span><span class="n">fruit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Look up fruit info.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Info about </span><span class="si">{</span><span class="n">fruit_name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># Subagent with checkpointer=True for persistent state</span>
+<span class="n">fruit_agent</span> <span class="o">=</span> <span class="n">create_agent</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-5.4-mini&quot;</span><span class="p">,</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">fruit_info</span><span class="p">],</span>
+    <span class="n">prompt</span><span class="o">=</span><span class="s2">&quot;You are a fruit expert. Use the fruit_info tool. Respond in one sentence.&quot;</span><span class="p">,</span>
+<span class="code-line hl">    <span class="n">checkpointer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span></span>
+<span class="p">)</span>
+
+<span class="c1"># Wrap subagent as a tool for the outer agent</span>
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ask_fruit_expert</span><span class="p">(</span><span class="n">question</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ask the fruit expert. Use for ALL fruit questions.&quot;&quot;&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">fruit_agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+        <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">question</span><span class="p">}]},</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content</span>
+
+<span class="c1"># Outer agent with checkpointer</span>
+<span class="c1"># Use ToolCallLimitMiddleware to prevent parallel calls to per-thread subagents,</span>
+<span class="c1"># which would cause checkpoint conflicts.</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">create_agent</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-5.4-mini&quot;</span><span class="p">,</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">ask_fruit_expert</span><span class="p">],</span>
+    <span class="n">prompt</span><span class="o">=</span><span class="s2">&quot;You have a fruit expert. ALWAYS delegate fruit questions to ask_fruit_expert.&quot;</span><span class="p">,</span>
+<span class="code-line hl">    <span class="n">middleware</span><span class="o">=</span><span class="p">[</span></span>
+<span class="code-line hl">        <span class="n">ToolCallLimitMiddleware</span><span class="p">(</span><span class="n">tool_name</span><span class="o">=</span><span class="s2">&quot;ask_fruit_expert&quot;</span><span class="p">,</span> <span class="n">run_limit</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span></span>
+<span class="code-line hl">    <span class="p">],</span></span>
+    <span class="n">checkpointer</span><span class="o">=</span><span class="n">MemorySaver</span><span class="p">(),</span>
+<span class="p">)</span>
+</code></pre></div>
+<div class="tabs" data-tabs data-group="tabs-2"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" aria-selected="true" data-target="tabs-2-0">中断</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-2-1">多轮对话</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-2-2">多次子图调用</button></div><div class="tab-panels"><div class="tab-panel active" id="tabs-2-0" role="tabpanel"><span class="tab-anchor" id="中断-2"></span><p>按线程的子智能体与按调用模式一样支持 <code>interrupt()</code>。在工具函数中添加 <code>interrupt()</code>，以要求用户批准：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fruit_info</span><span class="p">(</span><span class="n">fruit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Look up fruit info.&quot;&quot;&quot;</span>
+<span class="code-line hl">    <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;continue?&quot;</span><span class="p">)</span></span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Info about </span><span class="si">{</span><span class="n">fruit_name</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+
+<span class="c1"># Stream events - the subagent&#39;s tool calls interrupt()</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Tell me about apples&quot;</span><span class="p">}]},</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">output</span>  <span class="c1"># drive the stream to completion</span>
+<span class="c1"># stream.interrupts contains pending interrupts (and stream.interrupted is True)</span>
+
+<span class="c1"># Resume - approve the interrupt</span>
+<span class="n">resumed</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="n">final</span> <span class="o">=</span> <span class="n">resumed</span><span class="o">.</span><span class="n">output</span>
+</code></pre></div>
+<div class="card-grid"><div class="card"><div class="card-title"><a href="https://smith.langchain.com/public/17bf6cab-dbeb-4977-8c29-bb855291903e/r" target="_blank" rel="noreferrer">查看示例追踪</a></div><div class="card-body"><p>打开此示例的公开 LangSmith 运行记录。</p></div></div></div></div><div class="tab-panel" id="tabs-2-1" role="tabpanel"><span class="tab-anchor" id="多轮对话-2"></span><p>状态会在多次调用之间累积——子智能体会记住过去的对话：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+
+<span class="c1"># First call</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Tell me about apples&quot;</span><span class="p">}]},</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Subagent message count: 4</span>
+
+<span class="c1"># Second call - subagent REMEMBERS apples conversation</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Now tell me about bananas&quot;</span><span class="p">}]},</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Subagent message count: 8 (accumulated!)</span>
+</code></pre></div></div><div class="tab-panel" id="tabs-2-2" role="tabpanel"><span class="tab-anchor" id="多次子图调用-2"></span><p>当你拥有多个<strong>不同的</strong>按线程子图时（例如一个水果专家和一个蔬菜专家），每个子图都需要自己的存储空间，这样它们的检查点才不会互相覆盖。这称为<strong>命名空间隔离</strong>。</p>
+<p>如果你是<a href="#在节点内调用子图">在节点内调用子图</a>，LangGraph 会根据调用顺序分配命名空间（第一次调用、第二次调用等）。这意味着调整调用顺序可能会搞混哪个子图加载哪份状态。为避免这种情况，请把每个子智能体包装在各自拥有唯一节点名的 <code>StateGraph</code> 中——这样每个子图都会获得稳定且唯一的命名空间：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">MessagesState</span><span class="p">,</span> <span class="n">StateGraph</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_sub_agent</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap an agent with a unique node name for namespace isolation.&quot;&quot;&quot;</span>
+    <span class="n">agent</span> <span class="o">=</span> <span class="n">create_agent</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">StateGraph</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">)</span>
+<span class="code-line hl">        <span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span>  <span class="c1"># unique name → stable namespace</span></span>
+        <span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;__start__&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+    <span class="p">)</span>
+
+<span class="n">fruit_agent</span> <span class="o">=</span> <span class="n">create_sub_agent</span><span class="p">(</span>
+    <span class="s2">&quot;gpt-5.4-mini&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fruit_agent&quot;</span><span class="p">,</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">fruit_info</span><span class="p">],</span> <span class="n">prompt</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">checkpointer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">veggie_agent</span> <span class="o">=</span> <span class="n">create_sub_agent</span><span class="p">(</span>
+    <span class="s2">&quot;gpt-5.4-mini&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;veggie_agent&quot;</span><span class="p">,</span>
+    <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">veggie_info</span><span class="p">],</span> <span class="n">prompt</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">checkpointer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+
+<span class="c1"># First call - LLM calls both fruit and veggie experts</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Tell me about cherries and broccoli&quot;</span><span class="p">}]},</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Fruit subagent message count: 4</span>
+<span class="c1"># Veggie subagent message count: 4</span>
+
+<span class="c1"># Second call - both agents accumulate independently</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Now tell me about oranges and carrots&quot;</span><span class="p">}]},</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1"># Fruit subagent message count: 8 (remembers cherries!)</span>
+<span class="c1"># Veggie subagent message count: 8 (remembers broccoli!)</span>
+</code></pre></div>
+<p><a href="#将子图添加为节点">作为节点添加</a>的子图已经会自动获得基于名称的命名空间，因此不需要这层包装。</p></div></div></div>
+<h3 id="无状态">无状态<a class="h-anchor" href="#无状态" aria-label="本节链接">#</a></h3>
+<p>当你希望像普通函数调用一样运行子智能体、不承担检查点开销时，可以使用这种方式。子图无法暂停/恢复，也无法受益于<a href="persistence.html">持久执行</a>。请使用 <code>checkpointer=False</code> 进行编译。</p>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-icon">⚠</span><span>警告</span></div><div class="callout-body"><p>没有检查点时，子图不具备持久执行能力。如果进程在运行中途崩溃，子图无法恢复，必须从头重新运行。</p></div></div>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">subgraph_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="code-line hl"><span class="n">subgraph</span> <span class="o">=</span> <span class="n">subgraph_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></span>
+</code></pre></div>
+<h3 id="检查点器参考">检查点器参考<a class="h-anchor" href="#检查点器参考" aria-label="本节链接">#</a></h3>
+<p>通过 <code>.compile()</code> 上的 <code>checkpointer</code> 参数控制子图的持久化：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">subgraph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># or True / None</span>
+</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>特性</th><th>按调用（默认）</th><th>按线程</th><th>无状态</th></tr></thead><tbody><tr><td><code>checkpointer=</code></td><td><code>None</code></td><td><code>True</code></td><td><code>False</code></td></tr><tr><td>中断（HITL）</td><td>✅</td><td>✅</td><td>❌</td></tr><tr><td>多轮记忆</td><td>❌</td><td>✅</td><td>❌</td></tr><tr><td>多次调用（不同子图）</td><td>✅</td><td>⚠️（在同一节点内对多个按线程子图的调用可能导致命名空间冲突。有可用的变通方案。）</td><td>✅</td></tr><tr><td>多次调用（同一子图）</td><td>✅</td><td>❌</td><td>✅</td></tr><tr><td>状态查看</td><td>⚠️（按调用持久化的状态查看仅适用于当前这次调用（在中断期间）。每次调用都从头开始，因此调用完成后没有累积的状态可查看。）</td><td>✅</td><td>❌</td></tr></tbody></table></div>
+<ul><li><strong>中断（HITL）</strong>：子图可以使用 <a href="interrupts.html">interrupt()</a> 暂停执行并等待用户输入，然后从上次中断处恢复。</li><li><strong>多轮记忆</strong>：子图在同一<a href="checkpointers.html#threads">线程</a>内的多次调用之间保留其状态。每次调用都从上次结束处继续，而不是从头开始。</li><li><strong>多次调用（不同子图）</strong>：可以在单个节点内调用多个不同的子图实例，而不会产生检查点命名空间冲突。</li><li><strong>多次调用（同一子图）</strong>：同一子图实例可以在单个节点内被多次调用。在有状态持久化下，这些调用会写入同一个检查点命名空间并产生冲突——请改用按调用持久化。</li><li><strong>状态查看</strong>：可通过 <code>get_state(config, subgraphs=True)</code> 获取子图状态，用于调试和监控。</li></ul>
+<h2 id="查看子图状态">查看子图状态<a class="h-anchor" href="#查看子图状态" aria-label="本节链接">#</a></h2>
+<p>当你启用<a href="persistence.html">持久化</a>后，可以使用 subgraphs 选项查看子图状态。使用<a href="#无状态">无状态</a>检查点（<code>checkpointer=False</code>）时，不会保存任何子图检查点，因此子图状态不可用。</p>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>查看子图状态要求 LangGraph 能够<strong>静态发现</strong>该子图——也就是说，它要么<a href="#将子图添加为节点">作为节点添加</a>，要么<a href="#在节点内调用子图">在节点内调用</a>。如果在<a href="https://docs.langchain.com/oss/python/langchain/tools" target="_blank" rel="noreferrer">工具</a>函数或其他间接调用中调用子图（例如<a href="https://docs.langchain.com/oss/python/langchain/multi-agent/subagents" target="_blank" rel="noreferrer">子智能体</a>模式），则不起作用。无论嵌套层级如何，中断仍然会传播到顶层图。</p></div></div>
+<div class="tabs" data-tabs data-group="tabs-3"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" aria-selected="true" data-target="tabs-3-0">按调用</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-3-1">按线程</button></div><div class="tab-panels"><div class="tab-panel active" id="tabs-3-0" role="tabpanel"><span class="tab-anchor" id="按调用"></span><p>返回<strong>仅当前这次调用</strong>的子图状态。每次调用都从头开始。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemorySaver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">interrupt</span><span class="p">,</span> <span class="n">Command</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">foo</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="c1"># Subgraph</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">subgraph_node_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">(</span><span class="s2">&quot;Provide value:&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">value</span><span class="p">}</span>
+
+<span class="n">subgraph_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">subgraph_node_1</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;subgraph_node_1&quot;</span><span class="p">)</span>
+<span class="n">subgraph</span> <span class="o">=</span> <span class="n">subgraph_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>  <span class="c1"># inherits parent checkpointer</span>
+
+<span class="c1"># Parent graph</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node_1&quot;</span><span class="p">,</span> <span class="n">subgraph</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node_1&quot;</span><span class="p">)</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">MemorySaver</span><span class="p">()</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+
+<span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">},</span> <span class="n">config</span><span class="p">)</span>
+
+<span class="c1"># View subgraph state for the current invocation</span>
+<span class="code-line hl"><span class="n">subgraph_state</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">subgraphs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">state</span></span>
+
+<span class="c1"># Resume the subgraph</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">),</span> <span class="n">config</span><span class="p">)</span>
+</code></pre></div></div><div class="tab-panel" id="tabs-3-1" role="tabpanel"><span class="tab-anchor" id="按线程"></span><p>返回该线程上所有调用<strong>累积</strong>的子图状态。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">START</span><span class="p">,</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">MessagesState</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemorySaver</span>
+
+<span class="c1"># Subgraph with its own persistent state</span>
+<span class="n">subgraph_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">)</span>
+<span class="c1"># ... add nodes and edges</span>
+<span class="code-line hl"><span class="n">subgraph</span> <span class="o">=</span> <span class="n">subgraph_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></span>
+
+<span class="c1"># Parent graph</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;agent&quot;</span><span class="p">,</span> <span class="n">subgraph</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;agent&quot;</span><span class="p">)</span>
+
+<span class="n">checkpointer</span> <span class="o">=</span> <span class="n">MemorySaver</span><span class="p">()</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;configurable&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;thread_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}}</span>
+
+<span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;hi&quot;</span><span class="p">}]},</span> <span class="n">config</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;what did I say?&quot;</span><span class="p">}]},</span> <span class="n">config</span><span class="p">)</span>
+
+<span class="c1"># View accumulated subgraph state (includes messages from both invocations)</span>
+<span class="code-line hl"><span class="n">subgraph_state</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">subgraphs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">state</span></span>
+</code></pre></div></div></div></div>
+<h2 id="流式输出子图输出">流式输出子图输出<a class="h-anchor" href="#流式输出子图输出" aria-label="本节链接">#</a></h2>
+<p>要观察嵌套图的执行过程，我们推荐使用<a href="event-streaming.html">事件流式输出</a>：<code>stream.subgraphs</code> 投影会发现每一次嵌套运行，并在无需解析命名空间字符串的情况下暴露其 <code>path</code>、<code>messages</code> 和 <code>values</code>。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="code-line hl"><span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">},</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">)</span></span>
+
+<span class="k">for</span> <span class="n">subgraph</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">subgraphs</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">subgraph</span><span class="o">.</span><span class="n">graph_name</span><span class="p">,</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">snapshot</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">subgraph</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">)</span>
+</code></pre></div>
+<p>如果你需要原始的协议事件，可以直接迭代该流，并基于 <code>event["method"]</code> 和 <code>event["params"]["namespace"]</code> 进行过滤：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">UpdatesTransformer</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">},</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span> <span class="n">transformers</span><span class="o">=</span><span class="p">[</span><span class="n">UpdatesTransformer</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;updates&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;namespace&quot;</span><span class="p">],</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+</code></pre></div>
+<details class="accordion"><summary>从子图流式输出</summary><div class="accordion-body"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph.state</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">UpdatesTransformer</span>
+
+<span class="c1"># Define subgraph</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SubgraphState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">foo</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">bar</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">subgraph_node_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">SubgraphState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="s2">&quot;bar&quot;</span><span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">subgraph_node_2</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">SubgraphState</span><span class="p">):</span>
+    <span class="c1"># note that this node is using a state key (&#39;bar&#39;) that is only available in the subgraph</span>
+    <span class="c1"># and is sending update on the shared state key (&#39;foo&#39;)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;bar&quot;</span><span class="p">]}</span>
+
+<span class="n">subgraph_builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">SubgraphState</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">subgraph_node_1</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">subgraph_node_2</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;subgraph_node_1&quot;</span><span class="p">)</span>
+<span class="n">subgraph_builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;subgraph_node_1&quot;</span><span class="p">,</span> <span class="s2">&quot;subgraph_node_2&quot;</span><span class="p">)</span>
+<span class="n">subgraph</span> <span class="o">=</span> <span class="n">subgraph_builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="c1"># Define parent graph</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParentState</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="n">foo</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">node_1</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">ParentState</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;hi! &quot;</span> <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]}</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">ParentState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node_1&quot;</span><span class="p">,</span> <span class="n">node_1</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">&quot;node_2&quot;</span><span class="p">,</span> <span class="n">subgraph</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;node_1&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;node_1&quot;</span><span class="p">,</span> <span class="s2">&quot;node_2&quot;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+
+<span class="code-line hl"><span class="n">stream</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">stream_events</span><span class="p">({</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">},</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span> <span class="n">transformers</span><span class="o">=</span><span class="p">[</span><span class="n">UpdatesTransformer</span><span class="p">])</span></span>
+<span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;updates&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;namespace&quot;</span><span class="p">],</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">[] {'node_1': {'foo': 'hi! foo'}}
+['node_2:e58e5673-a661-ebb0-70d4-e298a7fc28b7'] {'subgraph_node_1': {'bar': 'bar'}}
+['node_2:e58e5673-a661-ebb0-70d4-e298a7fc28b7'] {'subgraph_node_2': {'foo': 'hi! foobar'}}
+[] {'node_2': {'foo': 'hi! foobar'}}</code></pre></div></div></details>
+<hr class="rule">
+<p>通过 MCP 将<a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">这些文档</a>连接到你选择的智能体，以获取实时答案。</p>
+<p>在 GitHub 上<a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/use-subgraphs.mdx" target="_blank" rel="noreferrer">编辑此页面</a>，或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交 issue</a>。</p></div>
+        <nav class="pager"><a class="prev" href="add-memory.html"><span class="lbl">上一页</span><span class="ttl">记忆</span></a><a class="next" href="workflows-agents.html"><span class="lbl">下一页</span><span class="ttl">工作流与智能体</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-2"><a href="#环境准备">环境准备</a></li><li class="lvl-2"><a href="#定义子图通信">定义子图通信</a></li><li class="lvl-3"><a href="#在节点内调用子图">在节点内调用子图</a></li><li class="lvl-3"><a href="#将子图添加为节点">将子图添加为节点</a></li><li class="lvl-2"><a href="#子图持久化">子图持久化</a></li><li class="lvl-3"><a href="#有状态">有状态</a></li><li class="lvl-3"><a href="#无状态">无状态</a></li><li class="lvl-3"><a href="#检查点器参考">检查点器参考</a></li><li class="lvl-2"><a href="#查看子图状态">查看子图状态</a></li><li class="lvl-2"><a href="#流式输出子图输出">流式输出子图输出</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

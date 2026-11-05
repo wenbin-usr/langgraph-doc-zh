@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>构建自定义 SQL 智能体 · LangGraph 中文文档</title>
+<meta name="description" content="构建自定义 SQL 智能体">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/pygments.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23161f34'/><text x='50' y='68' font-size='54' text-anchor='middle' fill='%23d4e8a8' font-family='sans-serif' font-weight='bold'>LG</text></svg>">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">LG</span>
+        <span class="brand-text"><b>LangGraph</b><span>中文文档</span></span>
+      </a>
+    </div>
+    <button class="sidebar-search" id="searchBtn" type="button">
+      <span>搜索文档…</span><kbd>⌘K</kbd>
+    </button>
+    <nav class="sidebar-nav"><div class="nav-single"><a class="nav-link" href="overview.html">概览</a></div>
+<div class="nav-group"><div class="nav-group-title">入门</div><ul><li><a class="nav-link" href="quickstart.html">快速开始</a></li><li><a class="nav-link" href="choosing-apis.html">选择 API</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">核心能力</div><ul><li><a class="nav-link" href="persistence.html">持久化</a></li><li><a class="nav-link" href="checkpointers.html">检查点</a></li><li><a class="nav-link" href="stores.html">存储</a></li><li><a class="nav-link" href="fault-tolerance.html">容错</a></li><li><a class="nav-link" href="event-streaming.html">事件流</a></li><li><a class="nav-link" href="streaming.html">流式输出</a></li><li><a class="nav-link" href="interrupts.html">中断</a></li><li><a class="nav-link" href="use-time-travel.html">时间旅行</a></li><li><a class="nav-link" href="add-memory.html">记忆</a></li><li><a class="nav-link" href="use-subgraphs.html">子图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">模式</div><ul><li><a class="nav-link" href="workflows-agents.html">工作流与智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">案例与实践</div><ul><li><a class="nav-link" href="case-studies.html">案例研究</a></li><li><a class="nav-link" href="agentic-rag.html">Agentic RAG</a></li><li><a class="nav-link active" href="sql-agent.html">SQL 智能体</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Graph API 构建</div><ul><li><a class="nav-link" href="thinking-in-graph-api.html">用 Graph API 思考</a></li><li><a class="nav-link" href="use-graph-api.html">构建清单</a></li><li><a class="nav-link" href="graph-api.html">Graph API</a></li><li><a class="nav-link" href="graph-api-state.html">定义与更新状态</a></li><li><a class="nav-link" href="graph-api-control-flow.html">控制流</a></li><li><a class="nav-link" href="graph-api-send-command.html">Send 与 Command</a></li><li><a class="nav-link" href="graph-api-nodes.html">配置节点</a></li><li><a class="nav-link" href="graph-api-visualize.html">可视化图</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">使用 Functional API 构建</div><ul><li><a class="nav-link" href="thinking-in-functional-api.html">用 Functional API 思考</a></li><li><a class="nav-link" href="use-functional-api.html">构建清单</a></li><li><a class="nav-link" href="functional-api.html">Functional API</a></li><li><a class="nav-link" href="functional-api-workflows.html">工作流</a></li><li><a class="nav-link" href="functional-api-tasks.html">任务</a></li><li><a class="nav-link" href="functional-api-streaming.html">流式输出</a></li><li><a class="nav-link" href="functional-api-human-in-the-loop.html">人在回路</a></li><li><a class="nav-link" href="functional-api-memory.html">记忆</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">部署</div><ul><li><a class="nav-link" href="local-server.html">本地服务器</a></li><li><a class="nav-link" href="application-structure.html">应用结构</a></li><li><a class="nav-link" href="test.html">测试</a></li><li><a class="nav-link" href="backward-compatibility.html">向后兼容</a></li><li><a class="nav-link" href="studio.html">LangSmith Studio</a></li><li><a class="nav-link" href="ui.html">Agent Chat UI</a></li><li><a class="nav-link" href="deploy.html">部署</a></li><li><a class="nav-link" href="observability.html">可观测性</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">前端</div><ul><li><a class="nav-link" href="frontend-overview.html">概览</a></li><li><a class="nav-link" href="frontend-graph-execution.html">图执行</a></li><li><a class="nav-link" href="frontend-custom-stream-channels.html">自定义流通道</a></li></ul></div>
+<div class="nav-group"><div class="nav-group-title">进阶</div><ul><li><a class="nav-link" href="pregel.html">运行时</a></li></ul></div></nav>
+    <div class="sidebar-foot">
+      <span>译自 LangChain 官方文档</span>
+      <a href="https://docs.langchain.com/oss/python/langgraph/sql-agent" target="_blank" rel="noreferrer">原文 ↗</a>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="打开导航">☰</button>
+      <div class="crumb"><a href="index.html">LangGraph</a><span class="sep">/</span><span>案例与实践</span><span class="sep">/</span><span>构建自定义 SQL 智能体</span></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="切换深色模式">🌙</button>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <article class="doc">
+        <div class="doc-head">
+          <span class="eyebrow">案例与实践</span>
+          <h1>构建自定义 SQL 智能体</h1>
+          
+        </div>
+        <div class="doc-body"><p>在本教程中，我们将使用 LangGraph 构建一个自定义智能体，它能够回答关于 SQL 数据库的问题。</p>
+<p>LangChain 提供了内置的 <a href="https://docs.langchain.com/oss/python/langchain/agents" target="_blank" rel="noreferrer">agent</a> 实现，这些实现使用 <a href="overview.html">LangGraph</a> 原语构建。如果需要更深入的定制，可以直接在 LangGraph 中实现智能体。本指南展示了一个 SQL 智能体的示例实现。如需实用的入门介绍，请参阅<a href="https://docs.langchain.com/oss/python/langchain/sql-agent" target="_blank" rel="noreferrer">使用更高层级的 LangChain 抽象构建 SQL 智能体</a>。</p>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-icon">⚠</span><span>警告</span></div><div class="callout-body"><p>构建 SQL 数据库的 Q\&amp;A 系统需要执行模型生成的 SQL 查询。这样做存在固有风险。请确保你的数据库连接权限始终尽可能收窄到智能体所需的范围内。这将缓解（但无法消除）构建模型驱动系统所带来的风险。</p></div></div>
+<p><a href="https://docs.langchain.com/oss/python/langchain/sql-agent" target="_blank" rel="noreferrer">预构建智能体</a>让我们可以快速上手，但我们依赖系统提示词来约束其行为——例如，我们指示智能体始终以“列出表”工具开始，并在执行查询前始终运行查询检查工具。</p>
+<p>通过自定义智能体，我们可以在 LangGraph 中实现更高程度的控制。这里，我们实现一个简单的 ReAct 智能体设置，为特定的工具调用使用专用节点。我们将使用与预构建智能体相同的 \[state]。</p>
+<h3 id="概念">概念<a class="h-anchor" href="#概念" aria-label="本节链接">#</a></h3>
+<p>我们将涵盖以下概念：</p>
+<ul><li>用于从 SQL 数据库读取数据的<a href="https://docs.langchain.com/oss/python/langchain/tools" target="_blank" rel="noreferrer">工具</a></li><li>LangGraph <a href="graph-api.html">Graph API</a>，包括状态、节点、边和条件边。</li><li><a href="interrupts.html">人在回路</a>流程</li></ul>
+<h2 id="设置">设置<a class="h-anchor" href="#设置" aria-label="本节链接">#</a></h2>
+<h3 id="安装">安装<a class="h-anchor" href="#安装" aria-label="本节链接">#</a></h3>
+<div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">pip<span class="w"> </span>install<span class="w"> </span>langchain<span class="w"> </span>langgraph
+</code></pre></div>
+<h3 id="langsmith">LangSmith<a class="h-anchor" href="#langsmith" aria-label="本节链接">#</a></h3>
+<p>设置 <a href="https://smith.langchain.com?utm_source=docs&amp;utm_medium=cta&amp;utm_campaign=langsmith-signup&amp;utm_content=oss-langgraph-sql-agent" target="_blank" rel="noreferrer">LangSmith</a> 以检查你的链或智能体内部正在发生的情况。然后设置以下环境变量：</p>
+<div class="code-block" data-lang="shell"><div class="code-head"><span class="code-lang">shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-shell"><span class="nb">export</span><span class="w"> </span><span class="nv">LANGSMITH_TRACING</span><span class="o">=</span><span class="s2">&quot;true&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LANGSMITH_API_KEY</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
+</code></pre></div>
+<h2 id="1.-选择一个-llm">1. 选择一个 LLM<a class="h-anchor" href="#1.-选择一个-llm" aria-label="本节链接">#</a></h2>
+<p>选择一个支持<a href="https://docs.langchain.com/oss/python/integrations/providers/overview" target="_blank" rel="noreferrer">工具调用</a>的模型：</p>
+<div class="tabs" data-tabs data-group="tabs"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" aria-selected="true" data-target="tabs-0">OpenAI</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-1">Anthropic</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-2">Azure</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-3">Google Gemini</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-4">AWS Bedrock</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-5">HuggingFace</button><button class="tab-btn" role="tab" aria-selected="false" data-target="tabs-6">OpenRouter</button></div><div class="tab-panels"><div class="tab-panel active" id="tabs-0" role="tabpanel"><span class="tab-anchor" id="openai"></span><p>👉 阅读 <a href="https://docs.langchain.com/oss/python/integrations/chat/openai/" target="_blank" rel="noreferrer">OpenAI 聊天模型集成文档</a></p>
+<div class="tabs code-tabs" data-tabs data-group="code"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-0">pip</button><button class="tab-btn" role="tab" data-target="code-1">uv</button><button class="tab-btn" role="tab" data-target="code-2">init_chat_model</button><button class="tab-btn" role="tab" data-target="code-3">Model</button></div><div class="tab-panels"><div class="tab-panel active" id="code-0" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">&quot;langchain[openai]&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-1" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">uv<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;langchain[openai]&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-2" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sk-...&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span><span class="s2">&quot;gpt-5.5&quot;</span><span class="p">)</span>
+</code></pre></div></div><div class="tab-panel" id="code-3" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sk-...&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-5.5&quot;</span><span class="p">)</span>
+</code></pre></div></div></div></div></div><div class="tab-panel" id="tabs-1" role="tabpanel"><span class="tab-anchor" id="anthropic"></span><p>👉 阅读 <a href="https://docs.langchain.com/oss/python/integrations/chat/anthropic/" target="_blank" rel="noreferrer">Anthropic 聊天模型集成文档</a></p>
+<div class="tabs code-tabs" data-tabs data-group="code-2"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-2-0">pip</button><button class="tab-btn" role="tab" data-target="code-2-1">uv</button><button class="tab-btn" role="tab" data-target="code-2-2">init_chat_model</button><button class="tab-btn" role="tab" data-target="code-2-3">Model</button></div><div class="tab-panels"><div class="tab-panel active" id="code-2-0" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">&quot;langchain[anthropic]&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-2-1" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">uv<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;langchain[anthropic]&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-2-2" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ANTHROPIC_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sk-...&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span><span class="s2">&quot;claude-sonnet-4-6&quot;</span><span class="p">)</span>
+</code></pre></div></div><div class="tab-panel" id="code-2-3" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_anthropic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatAnthropic</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ANTHROPIC_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sk-...&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatAnthropic</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;claude-sonnet-4-6&quot;</span><span class="p">)</span>
+</code></pre></div></div></div></div></div><div class="tab-panel" id="tabs-2" role="tabpanel"><span class="tab-anchor" id="azure"></span><p>👉 阅读 <a href="https://docs.langchain.com/oss/python/integrations/chat/azure_chat_openai/" target="_blank" rel="noreferrer">Azure 聊天模型集成文档</a></p>
+<div class="tabs code-tabs" data-tabs data-group="code-3"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-3-0">pip</button><button class="tab-btn" role="tab" data-target="code-3-1">uv</button><button class="tab-btn" role="tab" data-target="code-3-2">init_chat_model</button><button class="tab-btn" role="tab" data-target="code-3-3">Model</button></div><div class="tab-panels"><div class="tab-panel active" id="code-3-0" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">&quot;langchain[openai]&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-3-1" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">uv<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;langchain[openai]&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-3-2" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;AZURE_OPENAI_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;AZURE_OPENAI_ENDPOINT&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENAI_API_VERSION&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;2025-03-01-preview&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span>
+    <span class="s2">&quot;azure_openai:gpt-5.5&quot;</span><span class="p">,</span>
+    <span class="n">azure_deployment</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;AZURE_OPENAI_DEPLOYMENT_NAME&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+</code></pre></div></div><div class="tab-panel" id="code-3-3" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AzureChatOpenAI</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;AZURE_OPENAI_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;AZURE_OPENAI_ENDPOINT&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENAI_API_VERSION&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;2025-03-01-preview&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">AzureChatOpenAI</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-5.5&quot;</span><span class="p">,</span>
+    <span class="n">azure_deployment</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;AZURE_OPENAI_DEPLOYMENT_NAME&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+</code></pre></div></div></div></div></div><div class="tab-panel" id="tabs-3" role="tabpanel"><span class="tab-anchor" id="google-gemini"></span><p>👉 阅读 <a href="https://docs.langchain.com/oss/python/integrations/chat/google_generative_ai/" target="_blank" rel="noreferrer">Google GenAI 聊天模型集成文档</a></p>
+<div class="tabs code-tabs" data-tabs data-group="code-4"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-4-0">pip</button><button class="tab-btn" role="tab" data-target="code-4-1">uv</button><button class="tab-btn" role="tab" data-target="code-4-2">init_chat_model</button><button class="tab-btn" role="tab" data-target="code-4-3">Model</button></div><div class="tab-panels"><div class="tab-panel active" id="code-4-0" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">&quot;langchain[google-genai]&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-4-1" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">uv<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;langchain[google-genai]&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-4-2" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span><span class="s2">&quot;google_genai:gemini-3.7-flash&quot;</span><span class="p">)</span>
+</code></pre></div></div><div class="tab-panel" id="code-4-3" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_google_genai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatGoogleGenerativeAI</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatGoogleGenerativeAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gemini-3.7-flash&quot;</span><span class="p">)</span>
+</code></pre></div></div></div></div></div><div class="tab-panel" id="tabs-4" role="tabpanel"><span class="tab-anchor" id="aws-bedrock"></span><p>👉 阅读 <a href="https://docs.langchain.com/oss/python/integrations/chat/bedrock/" target="_blank" rel="noreferrer">AWS Bedrock 聊天模型集成文档</a></p>
+<div class="tabs code-tabs" data-tabs data-group="code-5"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-5-0">pip</button><button class="tab-btn" role="tab" data-target="code-5-1">uv</button><button class="tab-btn" role="tab" data-target="code-5-2">init_chat_model</button><button class="tab-btn" role="tab" data-target="code-5-3">Model</button></div><div class="tab-panels"><div class="tab-panel active" id="code-5-0" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">&quot;langchain[aws]&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-5-1" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">uv<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;langchain[aws]&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-5-2" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+
+<span class="c1"># Follow the steps here to configure your credentials:</span>
+<span class="c1"># https://docs.aws.amazon.com/bedrock/latest/userguide/getting-started.html</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span>
+    <span class="s2">&quot;us.anthropic.claude-sonnet-4-6&quot;</span><span class="p">,</span>
+    <span class="n">model_provider</span><span class="o">=</span><span class="s2">&quot;bedrock_converse&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div></div><div class="tab-panel" id="code-5-3" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_aws</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatBedrock</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatBedrock</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;us.anthropic.claude-sonnet-4-6&quot;</span><span class="p">)</span>
+</code></pre></div></div></div></div></div><div class="tab-panel" id="tabs-5" role="tabpanel"><span class="tab-anchor" id="huggingface"></span><p>👉 阅读 <a href="https://docs.langchain.com/oss/python/integrations/chat/huggingface/" target="_blank" rel="noreferrer">HuggingFace 聊天模型集成文档</a></p>
+<div class="tabs code-tabs" data-tabs data-group="code-6"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-6-0">pip</button><button class="tab-btn" role="tab" data-target="code-6-1">uv</button><button class="tab-btn" role="tab" data-target="code-6-2">init_chat_model</button><button class="tab-btn" role="tab" data-target="code-6-3">Model</button></div><div class="tab-panels"><div class="tab-panel active" id="code-6-0" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">&quot;langchain[huggingface]&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-6-1" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">uv<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;langchain[huggingface]&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-6-2" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;HUGGINGFACEHUB_API_TOKEN&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;hf_...&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span>
+    <span class="s2">&quot;microsoft/Phi-3-mini-4k-instruct&quot;</span><span class="p">,</span>
+    <span class="n">model_provider</span><span class="o">=</span><span class="s2">&quot;huggingface&quot;</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+    <span class="n">max_tokens</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div></div><div class="tab-panel" id="code-6-3" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_huggingface</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatHuggingFace</span><span class="p">,</span> <span class="n">HuggingFaceEndpoint</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;HUGGINGFACEHUB_API_TOKEN&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;hf_...&quot;</span>
+
+<span class="n">llm</span> <span class="o">=</span> <span class="n">HuggingFaceEndpoint</span><span class="p">(</span>
+    <span class="n">repo_id</span><span class="o">=</span><span class="s2">&quot;microsoft/Phi-3-mini-4k-instruct&quot;</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+    <span class="n">max_length</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatHuggingFace</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">)</span>
+</code></pre></div></div></div></div></div><div class="tab-panel" id="tabs-6" role="tabpanel"><span class="tab-anchor" id="openrouter"></span><p>👉 阅读 <a href="https://docs.langchain.com/oss/python/integrations/chat/openrouter/" target="_blank" rel="noreferrer">OpenRouter 聊天模型集成文档</a></p>
+<div class="tabs code-tabs" data-tabs data-group="code-7"><div class="tab-list" role="tablist"><button class="tab-btn active" role="tab" data-target="code-7-0">pip</button><button class="tab-btn" role="tab" data-target="code-7-1">uv</button><button class="tab-btn" role="tab" data-target="code-7-2">init_chat_model</button><button class="tab-btn" role="tab" data-target="code-7-3">Model</button></div><div class="tab-panels"><div class="tab-panel active" id="code-7-0" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">&quot;langchain-openrouter&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-7-1" role="tabpanel"><div class="code-block" data-lang="bash"><div class="code-head"><span class="code-lang">bash</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-bash">uv<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;langchain-openrouter&quot;</span>
+</code></pre></div></div><div class="tab-panel" id="code-7-2" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_chat_model</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENROUTER_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sk-...&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">init_chat_model</span><span class="p">(</span>
+    <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+    <span class="n">model_provider</span><span class="o">=</span><span class="s2">&quot;openrouter&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div></div><div class="tab-panel" id="code-7-3" role="tabpanel"><div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openrouter</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenRouter</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENROUTER_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sk-...&quot;</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatOpenRouter</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">)</span>
+</code></pre></div></div></div></div></div></div></div>
+<p>下面示例中展示的输出使用 OpenAI 生成。</p>
+<h2 id="2.-配置数据库">2. 配置数据库<a class="h-anchor" href="#2.-配置数据库" aria-label="本节链接">#</a></h2>
+<p>你将为本教程创建一个 <a href="https://www.sqlitetutorial.net/sqlite-sample-database/" target="_blank" rel="noreferrer">SQLite 数据库</a>。SQLite 是一个轻量级数据库，便于安装和使用。我们将加载 <code>chinook</code> 数据库，这是一个代表数字媒体商店的示例数据库。</p>
+<p>为方便起见，我们已将数据库（<code>Chinook.db</code>）托管在公共 GCS 存储桶上。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://storage.googleapis.com/benchmarks-artifacts/chinook/Chinook.db&quot;</span>
+<span class="n">local_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;Chinook.db&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">local_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2"> already exists, skipping download.&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="n">local_path</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File downloaded and saved as </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to download the file. Status code: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>我们将使用 Python 内置的 <code>sqlite3</code> 模块与数据库交互：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+
+<span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;Chinook.db&quot;</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT name FROM sqlite_master WHERE type=&#39;table&#39;;&quot;</span><span class="p">)</span>
+<span class="n">tables</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;sqlite_&quot;</span><span class="p">)]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dialect: sqlite&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available tables: </span><span class="si">{</span><span class="n">tables</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM Artist LIMIT 5;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample output: </span><span class="si">{</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">Dialect: sqlite
+Available tables: ['Album', 'Artist', 'Customer', 'Employee', 'Genre', 'Invoice', 'InvoiceLine', 'MediaType', 'Playlist', 'PlaylistTrack', 'Track']
+Sample output: [(1, 'AC/DC'), (2, 'Accept'), (3, 'Aerosmith'), (4, 'Alanis Morissette'), (5, 'Alice In Chains')]</code></pre></div>
+<h2 id="3.-为数据库交互添加工具">3. 为数据库交互添加工具<a class="h-anchor" href="#3.-为数据库交互添加工具" aria-label="本节链接">#</a></h2>
+<div class="callout callout-warning"><div class="callout-head"><span class="callout-icon">⚠</span><span>警告</span></div><div class="callout-body"><p>以下数据库工具仅是用于演示的最小封装。它们并不安全，也不适合在生产环境中使用。在执行模型生成的 SQL 之前，请使用范围受限的数据库权限，并添加针对具体应用的校验。</p></div></div>
+<p>我们可以使用 <code>langchain.tools</code> 中的 <code>@tool</code> 装饰器，把数据库<a href="https://docs.langchain.com/oss/python/langchain/tools" target="_blank" rel="noreferrer">工具</a>实现为轻量封装：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+
+<span class="c1"># Below are minimal tools for demonstration purposes.</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sql_db_list_tables</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Input is an empty string, output is a comma-separated list of tables in the database.&quot;&quot;&quot;</span>
+    <span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;Chinook.db&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT name FROM sqlite_master WHERE type=&#39;table&#39;;&quot;</span><span class="p">)</span>
+        <span class="n">tables</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;sqlite_&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sql_db_schema</span><span class="p">(</span><span class="n">table_names</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Input to this tool is a comma-separated list of tables, output is the schema and sample rows for those tables.</span>
+<span class="sd">    Be sure that the tables actually exist by calling sql_db_list_tables first!</span>
+<span class="sd">    Example Input: table1, table2, table3&quot;&quot;&quot;</span>
+    <span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;Chinook.db&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT name FROM sqlite_master WHERE type=&#39;table&#39;;&quot;</span><span class="p">)</span>
+        <span class="n">valid_tables</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;sqlite_&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">table_names</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">):</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_tables</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Error: table_names </span><span class="se">{{</span><span class="si">{</span><span class="n">table</span><span class="si">!r}</span><span class="se">}}</span><span class="s2"> not found in database&quot;</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="s2">&quot;SELECT sql FROM sqlite_master WHERE type=&#39;table&#39; AND name=?;&quot;</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">table</span><span class="p">,),</span>
+            <span class="p">)</span>
+            <span class="n">schema_row</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">schema_row</span><span class="p">:</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">schema_row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">quoted_table</span> <span class="o">=</span> <span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">table</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;&quot;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span>
+                    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SELECT * FROM </span><span class="si">{</span><span class="n">quoted_table</span><span class="si">}</span><span class="s2"> LIMIT 3;&quot;</span><span class="p">)</span>
+                    <span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">rows</span><span class="p">:</span>
+                        <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">description</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;/*</span><span class="se">\n</span><span class="s2">3 rows from </span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s2"> table:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col_names</span><span class="p">)</span>
+                            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span>
+                            <span class="p">)</span>
+                            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">*/&quot;</span>
+                        <span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error fetching sample rows: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="nd">@tool</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sql_db_query</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Input to this tool is a detailed and correct SQL query, output is a result from the database.</span>
+<span class="sd">    If the query is not correct, an error message will be returned.</span>
+<span class="sd">    If an error is returned, rewrite the query, check the query, and try again.</span>
+<span class="sd">    If you encounter an issue with Unknown column &#39;xxxx&#39; in &#39;field list&#39;, use sql_db_schema to query the correct table fields.&quot;&quot;&quot;</span>
+    <span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;Chinook.db&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="n">tools</span> <span class="o">=</span> <span class="p">[</span><span class="n">sql_db_list_tables</span><span class="p">,</span> <span class="n">sql_db_schema</span><span class="p">,</span> <span class="n">sql_db_query</span><span class="p">]</span>
+
+<span class="c1"># Use a distinct loop variable so it does not shadow the `tool` decorator,</span>
+<span class="c1"># which is reused later to wrap the query tool for human review.</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tools</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">t</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">sql_db_list_tables: Input is an empty string, output is a comma-separated list of tables in the database.
+
+sql_db_schema: Input to this tool is a comma-separated list of tables, output is the schema and sample rows for those tables.
+    Be sure that the tables actually exist by calling sql_db_list_tables first!
+    Example Input: table1, table2, table3
+
+sql_db_query: Input to this tool is a detailed and correct SQL query, output is a result from the database.
+    If the query is not correct, an error message will be returned.
+    If an error is returned, rewrite the query, check the query, and try again.
+    If you encounter an issue with Unknown column 'xxxx' in 'field list', use sql_db_schema to query the correct table fields.</code></pre></div>
+<h2 id="4.-定义应用步骤">4. 定义应用步骤<a class="h-anchor" href="#4.-定义应用步骤" aria-label="本节链接">#</a></h2>
+<p>我们为以下步骤构建专用节点：</p>
+<ul><li>列出数据库表</li><li>调用「获取 schema」工具</li><li>生成查询</li><li>检查查询</li></ul>
+<p>将这些步骤放入专用节点，可以让我们 (1) 在需要时强制发起工具调用，(2) 自定义与每个步骤关联的提示词。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">AIMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.runnables</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunnableConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">END</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">MessagesState</span><span class="p">,</span> <span class="n">StateGraph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.prebuilt</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolNode</span>
+
+<span class="n">get_schema_tool</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">tool</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">tools</span> <span class="k">if</span> <span class="n">tool</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;sql_db_schema&quot;</span><span class="p">)</span>
+<span class="n">get_schema_node</span> <span class="o">=</span> <span class="n">ToolNode</span><span class="p">([</span><span class="n">get_schema_tool</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;get_schema&quot;</span><span class="p">)</span>
+
+<span class="n">run_query_tool</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">tool</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">tools</span> <span class="k">if</span> <span class="n">tool</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;sql_db_query&quot;</span><span class="p">)</span>
+<span class="n">run_query_node</span> <span class="o">=</span> <span class="n">ToolNode</span><span class="p">([</span><span class="n">run_query_tool</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;run_query&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Example: create a predetermined tool call</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_tables</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">):</span>
+    <span class="n">tool_call</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;sql_db_list_tables&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;tool_call&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">tool_call_message</span> <span class="o">=</span> <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tool_calls</span><span class="o">=</span><span class="p">[</span><span class="n">tool_call</span><span class="p">])</span>
+
+    <span class="n">list_tables_tool</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">tool</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">tools</span> <span class="k">if</span> <span class="n">tool</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;sql_db_list_tables&quot;</span><span class="p">)</span>
+    <span class="n">tool_message</span> <span class="o">=</span> <span class="n">list_tables_tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">tool_call</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">AIMessage</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available tables: </span><span class="si">{</span><span class="n">tool_message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">tool_call_message</span><span class="p">,</span> <span class="n">tool_message</span><span class="p">,</span> <span class="n">response</span><span class="p">]}</span>
+
+
+<span class="c1"># Example: force a model to create a tool call</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_get_schema</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">):</span>
+    <span class="c1"># Note that LangChain enforces that all models accept `tool_choice=&quot;any&quot;`</span>
+    <span class="c1"># as well as `tool_choice=&lt;string name of tool&gt;`.</span>
+    <span class="n">llm_with_tools</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">bind_tools</span><span class="p">([</span><span class="n">get_schema_tool</span><span class="p">],</span> <span class="n">tool_choice</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">llm_with_tools</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">response</span><span class="p">]}</span>
+
+
+<span class="n">generate_query_system_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">You are an agent designed to interact with a SQL database.</span>
+<span class="s2">Given an input question, create a syntactically correct </span><span class="si">{dialect}</span><span class="s2"> query to run,</span>
+<span class="s2">then look at the results of the query and return the answer. Unless the user</span>
+<span class="s2">specifies a specific number of examples they wish to obtain, always limit your</span>
+<span class="s2">query to at most </span><span class="si">{top_k}</span><span class="s2"> results.</span>
+
+<span class="s2">You can order the results by a relevant column to return the most interesting</span>
+<span class="s2">examples in the database. Never query for all the columns from a specific table,</span>
+<span class="s2">only ask for the relevant columns given the question.</span>
+
+<span class="s2">DO NOT make any DML statements (INSERT, UPDATE, DELETE, DROP etc.) to the database.</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">dialect</span><span class="o">=</span><span class="s2">&quot;sqlite&quot;</span><span class="p">,</span>
+    <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_query</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">):</span>
+    <span class="n">system_message</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">generate_query_system_prompt</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="c1"># We do not force a tool call here, to allow the model to</span>
+    <span class="c1"># respond naturally when it obtains the solution.</span>
+    <span class="n">llm_with_tools</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">bind_tools</span><span class="p">([</span><span class="n">run_query_tool</span><span class="p">])</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">llm_with_tools</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">system_message</span><span class="p">]</span> <span class="o">+</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">response</span><span class="p">]}</span>
+
+
+<span class="n">check_query_system_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">You are a SQL expert with a strong attention to detail.</span>
+<span class="s2">Double check the </span><span class="si">{dialect}</span><span class="s2"> query for common mistakes, including:</span>
+<span class="s2">- Using NOT IN with NULL values</span>
+<span class="s2">- Using UNION when UNION ALL should have been used</span>
+<span class="s2">- Using BETWEEN for exclusive ranges</span>
+<span class="s2">- Data type mismatch in predicates</span>
+<span class="s2">- Properly quoting identifiers</span>
+<span class="s2">- Using the correct number of arguments for functions</span>
+<span class="s2">- Casting to the correct data type</span>
+<span class="s2">- Using the proper columns for joins</span>
+
+<span class="s2">If there are any of the above mistakes, rewrite the query. If there are no mistakes,</span>
+<span class="s2">just reproduce the original query.</span>
+
+<span class="s2">You will call the appropriate tool to execute the query after running this check.</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dialect</span><span class="o">=</span><span class="s2">&quot;sqlite&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">check_query</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">):</span>
+    <span class="n">system_message</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">check_query_system_prompt</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Generate an artificial user message to check</span>
+    <span class="n">tool_call</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">user_message</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">tool_call</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">][</span><span class="s2">&quot;query&quot;</span><span class="p">]}</span>
+    <span class="n">llm_with_tools</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">bind_tools</span><span class="p">([</span><span class="n">run_query_tool</span><span class="p">],</span> <span class="n">tool_choice</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">llm_with_tools</span><span class="o">.</span><span class="n">invoke</span><span class="p">([</span><span class="n">system_message</span><span class="p">,</span> <span class="n">user_message</span><span class="p">])</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">response</span><span class="p">]}</span>
+</code></pre></div>
+<h2 id="5.-实现智能体">5. 实现智能体<a class="h-anchor" href="#5.-实现智能体" aria-label="本节链接">#</a></h2>
+<p>现在，我们可以使用 <a href="graph-api.html">Graph API</a> 将这些步骤组装成一个工作流。我们在查询生成步骤定义一条<a href="graph-api.html#conditional-edges">条件边</a>：如果生成了查询，则路由到查询检查器；如果没有工具调用，则结束，此时 LLM 已经给出了对该问题的回答。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="k">def</span><span class="w"> </span><span class="nf">should_continue</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="n">END</span><span class="p">,</span> <span class="s2">&quot;check_query&quot;</span><span class="p">]:</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+    <span class="n">last_message</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">last_message</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">END</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;check_query&quot;</span>
+
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">list_tables</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">call_get_schema</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">get_schema_node</span><span class="p">,</span> <span class="s2">&quot;get_schema&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">generate_query</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">check_query</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">run_query_node</span><span class="p">,</span> <span class="s2">&quot;run_query&quot;</span><span class="p">)</span>
+
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;list_tables&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;list_tables&quot;</span><span class="p">,</span> <span class="s2">&quot;call_get_schema&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;call_get_schema&quot;</span><span class="p">,</span> <span class="s2">&quot;get_schema&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;get_schema&quot;</span><span class="p">,</span> <span class="s2">&quot;generate_query&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+    <span class="s2">&quot;generate_query&quot;</span><span class="p">,</span>
+    <span class="n">should_continue</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;check_query&quot;</span><span class="p">,</span> <span class="s2">&quot;run_query&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;run_query&quot;</span><span class="p">,</span> <span class="s2">&quot;generate_query&quot;</span><span class="p">)</span>
+
+<span class="n">agent</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+</code></pre></div>
+<p>我们在下方可视化该应用：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+
+<span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;graph.png&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">draw_mermaid_png</span><span class="p">())</span>
+</code></pre></div>
+<p><img src="https://mintcdn.com/langchain-5e9cc07a/aAi4RLdXQAh8fThS/oss/images/sql-agent-langgraph.png?fit=max&amp;auto=format&amp;n=aAi4RLdXQAh8fThS&amp;q=85&amp;s=1ddd4aae369fb8c143edaccb0a09c81f" alt="SQL 智能体图" loading="lazy" class="md-img"></p>
+<p>我们现在可以调用该图：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">question</span> <span class="o">=</span> <span class="s2">&quot;Which genre on average has the longest tracks?&quot;</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">question</span><span class="p">}]},</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">final_state</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">output</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">================================ Human Message =================================
+
+Which genre on average has the longest tracks?
+================================== Ai Message ==================================
+
+Available tables: Album, Artist, Customer, Employee, Genre, Invoice, InvoiceLine, MediaType, Playlist, PlaylistTrack, Track
+================================== Ai Message ==================================
+Tool Calls:
+  sql_db_schema (call_yzje0tj7JK3TEzDx4QnRR3lL)
+ Call ID: call_yzje0tj7JK3TEzDx4QnRR3lL
+  Args:
+    table_names: Genre, Track
+================================= Tool Message =================================
+Name: sql_db_schema
+
+
+CREATE TABLE "Genre" (
+	"GenreId" INTEGER NOT NULL,
+	"Name" NVARCHAR(120),
+	PRIMARY KEY ("GenreId")
+)
+
+/*
+3 rows from Genre table:
+GenreId	Name
+1	Rock
+2	Jazz
+3	Metal
+*/
+
+
+CREATE TABLE "Track" (
+	"TrackId" INTEGER NOT NULL,
+	"Name" NVARCHAR(200) NOT NULL,
+	"AlbumId" INTEGER,
+	"MediaTypeId" INTEGER NOT NULL,
+	"GenreId" INTEGER,
+	"Composer" NVARCHAR(220),
+	"Milliseconds" INTEGER NOT NULL,
+	"Bytes" INTEGER,
+	"UnitPrice" NUMERIC(10, 2) NOT NULL,
+	PRIMARY KEY ("TrackId"),
+	FOREIGN KEY("MediaTypeId") REFERENCES "MediaType" ("MediaTypeId"),
+	FOREIGN KEY("GenreId") REFERENCES "Genre" ("GenreId"),
+	FOREIGN KEY("AlbumId") REFERENCES "Album" ("AlbumId")
+)
+
+/*
+3 rows from Track table:
+TrackId	Name	AlbumId	MediaTypeId	GenreId	Composer	Milliseconds	Bytes	UnitPrice
+1	For Those About To Rock (We Salute You)	1	1	1	Angus Young, Malcolm Young, Brian Johnson	343719	11170334	0.99
+2	Balls to the Wall	2	2	1	U. Dirkschneider, W. Hoffmann, H. Frank, P. Baltes, S. Kaufmann, G. Hoffmann	342562	5510424	0.99
+3	Fast As a Shark	3	2	1	F. Baltes, S. Kaufman, U. Dirkscneider &amp; W. Hoffman	230619	3990994	0.99
+*/
+================================== Ai Message ==================================
+Tool Calls:
+  sql_db_query (call_cb9ApLfZLSq7CWg6jd0im90b)
+ Call ID: call_cb9ApLfZLSq7CWg6jd0im90b
+  Args:
+    query: SELECT Genre.Name, AVG(Track.Milliseconds) AS AvgMilliseconds FROM Track JOIN Genre ON Track.GenreId = Genre.GenreId GROUP BY Genre.GenreId ORDER BY AvgMilliseconds DESC LIMIT 5;
+================================== Ai Message ==================================
+Tool Calls:
+  sql_db_query (call_DMVALfnQ4kJsuF3Yl6jxbeAU)
+ Call ID: call_DMVALfnQ4kJsuF3Yl6jxbeAU
+  Args:
+    query: SELECT Genre.Name, AVG(Track.Milliseconds) AS AvgMilliseconds FROM Track JOIN Genre ON Track.GenreId = Genre.GenreId GROUP BY Genre.GenreId ORDER BY AvgMilliseconds DESC LIMIT 5;
+================================= Tool Message =================================
+Name: sql_db_query
+
+[('Sci Fi &amp; Fantasy', 2911783.0384615385), ('Science Fiction', 2625549.076923077), ('Drama', 2575283.78125), ('TV Shows', 2145041.0215053763), ('Comedy', 1585263.705882353)]
+================================== Ai Message ==================================
+
+The genre with the longest tracks on average is "Sci Fi &amp; Fantasy," with an average track length of approximately 2,911,783 milliseconds. Other genres with relatively long tracks include "Science Fiction," "Drama," "TV Shows," and "Comedy."</code></pre></div>
+<div class="callout callout-tip"><div class="callout-head"><span class="callout-icon">💡</span><span>提示</span></div><div class="callout-body"><p>上述运行的 <a href="https://smith.langchain.com/public/94b8c9ac-12f7-4692-8706-836a1f30f1ea/r" target="_blank" rel="noreferrer">LangSmith 追踪</a> 见此处。</p></div></div>
+<h2 id="6.-实现人在回路审查">6. 实现人在回路审查<a class="h-anchor" href="#6.-实现人在回路审查" aria-label="本节链接">#</a></h2>
+<p>在执行智能体的 SQL 查询之前，先检查其中是否存在非预期的操作或低效之处，是较为稳妥的做法。</p>
+<p>这里我们利用 LangGraph 的<a href="interrupts.html">人在回路</a>特性，在执行 SQL 查询之前暂停运行，并等待人工审查。借助 LangGraph 的<a href="persistence.html">持久化层</a>，我们可以无限期地暂停运行（或者至少只要持久化层仍然存活就可以）。</p>
+<p>让我们把 <code>sql_db_query</code> 工具包装在一个接收人工输入的节点中。我们可以使用 <a href="interrupts.html">interrupt</a> 函数来实现这一点。在下面，我们允许输入以批准工具调用、编辑其参数，或提供用户反馈。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">tool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">interrupt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.runnables</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunnableConfig</span>
+
+
+<span class="nd">@tool</span><span class="p">(</span>
+    <span class="n">run_query_tool</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="n">run_query_tool</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+    <span class="n">args_schema</span><span class="o">=</span><span class="n">run_query_tool</span><span class="o">.</span><span class="n">args_schema</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_query_tool_with_interrupt</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">RunnableConfig</span><span class="p">,</span> <span class="o">**</span><span class="n">tool_input</span><span class="p">):</span>
+    <span class="n">request</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">run_query_tool</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">tool_input</span><span class="p">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Please review the tool call&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="code-line hl">    <span class="n">response</span> <span class="o">=</span> <span class="n">interrupt</span><span class="p">([</span><span class="n">request</span><span class="p">])</span></span>
+    <span class="c1"># approve the tool call</span>
+    <span class="k">if</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;accept&quot;</span><span class="p">:</span>
+        <span class="n">tool_response</span> <span class="o">=</span> <span class="n">run_query_tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">tool_input</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+    <span class="c1"># update tool call args</span>
+    <span class="k">elif</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;edit&quot;</span><span class="p">:</span>
+        <span class="n">tool_input</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">][</span><span class="s2">&quot;args&quot;</span><span class="p">]</span>
+        <span class="n">tool_response</span> <span class="o">=</span> <span class="n">run_query_tool</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">tool_input</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+    <span class="c1"># respond to the LLM with user feedback</span>
+    <span class="k">elif</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;response&quot;</span><span class="p">:</span>
+        <span class="n">user_feedback</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">]</span>
+        <span class="n">tool_response</span> <span class="o">=</span> <span class="n">user_feedback</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported interrupt response type: </span><span class="si">{</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tool_response</span>
+
+
+<span class="c1"># Redefine the tool node to use the interrupt version</span>
+<span class="code-line hl"><span class="n">run_query_node</span> <span class="o">=</span> <span class="n">ToolNode</span><span class="p">([</span><span class="n">run_query_tool_with_interrupt</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;run_query&quot;</span><span class="p">)</span></span>
+</code></pre></div>
+<div class="callout callout-note"><div class="callout-head"><span class="callout-icon">ℹ</span><span>注意</span></div><div class="callout-body"><p>上述实现遵循更广泛的<a href="interrupts.html">人在回路</a>指南中的<a href="interrupts.html#interrupts-in-tools">工具中断示例</a>。有关细节和替代方案，请参阅该指南。</p></div></div>
+<p>现在我们重新组装我们的图。我们将用人工审查替换程序化检查。请注意，我们现在引入了一个<a href="persistence.html">检查点保存器</a>；这是暂停和恢复运行所必需的。</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemorySaver</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">should_continue</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">MessagesState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="n">END</span><span class="p">,</span> <span class="s2">&quot;run_query&quot;</span><span class="p">]:</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+    <span class="n">last_message</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">last_message</span><span class="o">.</span><span class="n">tool_calls</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">END</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;run_query&quot;</span>
+
+<span class="n">builder</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">MessagesState</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">list_tables</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">call_get_schema</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">get_schema_node</span><span class="p">,</span> <span class="s2">&quot;get_schema&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">generate_query</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">run_query_node</span><span class="p">,</span> <span class="s2">&quot;run_query&quot;</span><span class="p">)</span>
+
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">&quot;list_tables&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;list_tables&quot;</span><span class="p">,</span> <span class="s2">&quot;call_get_schema&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;call_get_schema&quot;</span><span class="p">,</span> <span class="s2">&quot;get_schema&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;get_schema&quot;</span><span class="p">,</span> <span class="s2">&quot;generate_query&quot;</span><span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span>
+    <span class="s2">&quot;generate_query&quot;</span><span class="p">,</span>
+    <span class="n">should_continue</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">builder</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">&quot;run_query&quot;</span><span class="p">,</span> <span class="s2">&quot;generate_query&quot;</span><span class="p">)</span>
+
+<span class="code-line hl"><span class="n">checkpointer</span> <span class="o">=</span> <span class="n">InMemorySaver</span><span class="p">()</span></span>
+<span class="code-line hl"><span class="n">agent</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">checkpointer</span><span class="o">=</span><span class="n">checkpointer</span><span class="p">)</span></span>
+</code></pre></div>
+<p>我们可以像之前一样调用该图。这一次，执行会被中断：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="n">question</span> <span class="o">=</span> <span class="s2">&quot;Which genre on average has the longest tracks?&quot;</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">question</span><span class="p">}]},</span>
+    <span class="n">config</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">stream</span><span class="o">.</span><span class="n">interrupted</span><span class="p">:</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">interrupts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INTERRUPTED:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="n">action</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">...
+
+INTERRUPTED:
+{
+  "action": "sql_db_query",
+  "args": {
+    "query": "SELECT Genre.Name, AVG(Track.Milliseconds) AS AvgLength FROM Track JOIN Genre ON Track.GenreId = Genre.GenreId GROUP BY Genre.Name ORDER BY AvgLength DESC LIMIT 5;"
+  },
+  "description": "Please review the tool call"
+}</code></pre></div>
+<p>我们可以使用 <a href="graph-api-send-command.html#combine-control-flow-and-state-updates-with-command">Command</a> 接受或编辑该工具调用：</p>
+<div class="code-block" data-lang="python"><div class="code-head"><span class="code-lang">python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">stream_events</span><span class="p">(</span>
+    <span class="n">Command</span><span class="p">(</span><span class="n">resume</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;accept&quot;</span><span class="p">}),</span>
+    <span class="c1"># Command(resume={&quot;type&quot;: &quot;edit&quot;, &quot;args&quot;: {&quot;query&quot;: &quot;...&quot;}}),</span>
+    <span class="n">config</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v3&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">stream</span><span class="o">.</span><span class="n">interrupted</span><span class="p">:</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">interrupts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;INTERRUPTED:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="n">action</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="code-block" data-lang="text"><div class="code-head"><span class="code-lang">text</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre class="code-pre"><code class="language-text">================================== Ai Message ==================================
+Tool Calls:
+  sql_db_query (call_t4yXkD6shwdTPuelXEmY3sAY)
+ Call ID: call_t4yXkD6shwdTPuelXEmY3sAY
+  Args:
+    query: SELECT Genre.Name, AVG(Track.Milliseconds) AS AvgLength FROM Track JOIN Genre ON Track.GenreId = Genre.GenreId GROUP BY Genre.Name ORDER BY AvgLength DESC LIMIT 5;
+================================= Tool Message =================================
+Name: sql_db_query
+
+[('Sci Fi &amp; Fantasy', 2911783.0384615385), ('Science Fiction', 2625549.076923077), ('Drama', 2575283.78125), ('TV Shows', 2145041.0215053763), ('Comedy', 1585263.705882353)]
+================================== Ai Message ==================================
+
+The genre with the longest average track length is "Sci Fi &amp; Fantasy" with an average length of about 2,911,783 milliseconds. Other genres with long average track lengths include "Science Fiction," "Drama," "TV Shows," and "Comedy."</code></pre></div>
+<p>有关细节，请参阅<a href="interrupts.html">人在回路指南</a>。</p>
+<h2 id="下一步">下一步<a class="h-anchor" href="#下一步" aria-label="本节链接">#</a></h2>
+<p>请查阅<a href="https://docs.langchain.com/langsmith/evaluate-graph" target="_blank" rel="noreferrer">评估图</a>指南，了解如何使用 LangSmith 评估 LangGraph 应用，包括像这样的 SQL 智能体。</p>
+<hr class="rule">
+<p><a href="https://docs.langchain.com/use-these-docs" target="_blank" rel="noreferrer">将这些文档</a>通过 MCP 连接到你所选的智能体，以获取实时答案。</p>
+<p><a href="https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/sql-agent.mdx" target="_blank" rel="noreferrer">在 GitHub 上编辑此页面</a>或<a href="https://github.com/langchain-ai/docs/issues/new/choose" target="_blank" rel="noreferrer">提交问题</a>。</p></div>
+        <nav class="pager"><a class="prev" href="agentic-rag.html"><span class="lbl">上一页</span><span class="ttl">Agentic RAG</span></a><a class="next" href="thinking-in-graph-api.html"><span class="lbl">下一页</span><span class="ttl">用 Graph API 思考</span></a></nav>
+        <footer class="doc-foot">
+          <span>本页为社区中文翻译，内容以 <a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank" rel="noreferrer">官方英文文档</a> 为准。</span>
+          <span><a href="https://github.com/langchain-ai/docs" target="_blank" rel="noreferrer">在 GitHub 查看原文</a></span>
+        </footer>
+      </article>
+      <aside class="toc"><div class="toc-title">本页目录</div><ul><li class="lvl-3"><a href="#概念">概念</a></li><li class="lvl-2"><a href="#设置">设置</a></li><li class="lvl-3"><a href="#安装">安装</a></li><li class="lvl-3"><a href="#langsmith">LangSmith</a></li><li class="lvl-2"><a href="#1.-选择一个-llm">1. 选择一个 LLM</a></li><li class="lvl-2"><a href="#2.-配置数据库">2. 配置数据库</a></li><li class="lvl-2"><a href="#3.-为数据库交互添加工具">3. 为数据库交互添加工具</a></li><li class="lvl-2"><a href="#4.-定义应用步骤">4. 定义应用步骤</a></li><li class="lvl-2"><a href="#5.-实现智能体">5. 实现智能体</a></li><li class="lvl-2"><a href="#6.-实现人在回路审查">6. 实现人在回路审查</a></li><li class="lvl-2"><a href="#下一步">下一步</a></li></ul></aside>
+    </div>
+  </div>
+</div>
+<div class="to-top" id="toTop" title="回到顶部">↑</div>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
